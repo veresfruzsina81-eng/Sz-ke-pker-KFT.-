@@ -66,7 +66,7 @@
     @media (max-width:900px){.hero-cols{grid-template-columns:1fr}}
 
     /* Sections */
-    section{padding:42px 0}
+    section{padding:42px 0; scroll-margin-top:84px;}
     h2{margin:0 0 12px;font-weight:900}
     .grid{display:grid;gap:14px}
     .cols-4{grid-template-columns:repeat(4,1fr)}
@@ -78,7 +78,11 @@
     /* Gallery */
     .gallery img{height:220px;object-fit:cover;border-radius:12px;cursor:pointer}
 
-    /* Map in modal */
+    /* Országosan - jelvények */
+    .tags{display:flex;flex-wrap:wrap;gap:8px}
+    .tag{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:8px 12px;border-radius:999px;font-weight:800;color:#dbe7fb}
+
+    /* Map in modal / inline */
     .map{width:100%;height:320px;border:0;border-radius:12px}
 
     /* Footer */
@@ -94,7 +98,7 @@
     .fb-btn svg{width:22px;height:22px;fill:#fff}
     .fb-btn:active{transform:translateY(-50%) scale(.98)}
 
-    /* Modal (Kapcsolat + Lightbox is uses these base styles) */
+    /* Modal (Kapcsolat + Lightbox) */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:120;padding:16px}
     .overlay.show{display:flex}
     .modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;max-width:820px;width:100%;padding:16px;box-shadow:0 14px 36px rgba(0,0,0,.4)}
@@ -117,9 +121,10 @@
         <span class="brand-name">Szőke Épker KFT.</span>
       </a>
       <nav class="menu" aria-label="Főmenü">
+        <a href="#szolgaltatasok">Szolgáltatások</a>
+        <a href="#orszagosan">Országosan</a>
         <a href="#ajanlatkeres" class="btn">Ajánlatkérés</a>
         <a href="#rolunk">Rólunk</a>
-        <a href="#szolgaltatasok">Szolgáltatások</a>
         <a href="#epitoanyagok">Építőanyagok</a>
         <a href="#galeria">Galéria</a>
         <a href="#" id="kapcsolatLink" class="btn outline">Kapcsolat</a>
@@ -127,7 +132,44 @@
     </div>
   </header>
 
-  <!-- HERO (egyben) -->
+  <!-- 1) SZOLGÁLTATÁSOK – legfelül -->
+  <section id="szolgaltatasok">
+    <div class="container">
+      <h2 class="reveal">Szolgáltatásaink</h2>
+      <div class="grid cols-4">
+        <div class="card reveal">🧱 Térkövezés és burkolás</div>
+        <div class="card reveal">🏗️ Generálkivitelezés</div>
+        <div class="card reveal">🏠 Homlokzati szigetelés</div>
+        <div class="card reveal">🎨 Festés, lakásfelújítás</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2) ORSZÁGOSAN – közvetlenül utána -->
+  <section id="orszagosan">
+    <div class="container">
+      <h2 class="reveal">Országosan vállaljuk</h2>
+      <div class="card reveal" style="margin-bottom:14px">
+        <p style="margin:0 0 10px;color:var(--muted)">
+          Teljes Magyarország területén dolgozunk. Gyors felmérés, átlátható ajánlat, pontos határidő.
+        </p>
+        <div class="tags">
+          <span class="tag">Budapest</span><span class="tag">Pest</span><span class="tag">Borsod</span>
+          <span class="tag">Hajdú-Bihar</span><span class="tag">Szabolcs</span><span class="tag">Békés</span>
+          <span class="tag">Csongrád-Csanád</span><span class="tag">Baranya</span><span class="tag">Somogy</span>
+          <span class="tag">Veszprém</span><span class="tag">Fejér</span><span class="tag">Győr-Moson-Sopron</span>
+          <span class="tag">Vas</span><span class="tag">Zala</span><span class="tag">Heves</span><span class="tag">Nógrád</span>
+          <span class="tag">Jász-Nagykun-Szolnok</span><span class="tag">Komárom-Esztergom</span><span class="tag">Tolna</span>
+        </div>
+      </div>
+      <iframe class="map reveal"
+        src="https://www.google.com/maps?&q=Magyarorsz%C3%A1g&hl=hu&z=6&output=embed"
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen
+        title="Magyarország térkép"></iframe>
+    </div>
+  </section>
+
+  <!-- 3) HERO (lejjebb helyezve) -->
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-card reveal">
@@ -196,19 +238,6 @@
     </div>
   </section>
 
-  <!-- SZOLGÁLTATÁSOK (Térkövezés legfelül) -->
-  <section id="szolgaltatasok">
-    <div class="container">
-      <h2 class="reveal">Szolgáltatásaink</h2>
-      <div class="grid cols-4">
-        <div class="card reveal">🧱 Térkövezés és burkolás</div>
-        <div class="card reveal">🏗️ Generálkivitelezés</div>
-        <div class="card reveal">🏠 Homlokzati szigetelés</div>
-        <div class="card reveal">🎨 Festés, lakásfelújítás</div>
-      </div>
-    </div>
-  </section>
-
   <!-- ÉPÍTŐANYAGOK (későbbi webshop helye) -->
   <section id="epitoanyagok">
     <div class="container">
@@ -266,7 +295,7 @@
         <div>
           <iframe class="map"
             src="https://www.google.com/maps?q=Beretty%C3%B3%C3%BAjfalu%20D%C3%B3zsa%20Gy%C3%B6rgy%20utca%206%201%2F3&output=embed"
-            loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+            loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Irodánk térképe"></iframe>
         </div>
       </div>
     </div>

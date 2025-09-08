@@ -4,27 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Szőke Épker KFT. – Minőség kompromisszumok nélkül</title>
-  <meta name="description" content="Generálkivitelezés, családi ház és társasház építés, felújítás, homlokzati szigetelés, térkövezés, burkolás és festés — országosan, megbízható csapattal.">
-
-  <!-- Favicons -->
+  <meta name="description" content="Generálkivitelezés, családi ház és társasház építés, felújítás, homlokzati szigetelés, térkövezés, burkolás és festés — megbízható csapattal.">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <meta name="theme-color" content="#0b1220">
-
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
-
   <style>
-    :root{
-      --bg:#0b1220; --panel:#0e1628; --text:#e8eef6; --muted:#a7b6cc;
-      --accent:#4da3ff; --accent2:#a78bfa; --glass:rgba(14,22,40,.65); --border:rgba(255,255,255,.08);
-    }
+    :root{--bg:#0b1220;--panel:#0e1628;--text:#e8eef6;--muted:#a7b6cc;--accent:#4da3ff;--accent2:#a78bfa;--glass:rgba(14,22,40,.65);--border:rgba(255,255,255,.08)}
     *{box-sizing:border-box} html,body{margin:0;height:100%}
     body{
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background: radial-gradient(1200px 800px at 20% 10%, rgba(77,163,255,.14), transparent),
-                  radial-gradient(1000px 700px at 80% 0%, rgba(167,139,250,.16), transparent),
-                  linear-gradient(180deg,#0b1220,#0b0f1a 40%,#0b1220);
-      -webkit-tap-highlight-color: transparent;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);
+      background:radial-gradient(1200px 800px at 20% 10%, rgba(77,163,255,.14), transparent),
+                 radial-gradient(1000px 700px at 80% 0%, rgba(167,139,250,.16), transparent),
+                 linear-gradient(180deg,#0b1220,#0b0f1a 40%,#0b1220);
+      -webkit-tap-highlight-color:transparent
     }
     a{color:inherit;text-decoration:none} img{max-width:100%;display:block}
     .container{max-width:1140px;margin:0 auto;padding:0 18px}
@@ -34,29 +26,21 @@
     .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
     .brand{display:flex;align-items:center;gap:10px}
     .brand img{height:40px;width:auto;border-radius:6px}
-    .brand-name{font-weight:900;letter-spacing:.2px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;font-size:clamp(18px,2.2vw,22px)}
+    .brand-name{font-weight:900;letter-spacing:.2px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+      -webkit-background-clip:text;background-clip:text;color:transparent;font-size:clamp(18px,2.2vw,22px)}
     .menu{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
     .menu a{color:var(--muted);font-weight:800}
     .menu a:hover{color:var(--text)}
-    .btn{display:inline-flex;align-items:center;gap:10px;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0b0f14;box-shadow:0 10px 24px rgba(0,0,0,.25);transition:.15s transform}
+    .btn{display:inline-flex;align-items:center;gap:10px;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0b0f14;box-shadow:0 10px 24px rgba(0,0,0,.25);transition:.15s transform}
     .btn:hover{transform:translateY(-1px)} .btn:active{transform:none}
     .btn.outline{background:transparent;color:var(--text);border:1px solid var(--border)}
 
     /* Hero */
-    .hero{
-      position:relative;
-      padding:90px 0 64px;
-      background-image:url('epito.jpg');
-      background-size:cover;
-      background-position:center;
-      isolation:isolate;
-    }
+    .hero{position:relative;padding:90px 0 64px;background-image:url('epito.jpg');background-size:cover;background-position:center;isolation:isolate}
     .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.6));z-index:0}
     .hero-inner{position:relative;z-index:1}
-    .hero-card{
-      background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:22px;
-      box-shadow:0 12px 30px rgba(0,0,0,.28);max-width:900px
-    }
+    .hero-card{background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 12px 30px rgba(0,0,0,.28);max-width:900px}
     .hero-top{display:flex;align-items:center;gap:14px;margin-bottom:8px}
     .hero-logo{height:56px;width:auto;border-radius:8px;filter:drop-shadow(0 8px 22px rgba(0,0,0,.45))}
     .pill{display:inline-block;font-weight:900;color:#0b0f14;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:6px 10px;border-radius:999px}
@@ -66,7 +50,7 @@
     @media (max-width:900px){.hero-cols{grid-template-columns:1fr}}
 
     /* Sections */
-    section{padding:42px 0; scroll-margin-top:84px;}
+    section{padding:42px 0;scroll-margin-top:84px}
     h2{margin:0 0 12px;font-weight:900}
     .grid{display:grid;gap:14px}
     .cols-4{grid-template-columns:repeat(4,1fr)}
@@ -77,13 +61,6 @@
 
     /* Gallery */
     .gallery img{height:220px;object-fit:cover;border-radius:12px;cursor:pointer}
-
-    /* Országosan - jelvények */
-    .tags{display:flex;flex-wrap:wrap;gap:8px}
-    .tag{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:8px 12px;border-radius:999px;font-weight:800;color:#dbe7fb}
-
-    /* Map in modal / inline */
-    .map{width:100%;height:320px;border:0;border-radius:12px}
 
     /* Footer */
     footer{border-top:1px solid var(--border);padding:18px 0;text-align:center;color:var(--muted)}
@@ -122,7 +99,6 @@
       </a>
       <nav class="menu" aria-label="Főmenü">
         <a href="#szolgaltatasok">Szolgáltatások</a>
-        <a href="#orszagosan">Országosan</a>
         <a href="#ajanlatkeres" class="btn">Ajánlatkérés</a>
         <a href="#rolunk">Rólunk</a>
         <a href="#epitoanyagok">Építőanyagok</a>
@@ -145,37 +121,13 @@
     </div>
   </section>
 
-  <!-- 2) ORSZÁGOSAN – közvetlenül utána -->
-  <section id="orszagosan">
-    <div class="container">
-      <h2 class="reveal">Országosan vállaljuk</h2>
-      <div class="card reveal" style="margin-bottom:14px">
-        <p style="margin:0 0 10px;color:var(--muted)">
-          Teljes Magyarország területén dolgozunk. Gyors felmérés, átlátható ajánlat, pontos határidő.
-        </p>
-        <div class="tags">
-          <span class="tag">Budapest</span><span class="tag">Pest</span><span class="tag">Borsod</span>
-          <span class="tag">Hajdú-Bihar</span><span class="tag">Szabolcs</span><span class="tag">Békés</span>
-          <span class="tag">Csongrád-Csanád</span><span class="tag">Baranya</span><span class="tag">Somogy</span>
-          <span class="tag">Veszprém</span><span class="tag">Fejér</span><span class="tag">Győr-Moson-Sopron</span>
-          <span class="tag">Vas</span><span class="tag">Zala</span><span class="tag">Heves</span><span class="tag">Nógrád</span>
-          <span class="tag">Jász-Nagykun-Szolnok</span><span class="tag">Komárom-Esztergom</span><span class="tag">Tolna</span>
-        </div>
-      </div>
-      <iframe class="map reveal"
-        src="https://www.google.com/maps?&q=Magyarorsz%C3%A1g&hl=hu&z=6&output=embed"
-        loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen
-        title="Magyarország térkép"></iframe>
-    </div>
-  </section>
-
-  <!-- 3) HERO (lejjebb helyezve) -->
+  <!-- 2) HERO -->
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-card reveal">
         <div class="hero-top">
           <img class="hero-logo" src="logo.jpg" alt="Szőke Épker KFT.">
-          <span class="pill">Országosan</span>
+          <span class="pill">Professzionális csapat</span>
         </div>
 
         <h1>Minőség kompromisszumok nélkül</h1>
@@ -227,18 +179,17 @@
       <div class="card reveal">
         <p style="margin-top:0">
           A Szőke Épker Kft. több éves tapasztalattal vállal <b>teljes körű generálkivitelezést</b>, családi házak és társasházak építését,
-          <b>felújítást</b>, <b>homlokzati szigetelést</b>, <b>térkövezést</b>, <b>burkolást</b> és <b>festést</b> <b>országosan</b>.
+          <b>felújítást</b>, <b>homlokzati szigetelést</b>, <b>térkövezést</b>, <b>burkolást</b> és <b>festést</b>.
         </p>
         <p>
-          Célunk, hogy minden ügyfelünk elégedetten vehesse birtokba otthonát vagy ingatlanját, ezért nemcsak a kivitelezésben, hanem
-          a teljes folyamat során számíthat ránk: a tervezéstől a kulcsátadásig. Velünk nincsenek rejtett költségek, félbehagyott munkák
-          vagy csúszó határidők. Mi valóban azt adjuk, amit ígérünk: <b>biztonságot és nyugalmat egy életre szóló befektetéshez</b>.
+          Célunk, hogy ügyfeleink elégedetten vehessék birtokba ingatlanjukat: a tervezéstől a kulcsátadásig számíthat ránk.
+          Nincsenek rejtett költségek vagy csúszó határidők — <b>amit ígérünk, azt megcsináljuk</b>.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- ÉPÍTŐANYAGOK (későbbi webshop helye) -->
+  <!-- ÉPÍTŐANYAGOK -->
   <section id="epitoanyagok">
     <div class="container">
       <h2 class="reveal">Építőanyagok</h2>
@@ -248,7 +199,7 @@
     </div>
   </section>
 
-  <!-- GALÉRIA (lightbox) -->
+  <!-- GALÉRIA -->
   <section id="galeria">
     <div class="container">
       <h2 class="reveal">Galéria</h2>
@@ -267,7 +218,7 @@
     <a class="btn" href="#ajanlatkeres">Ingyenes ajánlatkérés</a>
   </div>
 
-  <!-- Lebegő Facebook ikon (jobb oldalon, végiggörget) -->
+  <!-- Lebegő Facebook ikon -->
   <div class="fb-stick">
     <a class="fb-btn" href="https://www.facebook.com/szokeepkerkft" target="_blank" rel="noopener" aria-label="Facebook oldalunk">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
@@ -333,25 +284,21 @@
     }
 
     // Kapcsolat modal
-    const kontaktBtn = document.getElementById('kapcsolatLink');
-    const contactModal = document.getElementById('contactModal');
-    const closeContact = document.getElementById('closeContact');
-    kontaktBtn.addEventListener('click', (e)=>{ e.preventDefault(); contactModal.classList.add('show'); contactModal.setAttribute('aria-hidden','false'); });
-    closeContact.addEventListener('click', ()=>{ contactModal.classList.remove('show'); contactModal.setAttribute('aria-hidden','true'); });
-    contactModal.addEventListener('click', (e)=>{ if(e.target===contactModal){ contactModal.classList.remove('show'); contactModal.setAttribute('aria-hidden','true'); }});
+    const kontaktBtn=document.getElementById('kapcsolatLink');
+    const contactModal=document.getElementById('contactModal');
+    const closeContact=document.getElementById('closeContact');
+    kontaktBtn.addEventListener('click',(e)=>{e.preventDefault();contactModal.classList.add('show');contactModal.setAttribute('aria-hidden','false');});
+    closeContact.addEventListener('click',()=>{contactModal.classList.remove('show');contactModal.setAttribute('aria-hidden','true');});
+    contactModal.addEventListener('click',(e)=>{if(e.target===contactModal){contactModal.classList.remove('show');contactModal.setAttribute('aria-hidden','true');}});
 
-    // Lightbox a galériához
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImg');
+    // Lightbox
+    const lb=document.getElementById('lightbox');
+    const lbImg=document.getElementById('lbImg');
     document.querySelectorAll('.gallery .lb').forEach(img=>{
-      img.addEventListener('click', ()=>{
-        lbImg.src = img.src;
-        lb.classList.add('show');
-        lb.setAttribute('aria-hidden','false');
-      });
+      img.addEventListener('click',()=>{lbImg.src=img.src;lb.classList.add('show');lb.setAttribute('aria-hidden','false');});
     });
-    document.getElementById('closeLightbox').addEventListener('click', ()=>{ lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); lbImg.src=""; });
-    lb.addEventListener('click', (e)=>{ if(e.target===lb){ lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); lbImg.src=""; }});
+    document.getElementById('closeLightbox').addEventListener('click',()=>{lb.classList.remove('show');lb.setAttribute('aria-hidden','true');lbImg.src="";});
+    lb.addEventListener('click',(e)=>{if(e.target===lb){lb.classList.remove('show');lb.setAttribute('aria-hidden','true');lbImg.src="";}});
   </script>
 </body>
 </html>

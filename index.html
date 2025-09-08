@@ -2,10 +2,19 @@
 <html lang="hu">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Szőke Épker KFT. – Minőség kompromisszumok nélkül</title>
-  <meta name="description" content="Generálkivitelezés, térkövezés, burkolás, szigetelés, festés – megbízható csapat, határidőre.">
+  <meta name="description" content="A Szőke Épker Kft. több éves tapasztalattal vállal teljes körű generálkivitelezést, családi ház és társasház építést, felújítást, homlokzati szigetelést, térkövezést, burkolást és festést — országosan.">
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#0b1220">
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
   <style>
     :root{
       --bg:#0b1220; --panel:#0e1628; --text:#e8eef6; --muted:#a7b6cc;
@@ -18,14 +27,17 @@
       background: radial-gradient(1200px 800px at 20% 10%, rgba(77,163,255,.14), transparent),
                   radial-gradient(1000px 700px at 80% 0%, rgba(167,139,250,.16), transparent),
                   linear-gradient(180deg,#0b1220,#0b0f1a 40%,#0b1220);
+      -webkit-tap-highlight-color: transparent;
     }
-    a{color:inherit;text-decoration:none} img{max-width:100%;display:block;border-radius:12px}
+    a{color:inherit;text-decoration:none} img{max-width:100%;display:block}
     .container{max-width:1140px;margin:0 auto;padding:0 18px}
 
     /* Header */
-    header{position:sticky;top:0;z-index:50;background:rgba(11,18,32,.55);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
-    .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
-    .brand{font-weight:900;letter-spacing:.2px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;font-size:clamp(18px,2.2vw,22px)}
+    header{position:sticky;top:0;z-index:100;background:rgba(11,18,32,.55);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand img{height:40px;width:auto}
+    .brand-name{font-weight:900;letter-spacing:.2px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;font-size:clamp(18px,2.2vw,22px)}
     .menu{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
     .menu a{color:var(--muted);font-weight:800}
     .menu a:hover{color:var(--text)}
@@ -34,11 +46,26 @@
     .btn.outline{background:transparent;color:var(--text);border:1px solid var(--border)}
 
     /* Hero */
-    .hero{padding:72px 0 36px}
-    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:center}
+    .hero{
+      position:relative;
+      padding:90px 0 64px;
+      background-image:url('hero-bg.jpg');
+      background-size:cover;
+      background-position:center;
+      isolation:isolate;
+    }
+    .hero::after{ /* finom sötétítés a szöveg olvashatóságáért */
+      content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.55));
+      z-index:0;
+    }
+    .hero-inner{position:relative;z-index:1}
+    .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:center}
     @media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+    .hero-logo{max-width:min(360px,70%);opacity:.98;filter:drop-shadow(0 8px 22px rgba(0,0,0,.45));margin-bottom:14px}
     h1{margin:0 0 10px;font-weight:900;font-size:clamp(28px,4.6vw,48px);line-height:1.1}
-    .lead{color:var(--muted);font-size:clamp(14px,2vw,18px)}
+    .lead{color:#d7e3f6;font-size:clamp(14px,2vw,18px)}
+    .pill{display:inline-block;font-weight:900;color:#0b0f14;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:6px 10px;border-radius:999px}
+
     .glass{background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 12px 30px rgba(0,0,0,.28)}
 
     /* Sections */
@@ -52,11 +79,7 @@
     .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.22)}
 
     /* Gallery */
-    .gallery img{height:220px;object-fit:cover}
-
-    /* Quotes */
-    .quote{font-style:italic;color:#cbd6e6}
-    .who{margin-top:6px;color:var(--muted);font-size:14px}
+    .gallery img{height:220px;object-fit:cover;border-radius:12px}
 
     /* Map */
     .map{width:100%;height:320px;border:0;border-radius:12px}
@@ -65,8 +88,14 @@
     footer{border-top:1px solid var(--border);padding:18px 0;text-align:center;color:var(--muted)}
 
     /* Floating CTA (mobile) */
-    .cta-stick{position:fixed;right:16px;bottom:16px;z-index:60}
+    .cta-stick{position:fixed;right:16px;bottom:16px;z-index:90}
     @media (min-width:900px){.cta-stick{display:none}}
+
+    /* Floating Facebook */
+    .fb-stick{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:95}
+    .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;background:#1877f2;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+    .fb-btn svg{width:22px;height:22px;fill:#fff}
+    .fb-btn:active{transform:translateY(-50%) scale(.98)}
 
     /* Reveal */
     .reveal{opacity:0;transform:translateY(12px);transition:.5s ease}
@@ -79,37 +108,65 @@
   <!-- HEADER -->
   <header>
     <div class="container nav">
-      <div class="brand">Szőke Épker KFT.</div>
+      <a class="brand" href="#">
+        <img src="logo.png" alt="Szőke Épker KFT. logó">
+        <span class="brand-name">Szőke Épker KFT.</span>
+      </a>
       <nav class="menu" aria-label="Főmenü">
+        <a href="#ajanlatkeres" class="btn">Ajánlatkérés</a>
         <a href="#rolunk">Rólunk</a>
         <a href="#szolgaltatasok">Szolgáltatások</a>
+        <a href="#epitoanyagok">Építőanyagok</a>
         <a href="#galeria">Galéria</a>
         <a href="#kapcsolat" class="btn outline">Kapcsolat</a>
-        <!-- ÚJ: Ingyenes ajánlatkérés gomb a menüben -->
-        <a class="btn"
-           href="mailto:iroda@dgs-general.com?subject=Ingyenes%20aj%C3%A1nlatk%C3%A9r%C3%A9s%20-%20Szőke%20Épker%20KFT&body=Tisztelt%20Szőke%20Épker%20KFT%2C%0A%0ANevem%3A%0ATelefon%3A%0AC%C3%ADm%3A%0AMunka%20r%C3%B6vid%20le%C3%ADr%C3%A1sa%3A%0A%0AK%C3%A9rem%20aj%C3%A1nlatukat.%0A">Ingyenes ajánlatkérés</a>
       </nav>
     </div>
   </header>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="container hero-grid">
-      <div class="glass reveal">
-        <span style="display:inline-block;font-weight:900;color:#0b0f14;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:6px 10px;border-radius:999px">Berettyóújfalu és környéke</span>
-        <h1>Minőség kompromisszumok nélkül</h1>
-        <p class="lead">
-          Generálkivitelezés, térkövezés, burkolás, szigetelés és festés – megbízható csapat, pontos határidők, korrekt árak.
-        </p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-          <!-- ÚJ: Ingyenes ajánlatkérés gomb a Hero-ban -->
-          <a class="btn"
-             href="mailto:iroda@dgs-general.com?subject=Ingyenes%20aj%C3%A1nlatk%C3%A9r%C3%A9s%20-%20Szőke%20Épker%20KFT&body=Tisztelt%20Szőke%20Épker%20KFT%2C%0A%0ANevem%3A%0ATelefon%3A%0AC%C3%ADm%3A%0AMunka%20r%C3%B6vid%20le%C3%ADr%C3%A1sa%3A%0A%0AK%C3%A9rem%20aj%C3%A1nlatukat.%0A">📨 Ingyenes ajánlatkérés</a>
-          <a class="btn outline" href="#galeria">📷 Referenciák</a>
+    <div class="container hero-inner">
+      <div class="hero-grid">
+        <div class="glass reveal">
+          <img class="hero-logo" src="logo.png" alt="Szőke Épker KFT.">
+          <span class="pill">Országosan</span>
+          <h1>Minőség kompromisszumok nélkül</h1>
+          <p class="lead">
+            Generálkivitelezés, családi házak és társasházak építése, felújítások, homlokzati szigetelés, térkövezés, burkolás és festés.
+            Megbízható csapat, pontos határidők, átlátható ajánlatadás.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+            <a class="btn" href="#ajanlatkeres">📨 Ingyenes ajánlatkérés</a>
+            <a class="btn outline" href="#galeria">📷 Referenciák</a>
+          </div>
+        </div>
+        <div class="glass reveal">
+          <p style="margin:0;color:var(--muted)">
+            <b>Miért minket válasszon?</b><br>
+            • Megbízható, összeszokott csapat<br>
+            • Pontos, átlátható ajánlatadás<br>
+            • Korrekt ár-érték arány<br>
+            • Precíz, határidőre végzett munka
+          </p>
         </div>
       </div>
-      <div class="glass reveal">
-        <img src="munka2.jpg" alt="Kivitelezés közben" loading="lazy" decoding="async">
+    </div>
+  </section>
+
+  <!-- AJÁNLATKÉRÉS -->
+  <section id="ajanlatkeres">
+    <div class="container">
+      <h2 class="reveal">Kérjen ingyenes ajánlatot</h2>
+      <div class="card reveal">
+        <!-- Egyszerű, azonnal működő mailto + később cserélhető Netlify/Backend űrlapra -->
+        <p style="margin-top:0;color:var(--muted)">Töltse ki az alábbi mezőket, vagy írjon közvetlenül az <a href="mailto:iroda@dgs-general.com">iroda@dgs-general.com</a> címre.</p>
+        <form action="mailto:iroda@dgs-general.com" method="post" enctype="text/plain" style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
+          <input required name="Név" placeholder="Név" style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+          <input required name="Telefon" placeholder="Telefon" style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+          <input name="Cím" placeholder="Cím" style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+          <textarea required name="Munka rövid leírása" placeholder="Munka rövid leírása" rows="4" style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)"></textarea>
+          <button class="btn" type="submit">Elküldés</button>
+        </form>
       </div>
     </div>
   </section>
@@ -119,8 +176,22 @@
     <div class="container">
       <h2 class="reveal">Bemutatkozás</h2>
       <div class="card reveal">
-        A Szőke Épker Kft. 2021 óta végez generálkivitelezési munkákat. Szolgáltatásaink: térkövezés, burkolás,
-        szigetelés, festés és teljes lakásfelújítás. Csapatunk szakszerűen, megbízhatóan és határidőre dolgozik.
+        <p style="margin-top:0">
+          A Szőke Épker Kft. több éves tapasztalattal vállal <b>teljes körű generálkivitelezést</b>, családi házak és társasházak építését,
+          <b>felújítást</b>, <b>homlokzati szigetelést</b>, <b>térkövezést</b>, <b>burkolást</b> és <b>festést</b> <b>országosan</b>.
+        </p>
+        <ul style="margin:0;color:var(--muted);padding-left:18px">
+          <li>Megbízható, összeszokott csapat</li>
+          <li>Pontos, átlátható ajánlatadás</li>
+          <li>Korrekt ár-érték arány</li>
+          <li>Precíz, határidőre végzett munka</li>
+        </ul>
+        <p>
+          Célunk, hogy minden ügyfelünk elégedetten vehesse birtokba otthonát vagy ingatlanját, ezért nemcsak a kivitelezésben, hanem
+          a teljes folyamat során számíthat ránk: a tervezéstől a kulcsátadásig.
+          Velünk nincsenek rejtett költségek, félbehagyott munkák vagy csúszó határidők. Mi valóban azt adjuk, amit ígérünk:
+          <b>biztonságot és nyugalmat egy életre szóló befektetéshez</b>.
+        </p>
       </div>
     </div>
   </section>
@@ -132,29 +203,18 @@
       <div class="grid cols-4">
         <div class="card reveal">🏗️ Generálkivitelezés</div>
         <div class="card reveal">🧱 Térkövezés és burkolás</div>
-        <div class="card reveal">🏠 Szigetelés és festés</div>
-        <div class="card reveal">🛠️ Lakásfelújítás</div>
+        <div class="card reveal">🏠 Homlokzati szigetelés</div>
+        <div class="card reveal">🎨 Festés, lakásfelújítás</div>
       </div>
     </div>
   </section>
 
-  <!-- VÉLEMÉNYEK -->
-  <section>
+  <!-- ÉPÍTŐANYAGOK (későbbi webshop helye) -->
+  <section id="epitoanyagok">
     <div class="container">
-      <h2 class="reveal">Ügyfeleink mondták</h2>
-      <div class="grid cols-3">
-        <div class="card reveal">
-          <div class="quote">„Pontosak voltak, szép munkát adtak át, a határidőt tartották.”</div>
-          <div class="who">– K. Zoltán</div>
-        </div>
-        <div class="card reveal">
-          <div class="quote">„Korrekt árajánlat, jó kommunikáció, ajánlom.”</div>
-          <div class="who">– N. Andrea</div>
-        </div>
-        <div class="card reveal">
-          <div class="quote">„A felújítás gördülékenyen ment, minden kérdésre kaptunk megoldást.”</div>
-          <div class="who">– T. Gábor</div>
-        </div>
+      <h2 class="reveal">Építőanyagok</h2>
+      <div class="card reveal">
+        Hamarosan elérhető online kínálatunk. Dolgozunk a webshopon — addig is kérjen ajánlatot az elérhetőségeinken!
       </div>
     </div>
   </section>
@@ -199,8 +259,15 @@
 
   <!-- Lebegő CTA mobilon -->
   <div class="cta-stick">
-    <a class="btn"
-       href="mailto:iroda@dgs-general.com?subject=Ingyenes%20aj%C3%A1nlatk%C3%A9r%C3%A9s%20-%20Szőke%20Épker%20KFT&body=Tisztelt%20Szőke%20Épker%20KFT%2C%0A%0ANevem%3A%0ATelefon%3A%0AC%C3%ADm%3A%0AMunka%20r%C3%B6vid%20le%C3%ADr%C3%A1sa%3A%0A%0AK%C3%A9rem%20aj%C3%A1nlatukat.%0A">Ingyenes ajánlatkérés</a>
+    <a class="btn" href="#ajanlatkeres">Ingyenes ajánlatkérés</a>
+  </div>
+
+  <!-- Lebegő Facebook ikon (jobb oldalon, végiggörget) -->
+  <div class="fb-stick">
+    <a class="fb-btn" href="https://www.facebook.com/szokeepkerkft" target="_blank" rel="noopener" aria-label="Facebook oldalunk">
+      <!-- FB logó SVG -->
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
+    </a>
   </div>
 
   <script>

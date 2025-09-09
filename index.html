@@ -6,7 +6,6 @@
   <title>Szőke Épker KFT. – Minőség kompromisszumok nélkül</title>
   <meta name="description" content="Generálkivitelezés, családi ház és társasház építés, felújítás, homlokzati szigetelés, térkövezés, burkolás és festés — országosan, megbízható csapattal.">
 
-  <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/favicon-180.png">
@@ -15,7 +14,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
   <style>
-    /* ===== Világos, kontrasztos téma + háttér vízjel ===== */
     :root{
       --panel:#ffffff; --text:#0a0f1a; --muted:#1e293b;
       --accent:#1f6feb; --accent2:#f5a524;
@@ -25,10 +23,10 @@
     body{
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
-      background:#eef2f7;               /* fix világos háttér */
+      background:#eef2f7;
       position:relative; -webkit-tap-highlight-color:transparent;
     }
-    /* Háttérkép mint halvány vízjel – nem zavarja a tartalmat */
+    /* halvány vízjel háttér */
     body::after{
       content:""; position:fixed; inset:0; z-index:-1;
       background:url('epito.jpg') center/cover fixed no-repeat;
@@ -39,7 +37,7 @@
     a{color:inherit;text-decoration:none} img{max-width:100%;display:block}
     .container{max-width:1140px;margin:0 auto;padding:0 18px}
 
-    /* ===== Header / Menü ===== */
+    /* HEADER */
     header{
       position:sticky; top:0; z-index:100;
       background:#fff; border-bottom:1px solid var(--border);
@@ -48,10 +46,8 @@
     }
     .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;flex-wrap:wrap}
     .brand{display:flex;align-items:center;gap:10px}
-    /* LOGÓ KIEMELÉS (fejléc) */
     .brand img{
-      height:40px;width:auto;border-radius:10px;
-      background:#fff;padding:4px;border:1px solid var(--border);
+      height:40px;width:auto;border-radius:10px;background:#fff;padding:4px;border:1px solid var(--border);
       box-shadow:0 6px 16px rgba(16,24,40,.10);
     }
     .brand-name{font-weight:900;letter-spacing:.2px;color:#0b1220;font-size:clamp(18px,2.2vw,22px)}
@@ -68,26 +64,21 @@
     .btn.outline{background:#fff;color:var(--accent);border:1px solid var(--accent)}
     nav.menu a.is-active{ color:var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
 
-    /* ===== Beúszás ===== */
+    /* Beúszás */
     .reveal{opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease;}
     .reveal.show{opacity:1; transform:translateY(0);}
 
-    /* ===== Hero ===== */
+    /* HERO */
     .hero{padding:68px 0 56px}
     .hero-inner{position:relative}
-    .hero-card{
-      background:#fff;border:1px solid var(--border);border-radius:18px;
-      padding:22px;box-shadow:var(--shadow);max-width:900px
-    }
+    .hero-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow);max-width:900px}
     .hero-top{display:flex;align-items:center;gap:14px;margin-bottom:8px}
-    /* LOGÓ KIEMELÉS (hero) */
     .hero-logo{
-      height:56px;width:auto;border-radius:12px;background:#fff;padding:6px;
-      border:1px solid var(--border); box-shadow:0 8px 20px rgba(16,24,40,.12)
+      height:56px;width:auto;border-radius:12px;background:#fff;padding:6px;border:1px solid var(--border);
+      box-shadow:0 8px 20px rgba(16,24,40,.12)
     }
     .pill{
-      display:inline-block;font-weight:900;color:#0b1220;
-      background:linear-gradient(135deg,#ffecb5,var(--accent2));
+      display:inline-block;font-weight:900;color:#0b1220;background:linear-gradient(135deg,#ffecb5,var(--accent2));
       padding:6px 10px;border-radius:999px;border:1px solid #ffe49a;white-space:nowrap
     }
     h1{margin:6px 0 10px;font-weight:900;font-size:clamp(28px,4.6vw,48px);line-height:1.1;color:#0a0f1a}
@@ -95,7 +86,7 @@
     .hero-cols{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}
     @media (max-width:900px){.hero-cols{grid-template-columns:1fr}}
 
-    /* ===== Szekciók + panelek ===== */
+    /* SZEKCIÓK */
     section{padding:42px 0;scroll-margin-top:100px}
     h2{margin:0 0 12px;font-weight:900;color:#0a0f1a}
     .grid{display:grid;gap:14px}
@@ -103,42 +94,37 @@
     .cols-3{grid-template-columns:repeat(3,1fr)}
     .cols-2{grid-template-columns:repeat(2,1fr)}
     @media (max-width:900px){.cols-4,.cols-3,.cols-2{grid-template-columns:1fr}}
-    .card{
-      background:#fff;border:1px solid var(--border);border-radius:14px;
-      padding:16px;box-shadow:0 8px 24px rgba(16,24,40,.08); color:var(--text)
-    }
+    .card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(16,24,40,.08); color:var(--text)}
 
-    /* ===== Szolgáltatásaink – erősen kiemelve, mobilbarát rács ===== */
-    #szolgaltatasok{padding-top:28px;padding-bottom:28px}
+    /* SZOLGÁLTATÁSAINK – MOBIL FELSŐ SOR FIX + ERŐS KIEMELÉS */
+    #szolgaltatasok{padding-top:18px;padding-bottom:28px}
     #szolgaltatasok .container{
-      background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);
-      padding:22px;
+      background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px 18px 22px;
+      /* hogy a sticky header alatt mobilon legyen levegő */
+      margin-top:10px;
     }
-    #szolgaltatasok h2{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+    #szolgaltatasok h2{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
     #szolgaltatasok h2::before{
-      content:"Mit kínálunk?";
-      display:inline-block;font-size:14px;font-weight:700;color:#fff;background:var(--accent);
-      padding:4px 10px;border-radius:999px;width:fit-content
+      content:"Mit kínálunk?"; display:inline-block; font-size:14px; font-weight:700; color:#fff; background:var(--accent);
+      padding:6px 12px; border-radius:999px; width:fit-content
     }
-    /* Rács: nagy kijelzőn 3 oszlop, laptopon 2, kismobilon is 2 (360 alatt 1) */
+    /* Rács: nagy 3 oszlop, laptop 2, mobil 2 (360 alatt 1) */
     #szolgaltatasok .grid.cols-4{gap:16px;grid-template-columns:repeat(3,1fr)}
     @media (max-width:1150px){#szolgaltatasok .grid.cols-4{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:520px){ #szolgaltatasok .grid.cols-4{grid-template-columns:1fr 1fr} }
     @media (max-width:360px){ #szolgaltatasok .grid.cols-4{grid-template-columns:1fr} }
-    /* Kártya: ikon + szöveg kompakt, erős tipó */
     #szolgaltatasok .card{display:flex;align-items:center;gap:12px;text-align:left;padding:18px 16px;font-weight:800;font-size:17px}
     #szolgaltatasok .card:hover{transform:translateY(-4px);box-shadow:0 12px 22px rgba(16,24,40,.14)}
     #szolgaltatasok .card::before{
       content: attr(data-icon); display:inline-flex; align-items:center; justify-content:center;
-      font-size:22px; width:44px; height:44px; border-radius:999px;
-      background: var(--accent); color:#fff; flex:0 0 44px;
+      font-size:22px; width:44px; height:44px; border-radius:999px; background: var(--accent); color:#fff; flex:0 0 44px;
     }
     @media (max-width:520px){
       #szolgaltatasok .card{padding:14px 12px;font-size:16px}
       #szolgaltatasok .card::before{width:40px;height:40px;font-size:20px}
     }
 
-    /* ===== Ajánlatkérés (mobilon biztosan befér) ===== */
+    /* AJÁNLATKÉRÉS – mobilra biztosan befér */
     #ajanlatkeres .container{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:22px}
     #ajanlatkeres form{display:grid;gap:10px;grid-template-columns:1fr 1fr}
     @media (max-width:768px){ #ajanlatkeres form{grid-template-columns:1fr} }
@@ -146,26 +132,47 @@
       padding:12px;border-radius:10px;border:1px solid var(--border);background:#fff;color:var(--text)
     }
 
-    /* ===== Galéria ===== */
+    /* GALÉRIA */
     .gallery{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
     @media (max-width:900px){.gallery{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:600px){.gallery{grid-template-columns:1fr}}
     .gallery img{width:100%;height:220px;object-fit:cover;border-radius:12px;cursor:pointer;box-shadow:0 6px 14px rgba(16,24,40,.10)}
 
-    /* ===== Térkép / lábléc ===== */
+    /* TÉRKÉP, FOOTER */
     .map{width:100%;height:320px;border:0;border-radius:12px}
     footer{border-top:1px solid var(--border);padding:18px 0;text-align:center;color:#475569;background:#fff}
 
-    /* ===== Lebegő CTA & FB ===== */
-    .cta-stick{position:fixed;right:16px;bottom:16px;z-index:90}
-    @media (min-width:900px){.cta-stick{display:none}}
+    /* === Lebegő elemek === */
+    /* 1) A régi CTA (Kapcsolattartás) TELJESEN ELTÜNTETVE */
+    .cta-stick{ display:none !important; }
+
+    /* 2) Facebook ikon marad */
     .fb-stick{position:fixed;right:12px;top:55%;transform:translateY(-50%);z-index:95}
     .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;background:#1877f2;box-shadow:0 6px 18px rgba(16,24,40,.18)}
     .fb-btn svg{width:22px;height:22px;fill:#fff}
     .fb-btn:active{transform:translateY(-50%) scale(.98)}
-    @media (max-width:520px){ .fb-stick{ right:10px; bottom:92px; top:auto; transform:none; } }
 
-    /* ===== Mobil finomhangolás ===== */
+    /* 3) ÚJ: Lebegő céglogó badge jobb alsó sarokban (3. logó) */
+    .brand-float{ position:fixed; right:16px; bottom:16px; z-index:96; }
+    .brand-float a{
+      display:inline-flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--border);
+      border-radius:14px; padding:8px 10px; box-shadow:0 10px 22px rgba(16,24,40,.12);
+    }
+    .brand-float img{
+      width:36px; height:auto; border-radius:10px; background:#fff; padding:4px; border:1px solid var(--border);
+    }
+    .brand-float .bf-text{ font-weight:900; color:#0b1220; display:none; }
+    /* nagyobb képernyőn a szöveg is látszódhat */
+    @media (min-width:520px){
+      .brand-float .bf-text{ display:inline; }
+    }
+    /* hogy a két lebegő elem ne ütközzön kis mobilon */
+    @media (max-width:520px){
+      .fb-stick{ right:12px; bottom:84px; top:auto; transform:none; }
+      .brand-float{ right:16px; bottom:16px; }
+    }
+
+    /* Mobil finomhangolás */
     @media (max-width:640px){
       header{ position:static; }
       header .nav{padding:6px 0;gap:6px 8px;flex-wrap:wrap}
@@ -178,7 +185,7 @@
       section{scroll-margin-top:24px}
     }
 
-    /* ===== Lightbox ===== */
+    /* Lightbox */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:120;padding:16px}
     .overlay.show{display:flex}
     .modal{background:#fff;border:1px solid var(--border);border-radius:16px;max-width:min(1000px,96vw);width:100%;padding:12px;box-shadow:0 14px 36px rgba(16,24,40,.16)}
@@ -266,13 +273,13 @@
     <div class="container">
       <h2 class="reveal">Ismerj meg minket jobban</h2>
 
-      <div class="grid cols-2">
-        <div class="card reveal"><b>1. Felmérés</b><br>Kimegyünk a helyszínre, pontosítjuk az igényeket.</div>
-        <div class="card reveal"><b>2. Árajánlat</b><br>Tételes, átlátható ajánlat határidőkkel.</div>
-        <div class="card reveal"><b>3. Előkészítés</b><br>Beszerzés, ütemezés, munkaterület átadás.</div>
-        <div class="card reveal"><b>4. Kivitelezés</b><br>Minőség-ellenőrzött munkafolyamatok.</div>
-        <div class="card reveal"><b>5. Átadás</b><br>Tiszta helyszín, garanciális dokumentumok.</div>
-      </div>
+    <div class="grid cols-2">
+      <div class="card reveal"><b>1. Felmérés</b><br>Kimegyünk a helyszínre, pontosítjuk az igényeket.</div>
+      <div class="card reveal"><b>2. Árajánlat</b><br>Tételes, átlátható ajánlat határidőkkel.</div>
+      <div class="card reveal"><b>3. Előkészítés</b><br>Beszerzés, ütemezés, munkaterület átadás.</div>
+      <div class="card reveal"><b>4. Kivitelezés</b><br>Minőség-ellenőrzött munkafolyamatok.</div>
+      <div class="card reveal"><b>5. Átadás</b><br>Tiszta helyszín, garanciális dokumentumok.</div>
+    </div>
 
       <div class="grid cols-3" style="margin-top:20px">
         <div class="card reveal">
@@ -291,7 +298,7 @@
     </div>
   </section>
 
-  <!-- AJÁNLATKÉRÉS – Netlify Forms -->
+  <!-- AJÁNLATKÉRÉS -->
   <section id="ajanlatkeres">
     <div class="container">
       <h2 class="reveal">Kérjen ingyenes ajánlatot</h2>
@@ -401,15 +408,18 @@
 
   <footer>© 2025 Szőke Épker KFT. • Minden jog fenntartva.</footer>
 
-  <!-- Lebegő CTA mobilon -->
-  <div class="cta-stick">
-    <a class="btn" href="#ajanlatkeres">Ingyenes ajánlatkérés</a>
-  </div>
-
-  <!-- Lebegő Facebook ikon (marad oldalt) -->
+  <!-- Lebegő Facebook ikon -->
   <div class="fb-stick">
     <a class="fb-btn" href="https://www.facebook.com/szokeepkerkft" target="_blank" rel="noopener" aria-label="Facebook oldalunk">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
+    </a>
+  </div>
+
+  <!-- ÚJ: Lebegő céglogó badge a jobb alsó sarokban -->
+  <div class="brand-float">
+    <a href="#" aria-label="Szőke Épker KFT.">
+      <img src="logo.jpg" alt="Szőke Épker KFT.">
+      <span class="bf-text">Szőke Épker KFT.</span>
     </a>
   </div>
 
@@ -443,7 +453,7 @@
       window.addEventListener('resize', showVisible);
     })();
 
-    // Aktív menü jelölése
+    // Aktív menüpont jelölése
     (function(){
       const links=[...document.querySelectorAll('nav.menu a[href^="#"]')];
       const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
@@ -469,7 +479,8 @@
       prev?.addEventListener('click', ()=> step(-1));
       next?.addEventListener('click', ()=> step(+1));
       lb.addEventListener('click', (e)=>{ if(e.target===lb) close(); });
-      window.addEventListener('keydown', (e)=>{ if(!lb.classList.contains('show')) return; if(e.key==='Escape') close(); if(e.key==='ArrowLeft') step(-1); if(e.key==='ArrowRight') step(+1); });
+      window.addEventListener('keydown', (e)=>{ if(!lb.classList.contains('show')) return;
+        if(e.key==='Escape') close(); if(e.key==='ArrowLeft') step(-1); if(e.key==='ArrowRight') step(+1); });
     })();
   </script>
 </body>

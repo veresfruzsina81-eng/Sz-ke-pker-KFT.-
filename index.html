@@ -36,38 +36,38 @@
       -webkit-tap-highlight-color: transparent;
       position: relative;
     }
-    /* Fehér fátyol: minimális, hogy a háttér jobban látszódjon */
+    /* Finom fehér fátyol – hogy a szöveg olvasható, de a háttér is látszik */
     body::before{
       content:"";
       position:fixed; inset:0;
-      background: linear-gradient(to bottom, rgba(255,255,255,.25), rgba(255,255,255,.10));
+      background: linear-gradient(to bottom, rgba(255,255,255,.22), rgba(255,255,255,.08));
       z-index:-1;
     }
 
     a{color:inherit;text-decoration:none} img{max-width:100%;display:block}
     .container{max-width:1140px;margin:0 auto;padding:0 18px}
 
-    /* Header */
+    /* Header – tiszta fehér, kontrasztos menü */
     header{
       position:sticky;top:0;z-index:100;
-      background:rgba(255,255,255,.9);
-      backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--border)
+      background:#ffffff; border-bottom:1px solid var(--border);
+      backdrop-filter:saturate(120%) blur(6px);
+      box-shadow:0 6px 18px rgba(16,24,40,.06);
     }
     .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;flex-wrap:wrap}
     .brand{display:flex;align-items:center;gap:10px}
     .brand img{height:40px;width:auto;border-radius:6px}
     .brand-name{
       font-weight:900;letter-spacing:.2px;
-      color:#1f6feb !important;           /* egységes márkakék */
+      color:#0b1220 !important;
       background:none !important;
       -webkit-background-clip:unset;background-clip:unset;
       font-size:clamp(18px,2.2vw,22px)
     }
     .menu{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-    .menu a{color:#0f172a;font-weight:800;opacity:.95}
+    .menu a{color:#0f172a;font-weight:800;opacity:.95;padding:0;border:0;border-radius:0;background:transparent}
     .menu a:hover{color:var(--accent);opacity:1}
-
+    /* Csak a CTA-k legyenek gombok */
     .btn{
       display:inline-flex;align-items:center;gap:10px;border:none;border-radius:14px;
       padding:12px 16px;font-weight:900;cursor:pointer;
@@ -76,13 +76,15 @@
     }
     .btn:hover{transform:translateY(-1px)} .btn:active{transform:none}
     .btn.outline{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+    /* Aktív menü vizuális jelölése */
+    nav.menu a.is-active{ color:var(--accent) !important; box-shadow: inset 0 -3px 0 var(--accent); }
 
-    /* Beúszó animáció – induláskor is és görgetéskor is */
-    .reveal{opacity:0; transform:translateY(30px); transition:opacity .7s ease, transform .7s ease;}
+    /* Beúszó animáció – induláskor és görgetéskor is */
+    .reveal{opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease;}
     .reveal.show{opacity:1; transform:translateY(0);}
 
-    /* Hero – nincs külön háttér, hogy a globális háttér érvényesüljön */
-    .hero{position:relative;padding:90px 0 64px;background:transparent; isolation:isolate;}
+    /* Hero – feljebb húzva, ne „üljön le” */
+    .hero{position:relative;padding:72px 0 56px;background:transparent; isolation:isolate;}
     .hero::after{ content:none; }
     .hero-inner{position:relative;z-index:1}
     .hero-card{
@@ -114,35 +116,44 @@
       padding:16px;box-shadow:0 8px 24px rgba(16,24,40,.08); color:var(--text)
     }
 
-    /* === SZOLGÁLTATÁSAINK – KIEMELÉS === */
+    /* === SZOLGÁLTATÁSAINK – erősebb kiemelés és láthatóság === */
     #szolgaltatasok{
-      background: linear-gradient(to bottom, #f0f4f8, #ffffff);
+      background: linear-gradient(to bottom, #eef3f9, #ffffff);
       border-top: 3px solid var(--accent);
       border-bottom: 1px solid var(--border);
+      padding-top:28px; padding-bottom:36px;
     }
-    #szolgaltatasok h2{
-      display:flex; flex-direction:column; gap:6px;
-    }
+    #szolgaltatasok .container{ max-width: 1040px; }
+    #szolgaltatasok h2{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
     #szolgaltatasok h2::before{
       content:"Mit kínálunk?";
-      display:inline-block;
-      font-size:14px; font-weight:700;
+      display:inline-block; font-size:14px; font-weight:700;
       color:#fff; background:var(--accent);
       padding:4px 10px; border-radius:999px; width:fit-content;
     }
+    /* Rács: mobilon is 2 oszlop (360px-től), nagy kijelzőn 3 oszlop */
+    #szolgaltatasok .grid.cols-4{ gap:16px; grid-template-columns:repeat(3,1fr); }
+    @media (max-width:1150px){ #szolgaltatasok .grid.cols-4{ grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:520px){  #szolgaltatasok .grid.cols-4{ grid-template-columns:1fr 1fr; } }
+    @media (max-width:360px){  #szolgaltatasok .grid.cols-4{ grid-template-columns:1fr; } }
+
+    /* Kártyák: balra ikon, mellette szöveg – kompakt, jól olvasható */
     #szolgaltatasok .card{
-      text-align:center; padding:28px 16px; font-weight:600;
-      transition: transform .3s ease, box-shadow .3s ease;
+      display:flex; align-items:center; gap:12px;
+      text-align:left; padding:18px 16px; font-weight:700;
+      transition: transform .25s ease, box-shadow .25s ease;
+      border-radius:18px;
     }
-    #szolgaltatasok .card:hover{
-      transform: translateY(-6px);
-      box-shadow: 0 14px 28px rgba(16,24,40,.18);
-    }
+    #szolgaltatasok .card:hover{ transform: translateY(-4px); box-shadow:0 12px 22px rgba(16,24,40,.14); }
     #szolgaltatasok .card::before{
       content: attr(data-icon);
       display:inline-flex; align-items:center; justify-content:center;
-      font-size:26px; width:50px; height:50px; border-radius:999px;
-      background: var(--accent); color:#fff; margin-bottom:10px;
+      font-size:22px; width:44px; height:44px; border-radius:999px;
+      background: var(--accent); color:#fff; flex:0 0 44px;
+    }
+    @media (max-width:520px){
+      #szolgaltatasok .card{ padding:14px 12px; gap:10px; }
+      #szolgaltatasok .card::before{ width:40px; height:40px; font-size:20px; }
     }
 
     /* Gallery */
@@ -161,11 +172,12 @@
     .cta-stick{position:fixed;right:16px;bottom:16px;z-index:90}
     @media (min-width:900px){.cta-stick{display:none}}
 
-    /* Floating Facebook – kis kék ikon, fixen oldalt */
-    .fb-stick{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:95}
+    /* FB ikon marad oldalt – csak pozíció finomítás, hogy ne lógjon bele */
+    .fb-stick{position:fixed;right:12px;top:55%;transform:translateY(-50%);z-index:95}
     .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;background:#1877f2;box-shadow:0 6px 18px rgba(16,24,40,.18)}
     .fb-btn svg{width:22px;height:22px;fill:#fff}
     .fb-btn:active{transform:translateY(-50%) scale(.98)}
+    @media (max-width:520px){ .fb-stick{ right:10px; top:auto; bottom:90px; transform:none; } }
 
     /* Lightbox modal */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:120;padding:16px}
@@ -177,7 +189,7 @@
     .lb-nav{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
     .lb-nav .btn{flex:1}
 
-    /* Mobil finomhangolás */
+    /* Mobil finomhangolás a menühöz */
     @media (max-width:640px){
       header{ position:static; }
       header .nav{padding:6px 0;gap:6px 8px;flex-wrap:wrap}
@@ -188,8 +200,6 @@
       h1{font-size:clamp(24px,7vw,30px)}
       .lead{font-size:15px}
       section{scroll-margin-top:24px}
-      .fb-stick{right:12px;top:55%;transform:translateY(-50%);z-index:95}
-      .fb-btn{width:40px;height:40px}
     }
   </style>
 </head>
@@ -214,7 +224,7 @@
     </div>
   </header>
 
-  <!-- SZOLGÁLTATÁSOK (HERO FÖLÖTT) -->
+  <!-- SZOLGÁLTATÁSOK -->
   <section id="szolgaltatasok" class="reveal">
     <div class="container">
       <h2 class="reveal">Szolgáltatásaink</h2>
@@ -416,7 +426,7 @@
     <a class="btn" href="#ajanlatkeres">Ingyenes ajánlatkérés</a>
   </div>
 
-  <!-- Lebegő Facebook ikon -->
+  <!-- Lebegő Facebook ikon (MEGMARAD) -->
   <div class="fb-stick">
     <a class="fb-btn" href="https://www.facebook.com/szokeepkerkft" target="_blank" rel="noopener" aria-label="Facebook oldalunk">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
@@ -436,23 +446,42 @@
       });
     });
 
-    // Reveal on scroll
+    // Reveal on scroll & induláskor
     if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
       const io=new IntersectionObserver(es=>{
         es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }});
       },{threshold:.12});
       document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+      // Induláskor azonnal mutassuk a fold felettieket
+      function showVisibleOnLoad(){
+        document.querySelectorAll('.reveal').forEach(el=>{
+          const r=el.getBoundingClientRect();
+          if(r.top < window.innerHeight*0.9 && r.bottom>0) el.classList.add('show');
+        });
+      }
+      window.addEventListener('DOMContentLoaded', showVisibleOnLoad);
+      window.addEventListener('resize', showVisibleOnLoad);
+    }else{
+      document.querySelectorAll('.reveal').forEach(el=>el.classList.add('show'));
     }
 
-    // Oldalbetöltéskor indítsuk el a fő elemek beúszását
-    window.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll("header, .hero, .hero-card, #szolgaltatasok h2").forEach(el=>{
-        el.classList.add("show");
-      });
-    });
+    // Aktív menüpont jelölése
+    (function(){
+      const links = Array.from(document.querySelectorAll('nav.menu a[href^="#"]'));
+      const sections = links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+      function setActive(){
+        const y = window.scrollY + 120;
+        let current=null;
+        sections.forEach(sec=>{ if(sec.offsetTop <= y) current=sec; });
+        links.forEach(a=> a.classList.toggle('is-active', current && a.getAttribute('href')==='#'+current.id));
+      }
+      window.addEventListener('scroll', setActive, {passive:true});
+      window.addEventListener('load', setActive);
+    })();
 
     // LIGHTBOX – galéria + „ismerj meg” képek (class="lb")
-    (()=>{
+    (function(){
       const lb   = document.getElementById('lightbox');
       const img  = document.getElementById('lbImg');
       const btnX = document.getElementById('closeLightbox');

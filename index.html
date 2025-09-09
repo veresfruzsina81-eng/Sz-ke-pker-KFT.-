@@ -65,7 +65,10 @@
     .cols-4{grid-template-columns:repeat(4,1fr)}
     .cols-3{grid-template-columns:repeat(3,1fr)}
     .cols-2{grid-template-columns:repeat(2,1fr)}
+    .cols-5{grid-template-columns:repeat(5,1fr)}
     @media (max-width:900px){.cols-4,.cols-3,.cols-2{grid-template-columns:1fr}}
+    @media (max-width:900px){.cols-5{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:600px){.cols-5{grid-template-columns:1fr}}
     .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.22)}
 
     /* Gallery */
@@ -105,6 +108,15 @@
       .fb-btn{ width:40px; height:40px; box-shadow:0 4px 12px rgba(0,0,0,.25) }
     }
 
+    /* Lightbox frissített stílusai */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:120;padding:16px}
+    .overlay.show{display:flex}
+    .modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;max-width:min(1000px,96vw);width:100%;padding:12px;box-shadow:0 14px 36px rgba(0,0,0,.4)}
+    #lbImg{width:100%;max-height:80vh;object-fit:contain;border-radius:12px}
+    .lb-nav{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
+    .lb-nav .btn{flex:1}
+    .no-scroll{overflow:hidden}
+
     /* Reveal */
     .reveal{opacity:0;transform:translateY(12px);transition:.5s ease}
     .reveal.show{opacity:1;transform:none}
@@ -131,6 +143,18 @@
       </nav>
     </div>
   </header>
+  <!-- SZOLGÁLTATÁSOK – fejléc után, a HERO fölött -->
+  <section id="szolgaltatasok">
+    <div class="container">
+      <h2 class="reveal">Szolgáltatásaink</h2>
+      <div class="grid cols-4">
+        <div class="card reveal">🧱 Térkövezés és burkolás</div>
+        <div class="card reveal">🏗️ Generálkivitelezés</div>
+        <div class="card reveal">🏠 Homlokzati szigetelés</div>
+        <div class="card reveal">🎨 Festés, lakásfelújítás</div>
+      </div>
+    </div>
+  </section>
 
   <!-- HERO -->
   <section class="hero">
@@ -161,26 +185,13 @@
       </div>
     </div>
   </section>
-  <!-- SZOLGÁLTATÁSOK -->
-  <section id="szolgaltatasok">
-    <div class="container">
-      <h2 class="reveal">Szolgáltatásaink</h2>
-      <div class="grid cols-4">
-        <div class="card reveal">🧱 Térkövezés és burkolás</div>
-        <div class="card reveal">🏗️ Generálkivitelezés</div>
-        <div class="card reveal">🏠 Homlokzati szigetelés</div>
-        <div class="card reveal">🎨 Festés, lakásfelújítás</div>
-      </div>
-    </div>
-  </section>
-
   <!-- ISMERJ MEG MINKET -->
   <section id="ismerjmeg">
     <div class="container">
       <h2 class="reveal">Ismerj meg minket jobban</h2>
 
       <!-- Hogyan dolgozunk – 5 lépés -->
-      <div class="grid cols-5" style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px">
+      <div class="grid cols-5">
         <div class="card reveal"><b>1. Felmérés</b><br>Kimegyünk a helyszínre, pontosítjuk az igényeket.</div>
         <div class="card reveal"><b>2. Árajánlat</b><br>Tételes, átlátható ajánlat határidőkkel.</div>
         <div class="card reveal"><b>3. Előkészítés</b><br>Beszerzés, ütemezés, munkaterület átadás.</div>
@@ -198,22 +209,22 @@
       <!-- Csapat & helyszíni képek -->
       <div class="grid cols-3" style="margin-top:14px">
         <div class="card reveal">
-          <img src="team.jpg" alt="Csapatkép" loading="lazy" decoding="async" style="border-radius:10px;margin-bottom:10px">
+          <img class="lb" src="team.jpg" alt="Csapatkép" loading="lazy" decoding="async" style="border-radius:10px;margin-bottom:10px">
           <b>Csapatunk</b><br>Összeszokott szakemberek, országos jelenlét.
         </div>
         <div class="card reveal">
-          <img src="munka1.jpg" alt="Helyszíni munka 1" loading="lazy" decoding="async" style="border-radius:10px;margin-bottom:10px">
+          <img class="lb" src="munka1.jpg" alt="Helyszíni munka 1" loading="lazy" decoding="async" style="border-radius:10px;margin-bottom:10px">
           <b>Helyszíni munka</b><br>Biztonságos munkavégzés, tiszta átadás.
         </div>
         <div class="card reveal">
-          <img src="munka2.jpg" alt="Helyszíni munka 2" loading="lazy" decoding="async" style="border-radius:10px;margin-bottom:10px">
+          <img class="lb" src="munka2.jpg" alt="Helyszíni munka 2" loading="lazy" decoding="async" style="border-radius:10px;margin-bottom:10px">
           <b>Referencia</b><br>Visszatérő ügyfelek és ajánlások.
         </div>
       </div>
     </div>
   </section>
 
-  <!-- AJÁNLATKÉRÉS – Netlify Forms (jelszó nélkül működik) -->
+  <!-- AJÁNLATKÉRÉS – Netlify Forms -->
   <section id="ajanlatkeres">
     <div class="container">
       <h2 class="reveal">Kérjen ingyenes ajánlatot</h2>
@@ -242,6 +253,7 @@
       </div>
     </div>
   </section>
+
   <!-- RÓLUNK -->
   <section id="rolunk">
     <div class="container">
@@ -268,30 +280,33 @@
       </div>
     </div>
   </section>
-
   <!-- GALÉRIA -->
   <section id="galeria">
     <div class="container">
       <h2 class="reveal">Galéria</h2>
       <div class="gallery">
-        <img class="reveal" src="k%C3%A9p1.jpg" alt="Referencia 1" loading="lazy" decoding="async">
-        <img class="reveal" src="k%C3%A9p2.jpg" alt="Referencia 2" loading="lazy" decoding="async">
-        <img class="reveal" src="k%C3%A9p3.jpg" alt="Referencia 3" loading="lazy" decoding="async">
-        <img class="reveal" src="k%C3%A9p4.jpg" alt="Referencia 4" loading="lazy" decoding="async">
-        <img class="reveal" src="k%C3%A9p5.jpg" alt="Referencia 5" loading="lazy" decoding="async">
-        <img class="reveal" src="k%C3%A9p6.png" alt="Miért minket válasszon – grafika" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p1.jpg" alt="Referencia 1" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p2.jpg" alt="Referencia 2" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p3.jpg" alt="Referencia 3" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p4.jpg" alt="Referencia 4" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p5.jpg" alt="Referencia 5" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p6.png" alt="Miért minket válasszon – grafika" loading="lazy" decoding="async">
       </div>
     </div>
   </section>
 
-  <!-- LIGHTBOX -->
+  <!-- LIGHTBOX (középen, lapozható) -->
   <div class="overlay" id="lightbox" aria-hidden="true">
-    <div class="modal" style="max-width:1000px">
+    <div class="modal" role="dialog" aria-label="Kép nagyítás">
       <div class="modal-header">
         <span style="opacity:.7">Kép megnyitva</span>
         <button class="close" aria-label="Bezárás" id="closeLightbox">&times;</button>
       </div>
-      <img id="lbImg" src="" alt="" style="width:100%;height:auto;border-radius:12px">
+      <img id="lbImg" src="" alt="">
+      <div class="lb-nav">
+        <button id="lbPrev" class="btn outline">◀ Előző</button>
+        <button id="lbNext" class="btn">Következő ▶</button>
+      </div>
     </div>
   </div>
 
@@ -357,20 +372,51 @@
       document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     }
 
-    // Lightbox a galériához
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImg');
-    document.querySelectorAll('.gallery img').forEach(img=>{
-      img.addEventListener('click', ()=>{
-        lbImg.src = img.src;
+    // LIGHTBOX – galéria + „ismerj meg” képek (class="lb")
+    (()=>{
+      const lb   = document.getElementById('lightbox');
+      const img  = document.getElementById('lbImg');
+      const btnX = document.getElementById('closeLightbox');
+      const prev = document.getElementById('lbPrev');
+      const next = document.getElementById('lbNext');
+
+      const nodes = Array.from(document.querySelectorAll('img.lb'));
+      let idx = -1;
+
+      function openAt(i){
+        if(i<0 || i>=nodes.length) return;
+        idx = i;
+        img.src = nodes[idx].src;
         lb.classList.add('show');
         lb.setAttribute('aria-hidden','false');
+        document.documentElement.classList.add('no-scroll');
+        document.body.classList.add('no-scroll');
+      }
+      function close(){
+        lb.classList.remove('show');
+        lb.setAttribute('aria-hidden','true');
+        img.src = "";
+        document.documentElement.classList.remove('no-scroll');
+        document.body.classList.remove('no-scroll');
+      }
+      function step(d){
+        if(!nodes.length) return;
+        idx = (idx + d + nodes.length) % nodes.length;
+        img.src = nodes[idx].src;
+      }
+
+      nodes.forEach((n,i)=> n.addEventListener('click', ()=> openAt(i)));
+      btnX?.addEventListener('click', close);
+      prev?.addEventListener('click', ()=> step(-1));
+      next?.addEventListener('click', ()=> step(+1));
+      lb.addEventListener('click', (e)=>{ if(e.target===lb) close(); });
+      window.addEventListener('keydown', (e)=>{
+        if(!lb.classList.contains('show')) return;
+        if(e.key==='Escape') close();
+        if(e.key==='ArrowLeft') step(-1);
+        if(e.key==='ArrowRight') step(+1);
       });
-    });
-    document.getElementById('closeLightbox').addEventListener('click', ()=>{
-      lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); lbImg.src = "";
-    });
-    lb.addEventListener('click', (e)=>{ if(e.target===lb){ lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); lbImg.src=""; }});
+    })();
   </script>
 </body>
 </html>

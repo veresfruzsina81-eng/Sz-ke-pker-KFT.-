@@ -19,7 +19,7 @@
       --bg:#0b1220; --panel:#0e1628; --text:#e8eef6; --muted:#a7b6cc;
       --accent:#4da3ff; --accent2:#a78bfa; --glass:rgba(14,22,40,.65); --border:rgba(255,255,255,.08);
     }
-    *{box-sizing:border-box} html,body{margin:0;height:100%}
+    *{box-sizing:border-box} html,body{margin:0;height:100%;overflow-x:hidden}
     body{
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
@@ -27,7 +27,6 @@
                   radial-gradient(1000px 700px at 80% 0%, rgba(167,139,250,.16), transparent),
                   linear-gradient(180deg,#0b1220,#0b0f1a 40%,#0b1220);
       -webkit-tap-highlight-color: transparent;
-      overflow-x:hidden;
     }
     a{color:inherit;text-decoration:none} img{max-width:100%;display:block}
     .container{max-width:1140px;margin:0 auto;padding:0 18px}
@@ -38,6 +37,7 @@
     .brand{display:flex;align-items:center;gap:10px}
     .brand img{height:40px;width:auto;border-radius:6px}
     .brand-name{font-weight:900;letter-spacing:.2px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;font-size:clamp(18px,2.2vw,22px)}
+
     .menu{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
     .menu a{color:var(--muted);font-weight:800}
     .menu a:hover{color:var(--text)}
@@ -46,20 +46,10 @@
     .btn.outline{background:transparent;color:var(--text);border:1px solid var(--border)}
 
     /* Hero */
-    .hero{
-      position:relative;
-      padding:90px 0 64px;
-      background-image:url('epito.jpg');
-      background-size:cover;
-      background-position:center;
-      isolation:isolate;
-    }
+    .hero{position:relative;padding:90px 0 64px;background-image:url('epito.jpg');background-size:cover;background-position:center;isolation:isolate}
     .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.6));z-index:0}
     .hero-inner{position:relative;z-index:1}
-    .hero-card{
-      background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:22px;
-      box-shadow:0 12px 30px rgba(0,0,0,.28);max-width:900px
-    }
+    .hero-card{background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 12px 30px rgba(0,0,0,.28);max-width:900px}
     .hero-top{display:flex;align-items:center;gap:14px;margin-bottom:8px}
     .hero-logo{height:56px;width:auto;border-radius:8px;filter:drop-shadow(0 8px 22px rgba(0,0,0,.45))}
     .pill{display:inline-block;font-weight:900;color:#0b0f14;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:6px 10px;border-radius:999px}
@@ -69,7 +59,7 @@
     @media (max-width:900px){.hero-cols{grid-template-columns:1fr}}
 
     /* Sections */
-    section{padding:42px 0}
+    section{padding:42px 0;scroll-margin-top:84px}
     h2{margin:0 0 12px;font-weight:900}
     .grid{display:grid;gap:14px}
     .cols-4{grid-template-columns:repeat(4,1fr)}
@@ -78,32 +68,16 @@
     @media (max-width:900px){.cols-4,.cols-3,.cols-2{grid-template-columns:1fr}}
     .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.22)}
 
-    /* Gallery */
-    .gallery img{height:220px;object-fit:cover;border-radius:12px;cursor:pointer}
-
-    /* Footer */
-    footer{border-top:1px solid var(--border);padding:18px 0;text-align:center;color:var(--muted)}
-
-    /* Floating CTA (mobile) */
-    .cta-stick{position:fixed;right:16px;bottom:16px;z-index:90}
-    @media (min-width:900px){.cta-stick{display:none}}
-
-    /* Floating Facebook */
-    .fb-stick{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:95}
-    .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;background:#1877f2;box-shadow:0 6px 18px rgba(0,0,0,.3)}
-    .fb-btn svg{width:22px;height:22px;fill:#fff}
-    .fb-btn:active{transform:translateY(-50%) scale(.98)}
-
     /* Mobil fejlec kompakt */
     @media (max-width:640px){
       header .nav{padding:6px 0;gap:6px 8px;flex-wrap:wrap}
       .brand img{height:26px}
-      .brand-name{display:none}
+      .brand-name{display:inline;font-size:14px;white-space:nowrap}
       .menu{width:100%;display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:6px 8px;justify-items:center}
       .menu a, .menu .btn, .menu .btn.outline{width:100%;padding:8px 10px;font-size:14px;line-height:1.05;border-radius:10px}
       section{scroll-margin-top:112px}
-      .fb-stick{right:10px;top:58%;transform:translateY(-50%);z-index:20}
-      .fb-btn{width:40px;height:40px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+      .fb-stick{right:12px;top:55%;transform:translateY(-50%);z-index:200}
+      .fb-btn{width:40px;height:40px}
     }
   </style>
 </head>
@@ -133,27 +107,51 @@
     <div class="container hero-inner">
       <div class="hero-card reveal">
         <div class="hero-top">
-          <img src="logo.jpg" alt="Szőke Épker logó" class="hero-logo">
+          <img src="logo.jpg" alt="Szőke Épker KFT." class="hero-logo">
           <span class="pill">Professzionális csapat</span>
         </div>
         <h1>Minőség kompromisszumok nélkül</h1>
-        <p class="lead">Generálkivitelezés, családi házak és társasházak építése, felújítások, homlokzati szigetelés, térkövezés, burkolás és festés. Megbízható csapat, pontos határidők, átlátható ajánlatadás.</p>
+        <div class="hero-cols">
+          <div>
+            <p class="lead">
+              Generálkivitelezés, családi házak és társasházak építése, felújítások, homlokzati szigetelés,
+              térkövezés, burkolás és festés. Megbízható csapat, pontos határidők, átlátható ajánlatadás.
+            </p>
+            <ul style="margin:0; padding-left:18px; color:#d7e3f6">
+              <li>Határidő-garancia és tételes költségvetés</li>
+              <li>Szabványosított minőség-ellenőrzés minden ütemnél</li>
+              <li>Rendszeres tájékoztatás, fotós előrehaladás-jelentés</li>
+              <li>Garanciális átadás, tiszta munkaterület</li>
+            </ul>
+          </div>
+          <div class="card" style="background:rgba(14,22,40,.55)">
+            <b>Miért minket válasszon?</b><br>
+            • Megbízható, összeszokott csapat<br>
+            • Pontos, átlátható ajánlatadás<br>
+            • Korrekt ár-érték arány<br>
+            • Precíz, határidőre végzett munka
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+          <a class="btn" href="#ajanlatkeres">📨 Ingyenes ajánlatkérés</a>
+          <a class="btn outline" href="#galeria">📷 Referenciák</a>
+        </div>
       </div>
     </div>
   </section>
-
-  <!-- SZOLGÁLTATÁSOK -->
+  <!-- SZOLGÁLTATÁSOK (HERO UTÁN) -->
   <section id="szolgaltatasok">
     <div class="container">
-      <h2>Szolgáltatásaink</h2>
-      <div class="grid cols-2">
+      <h2 class="reveal">Szolgáltatásaink</h2>
+      <div class="grid cols-4">
         <div class="card reveal">🧱 Térkövezés és burkolás</div>
-        <div class="card reveal">🏗 Generálkivitelezés</div>
+        <div class="card reveal">🏗️ Generálkivitelezés</div>
         <div class="card reveal">🏠 Homlokzati szigetelés</div>
         <div class="card reveal">🎨 Festés, lakásfelújítás</div>
       </div>
     </div>
   </section>
+
   <!-- ISMERJ MEG MINKET -->
   <section id="ismerjmeg">
     <div class="container">
@@ -168,42 +166,50 @@
         <div class="card reveal"><b>5. Átadás</b><br>Tiszta helyszín, garanciális dokumentumok.</div>
       </div>
 
-      <!-- Csapat képek -->
+      <!-- Csapat & helyszíni képek -->
       <div class="grid cols-3" style="margin-top:20px">
         <div class="card reveal">
           <img class="lb" src="team.jpg" alt="Csapatkép" style="border-radius:10px;margin-bottom:10px">
           <b>Csapatunk</b><br>Összeszokott szakemberek, országos jelenlét.
         </div>
         <div class="card reveal">
-          <img class="lb" src="munka1.jpg" alt="Munka 1" style="border-radius:10px;margin-bottom:10px">
+          <img class="lb" src="munka1.jpg" alt="Helyszíni munka 1" style="border-radius:10px;margin-bottom:10px">
           <b>Helyszíni munka</b><br>Biztonságos munkavégzés, tiszta átadás.
         </div>
         <div class="card reveal">
-          <img class="lb" src="munka2.jpg" alt="Munka 2" style="border-radius:10px;margin-bottom:10px">
+          <img class="lb" src="munka2.jpg" alt="Helyszíni munka 2" style="border-radius:10px;margin-bottom:10px">
           <b>Referencia</b><br>Visszatérő ügyfelek és ajánlások.
         </div>
       </div>
     </div>
   </section>
 
-  <!-- AJÁNLATKÉRÉS -->
+  <!-- AJÁNLATKÉRÉS (Netlify Forms) -->
   <section id="ajanlatkeres">
     <div class="container">
       <h2 class="reveal">Kérjen ingyenes ajánlatot</h2>
-      <div class="card reveal">
-        <form name="ajanlat" method="POST" data-netlify="true" netlify-honeypot="bot-field"
-              style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
-          <input type="hidden" name="form-name" value="ajanlat">
-          <p style="display:none"><label>Ne töltse ki: <input name="bot-field"></label></p>
+    <div class="card reveal">
+      <p style="margin-top:0;color:var(--muted)">Töltse ki az alábbi mezőket, üzenete biztonságosan továbbításra kerül.</p>
 
-          <input required name="Név" placeholder="Név" style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
-          <input required name="Telefon" placeholder="Telefon" style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
-          <input required type="email" name="Email" placeholder="E-mail" style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
-          <textarea required name="Üzenet" placeholder="Munka rövid leírása" rows="4" style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)"></textarea>
+      <form name="ajanlat" method="POST" data-netlify="true" netlify-honeypot="bot-field"
+            style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
+        <input type="hidden" name="form-name" value="ajanlat">
+        <p style="display:none"><label>Ne töltse ki: <input name="bot-field"></label></p>
 
-          <button class="btn" type="submit">Elküldés</button>
-        </form>
-      </div>
+        <input required name="Név" placeholder="Név"
+               style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+        <input required name="Telefon" placeholder="Telefon"
+               style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+        <input required type="email" name="Email" placeholder="E-mail"
+               style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+        <input name="Cím" placeholder="Cím (opcionális)"
+               style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+        <textarea required name="Üzenet" placeholder="Munka rövid leírása" rows="4"
+                  style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)"></textarea>
+
+        <button class="btn" type="submit">Elküldés</button>
+      </form>
+    </div>
     </div>
   </section>
 
@@ -212,8 +218,14 @@
     <div class="container">
       <h2 class="reveal">Bemutatkozás</h2>
       <div class="card reveal">
-        <p>A Szőke Épker Kft. több éves tapasztalattal vállal <b>teljes körű generálkivitelezést</b>, családi házak és társasházak építését, <b>felújítást</b>, <b>homlokzati szigetelést</b>, <b>térkövezést</b>, <b>burkolást</b> és <b>festést</b>.</p>
-        <p>Célunk, hogy ügyfeleink elégedetten vehessék birtokba ingatlanjukat: a tervezéstől a kulcsátadásig számíthat ránk. <b>Nincsenek rejtett költségek</b> vagy csúszó határidők — amit ígérünk, azt teljesítjük.</p>
+        <p style="margin-top:0">
+          A Szőke Épker Kft. több éves tapasztalattal vállal <b>teljes körű generálkivitelezést</b>, családi házak és társasházak építését,
+          <b>felújítást</b>, <b>homlokzati szigetelést</b>, <b>térkövezést</b>, <b>burkolást</b> és <b>festést</b>.
+        </p>
+        <p>
+          Célunk, hogy ügyfeleink elégedetten vehessék birtokba ingatlanjukat: a tervezéstől a kulcsátadásig számíthat ránk.
+          Nincsenek rejtett költségek vagy csúszó határidők — <b>amit ígérünk, azt megcsináljuk</b>.
+        </p>
       </div>
     </div>
   </section>
@@ -228,17 +240,17 @@
     </div>
   </section>
 
-  <!-- GALÉRIA -->
+  <!-- GALÉRIA (ékezetes fájlnevek URL-kódolva) -->
   <section id="galeria">
     <div class="container">
       <h2 class="reveal">Galéria</h2>
       <div class="grid cols-3 gallery">
-        <img class="reveal lb" src="kep1.jpg" alt="Referencia 1">
-        <img class="reveal lb" src="kep2.jpg" alt="Referencia 2">
-        <img class="reveal lb" src="kep3.jpg" alt="Referencia 3">
-        <img class="reveal lb" src="kep4.jpg" alt="Referencia 4">
-        <img class="reveal lb" src="kep5.jpg" alt="Referencia 5">
-        <img class="reveal lb" src="kep6.png" alt="Miért minket válasszon grafika">
+        <img class="reveal lb" src="k%C3%A9p1.jpg" alt="Referencia 1" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p2.jpg" alt="Referencia 2" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p3.jpg" alt="Referencia 3" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p4.jpg" alt="Referencia 4" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p5.jpg" alt="Referencia 5" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p6.png" alt="Miért minket válasszon – grafika" loading="lazy" decoding="async">
       </div>
     </div>
   </section>

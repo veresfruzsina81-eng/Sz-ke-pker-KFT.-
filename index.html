@@ -15,7 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
   <style>
-    /* ==== VILÁGOS TÉMA + FIX HÁTTÉRKÉP ==== */
+    /* ==== VILÁGOS TÉMA + FIX, ERŐSEBB HÁTTÉRKÉP ==== */
     :root{
       --bg:#f7f9fb;
       --panel:#ffffff;
@@ -25,23 +25,22 @@
       --accent2:#f5a524;   /* borostyán – energia */
       --glass:rgba(255,255,255,.96);
       --border:#e6e9ef;
+      --shadow:0 10px 24px rgba(16,24,40,.12);
     }
 
     *{box-sizing:border-box} html,body{margin:0;height:100%;overflow-x:hidden}
     body{
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
-      /* Teljes háttérkép – minden szekció alatt látszik */
-      background: url('epito.jpg') center/cover fixed no-repeat;
+      background: url('epito.jpg') center/cover fixed no-repeat; /* TELJES háttér */
       -webkit-tap-highlight-color: transparent;
       position: relative;
     }
-    /* Finom fehér fátyol: felül erősebb, lejjebb jobban látszik a kép */
+    /* Fehér fátyol: minimális, hogy a háttér jobban látszódjon */
     body::before{
       content:"";
-      position:fixed;
-      inset:0;
-      background: linear-gradient(to bottom, rgba(255,255,255,.80), rgba(255,255,255,.42));
+      position:fixed; inset:0;
+      background: linear-gradient(to bottom, rgba(255,255,255,.25), rgba(255,255,255,.10));
       z-index:-1;
     }
 
@@ -73,19 +72,18 @@
       display:inline-flex;align-items:center;gap:10px;border:none;border-radius:14px;
       padding:12px 16px;font-weight:900;cursor:pointer;
       background:linear-gradient(135deg,var(--accent),#4c8df5);
-      color:#fff; box-shadow:0 10px 24px rgba(16,24,40,.12); transition:.15s transform
+      color:#fff; box-shadow:var(--shadow); transition:.15s transform
     }
     .btn:hover{transform:translateY(-1px)} .btn:active{transform:none}
     .btn.outline{background:#fff;color:var(--accent);border:1px solid var(--accent)}
 
-    /* Hero – NINCS külön háttérkép, hogy a globális háttér érvényesüljön */
-    .hero{
-      position:relative;padding:90px 0 64px;
-      background: transparent; isolation:isolate;
-    }
-    /* Korábbi hero overlay kikapcsolva */
-    .hero::after{ content:none; }
+    /* Beúszó animáció – induláskor is és görgetéskor is */
+    .reveal{opacity:0; transform:translateY(30px); transition:opacity .7s ease, transform .7s ease;}
+    .reveal.show{opacity:1; transform:translateY(0);}
 
+    /* Hero – nincs külön háttér, hogy a globális háttér érvényesüljön */
+    .hero{position:relative;padding:90px 0 64px;background:transparent; isolation:isolate;}
+    .hero::after{ content:none; }
     .hero-inner{position:relative;z-index:1}
     .hero-card{
       background:var(--glass);border:1px solid var(--border);border-radius:18px;
@@ -114,6 +112,37 @@
     .card{
       background:var(--panel);border:1px solid var(--border);border-radius:14px;
       padding:16px;box-shadow:0 8px 24px rgba(16,24,40,.08); color:var(--text)
+    }
+
+    /* === SZOLGÁLTATÁSAINK – KIEMELÉS === */
+    #szolgaltatasok{
+      background: linear-gradient(to bottom, #f0f4f8, #ffffff);
+      border-top: 3px solid var(--accent);
+      border-bottom: 1px solid var(--border);
+    }
+    #szolgaltatasok h2{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    #szolgaltatasok h2::before{
+      content:"Mit kínálunk?";
+      display:inline-block;
+      font-size:14px; font-weight:700;
+      color:#fff; background:var(--accent);
+      padding:4px 10px; border-radius:999px; width:fit-content;
+    }
+    #szolgaltatasok .card{
+      text-align:center; padding:28px 16px; font-weight:600;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    #szolgaltatasok .card:hover{
+      transform: translateY(-6px);
+      box-shadow: 0 14px 28px rgba(16,24,40,.18);
+    }
+    #szolgaltatasok .card::before{
+      content: attr(data-icon);
+      display:inline-flex; align-items:center; justify-content:center;
+      font-size:26px; width:50px; height:50px; border-radius:999px;
+      background: var(--accent); color:#fff; margin-bottom:10px;
     }
 
     /* Gallery */
@@ -167,7 +196,7 @@
 <body>
 
   <!-- HEADER -->
-  <header>
+  <header class="reveal">
     <div class="container nav">
       <a class="brand" href="#">
         <img src="logo.jpg" alt="Szőke Épker KFT. logó">
@@ -186,20 +215,20 @@
   </header>
 
   <!-- SZOLGÁLTATÁSOK (HERO FÖLÖTT) -->
-  <section id="szolgaltatasok">
+  <section id="szolgaltatasok" class="reveal">
     <div class="container">
       <h2 class="reveal">Szolgáltatásaink</h2>
       <div class="grid cols-4">
-        <div class="card reveal">🧱 Térkövezés és burkolás</div>
-        <div class="card reveal">🏗️ Generálkivitelezés</div>
-        <div class="card reveal">🏠 Homlokzati szigetelés</div>
-        <div class="card reveal">🎨 Festés, lakásfelújítás</div>
+        <div class="card reveal" data-icon="🧱">Térkövezés és burkolás</div>
+        <div class="card reveal" data-icon="🏗️">Generálkivitelezés</div>
+        <div class="card reveal" data-icon="🏠">Homlokzati szigetelés</div>
+        <div class="card reveal" data-icon="🎨">Festés, lakásfelújítás</div>
       </div>
     </div>
   </section>
 
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero reveal">
     <div class="container hero-inner">
       <div class="hero-card reveal">
         <div class="hero-top">
@@ -394,7 +423,7 @@
     </a>
   </div>
 
-  <!-- SCRIPT-ek (változatlan) -->
+  <!-- SCRIPT-ek -->
   <script>
     // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(a=>{
@@ -414,6 +443,13 @@
       },{threshold:.12});
       document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     }
+
+    // Oldalbetöltéskor indítsuk el a fő elemek beúszását
+    window.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("header, .hero, .hero-card, #szolgaltatasok h2").forEach(el=>{
+        el.classList.add("show");
+      });
+    });
 
     // LIGHTBOX – galéria + „ismerj meg” képek (class="lb")
     (()=>{

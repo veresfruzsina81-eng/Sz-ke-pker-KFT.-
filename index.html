@@ -5,18 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Szőke Épker KFT. – Minőség kompromisszumok nélkül</title>
   <meta name="description" content="Generálkivitelezés, családi ház és társasház építés, felújítás, homlokzati szigetelés, térkövezés, burkolás és festés — megbízható csapattal.">
-  <link rel="icon" href="/favicon.ico" sizes="any">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/favicon-180.png">
   <meta name="theme-color" content="#0b1220">
+
+  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
   <style>
-    :root{--bg:#0b1220;--panel:#0e1628;--text:#e8eef6;--muted:#a7b6cc;--accent:#4da3ff;--accent2:#a78bfa;--glass:rgba(14,22,40,.65);--border:rgba(255,255,255,.08)}
+    :root{
+      --bg:#0b1220; --panel:#0e1628; --text:#e8eef6; --muted:#a7b6cc;
+      --accent:#4da3ff; --accent2:#a78bfa; --glass:rgba(14,22,40,.65); --border:rgba(255,255,255,.08);
+    }
     *{box-sizing:border-box} html,body{margin:0;height:100%}
     body{
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);
-      background:radial-gradient(1200px 800px at 20% 10%, rgba(77,163,255,.14), transparent),
-                 radial-gradient(1000px 700px at 80% 0%, rgba(167,139,250,.16), transparent),
-                 linear-gradient(180deg,#0b1220,#0b0f1a 40%,#0b1220);
-      -webkit-tap-highlight-color:transparent
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(77,163,255,.14), transparent),
+                  radial-gradient(1000px 700px at 80% 0%, rgba(167,139,250,.16), transparent),
+                  linear-gradient(180deg,#0b1220,#0b0f1a 40%,#0b1220);
+      -webkit-tap-highlight-color: transparent;
     }
     a{color:inherit;text-decoration:none} img{max-width:100%;display:block}
     .container{max-width:1140px;margin:0 auto;padding:0 18px}
@@ -26,21 +37,38 @@
     .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
     .brand{display:flex;align-items:center;gap:10px}
     .brand img{height:40px;width:auto;border-radius:6px}
-    .brand-name{font-weight:900;letter-spacing:.2px;background:linear-gradient(135deg,var(--accent),var(--accent2));
-      -webkit-background-clip:text;background-clip:text;color:transparent;font-size:clamp(18px,2.2vw,22px)}
+    .brand-name{font-weight:900;letter-spacing:.2px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;font-size:clamp(18px,2.2vw,22px)}
     .menu{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
     .menu a{color:var(--muted);font-weight:800}
     .menu a:hover{color:var(--text)}
-    .btn{display:inline-flex;align-items:center;gap:10px;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0b0f14;box-shadow:0 10px 24px rgba(0,0,0,.25);transition:.15s transform}
+    .btn{display:inline-flex;align-items:center;gap:10px;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0b0f14;box-shadow:0 10px 24px rgba(0,0,0,.25);transition:.15s transform}
     .btn:hover{transform:translateY(-1px)} .btn:active{transform:none}
     .btn.outline{background:transparent;color:var(--text);border:1px solid var(--border)}
 
+    /* Kiemeltebb CTA – erősebb kontraszt */
+    .btn.cta{
+      background:#4da3ff;
+      color:#0b0f14;
+      box-shadow:0 0 0 2px rgba(255,255,255,.08), 0 12px 30px rgba(77,163,255,.35);
+    }
+    .btn.cta:hover{transform:translateY(-1px) scale(1.01)}
+    .btn.cta:active{transform:none}
+
     /* Hero */
-    .hero{position:relative;padding:90px 0 64px;background-image:url('epito.jpg');background-size:cover;background-position:center;isolation:isolate}
+    .hero{
+      position:relative;
+      padding:90px 0 64px;
+      background-image:url('epito.jpg');
+      background-size:cover;
+      background-position:center;
+      isolation:isolate;
+    }
     .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.6));z-index:0}
     .hero-inner{position:relative;z-index:1}
-    .hero-card{background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 12px 30px rgba(0,0,0,.28);max-width:900px}
+    .hero-card{
+      background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:22px;
+      box-shadow:0 12px 30px rgba(0,0,0,.28);max-width:900px
+    }
     .hero-top{display:flex;align-items:center;gap:14px;margin-bottom:8px}
     .hero-logo{height:56px;width:auto;border-radius:8px;filter:drop-shadow(0 8px 22px rgba(0,0,0,.45))}
     .pill{display:inline-block;font-weight:900;color:#0b0f14;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:6px 10px;border-radius:999px}
@@ -50,7 +78,7 @@
     @media (max-width:900px){.hero-cols{grid-template-columns:1fr}}
 
     /* Sections */
-    section{padding:42px 0;scroll-margin-top:84px}
+    section{padding:42px 0; scroll-margin-top:84px;}
     h2{margin:0 0 12px;font-weight:900}
     .grid{display:grid;gap:14px}
     .cols-4{grid-template-columns:repeat(4,1fr)}
@@ -61,6 +89,9 @@
 
     /* Gallery */
     .gallery img{height:220px;object-fit:cover;border-radius:12px;cursor:pointer}
+
+    /* Map in modal */
+    .map{width:100%;height:320px;border:0;border-radius:12px}
 
     /* Footer */
     footer{border-top:1px solid var(--border);padding:18px 0;text-align:center;color:var(--muted)}
@@ -75,7 +106,7 @@
     .fb-btn svg{width:22px;height:22px;fill:#fff}
     .fb-btn:active{transform:translateY(-50%) scale(.98)}
 
-    /* Modal (Kapcsolat + Lightbox) */
+    /* Modal (Kapcsolat + Lightbox is uses these base styles) */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:120;padding:16px}
     .overlay.show{display:flex}
     .modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;max-width:820px;width:100%;padding:16px;box-shadow:0 14px 36px rgba(0,0,0,.4)}
@@ -94,12 +125,12 @@
   <header>
     <div class="container nav">
       <a class="brand" href="#">
-        <img src="logo.jpg" alt="Szőke Épker KFT. logó">
+        <img src="assets/img/logo.png" alt="Szőke Épker KFT. logó">
         <span class="brand-name">Szőke Épker KFT.</span>
       </a>
       <nav class="menu" aria-label="Főmenü">
         <a href="#szolgaltatasok">Szolgáltatások</a>
-        <a href="#ajanlatkeres" class="btn">Ajánlatkérés</a>
+        <a href="#ajanlatkeres" class="btn cta">Ajánlatkérés</a>
         <a href="#rolunk">Rólunk</a>
         <a href="#epitoanyagok">Építőanyagok</a>
         <a href="#galeria">Galéria</a>
@@ -108,7 +139,7 @@
     </div>
   </header>
 
-  <!-- 1) SZOLGÁLTATÁSOK – legfelül -->
+  <!-- SZOLGÁLTATÁSOK -->
   <section id="szolgaltatasok">
     <div class="container">
       <h2 class="reveal">Szolgáltatásaink</h2>
@@ -121,12 +152,12 @@
     </div>
   </section>
 
-  <!-- 2) HERO -->
+  <!-- HERO -->
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-card reveal">
         <div class="hero-top">
-          <img class="hero-logo" src="logo.jpg" alt="Szőke Épker KFT.">
+          <img class="hero-logo" src="assets/img/logo.png" alt="Szőke Épker KFT.">
           <span class="pill">Professzionális csapat</span>
         </div>
 
@@ -148,7 +179,7 @@
         </div>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-          <a class="btn" href="#ajanlatkeres">📨 Ingyenes ajánlatkérés</a>
+          <a class="btn cta" href="#ajanlatkeres">📨 Ingyenes ajánlatkérés</a>
           <a class="btn outline" href="#galeria">📷 Referenciák</a>
         </div>
       </div>
@@ -166,7 +197,7 @@
           <input required name="Telefon" placeholder="Telefon" style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
           <input name="Cím" placeholder="Cím" style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
           <textarea required name="Munka rövid leírása" placeholder="Munka rövid leírása" rows="4" style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)"></textarea>
-          <button class="btn" type="submit">Elküldés</button>
+          <button class="btn cta" type="submit">Elküldés</button>
         </form>
       </div>
     </div>
@@ -199,14 +230,43 @@
     </div>
   </section>
 
-  <!-- GALÉRIA -->
+  <!-- GALÉRIA (lightbox) -->
   <section id="galeria">
     <div class="container">
       <h2 class="reveal">Galéria</h2>
       <div class="grid cols-3 gallery">
-        <img class="reveal lb" src="munka1.jpg" alt="Munka 1" loading="lazy" decoding="async">
-        <img class="reveal lb" src="munka2.jpg" alt="Munka 2" loading="lazy" decoding="async">
-        <img class="reveal lb" src="munka3.jpg" alt="Munka 3" loading="lazy" decoding="async">
+        <img class="reveal lb" src="kep1.jpg" alt="Referencia 1" loading="lazy" decoding="async">
+        <img class="reveal lb" src="kep2.jpg" alt="Referencia 2" loading="lazy" decoding="async">
+        <img class="reveal lb" src="kep3.jpg" alt="Referencia 3" loading="lazy" decoding="async">
+        <img class="reveal lb" src="kep4.jpg" alt="Referencia 4" loading="lazy" decoding="async">
+        <img class="reveal lb" src="kep5.jpg" alt="Referencia 5" loading="lazy" decoding="async">
+        <img class="reveal lb" src="kep6.png" alt="Miért minket válasszon? – grafika" loading="lazy" decoding="async">
+      </div>
+    </div>
+  </section>
+
+  <!-- KAPCSOLAT – fix kártya az oldal alján -->
+  <section id="kapcsolat">
+    <div class="container">
+      <h2 class="reveal">Kapcsolat</h2>
+      <div class="card reveal">
+        <div class="grid cols-2">
+          <div>
+            <p style="margin-top:0"><b>Cím:</b> 4100 Berettyóújfalu, Dózsa György utca 6 1/3</p>
+            <p><b>Telefon:</b> <a href="tel:+36706070675">+36 70 607 0675</a></p>
+            <p><b>E-mail:</b> <a href="mailto:iroda@dgs-general.com">iroda@dgs-general.com</a></p>
+            <p><b>Web:</b> <a href="http://dgs-general.com" target="_blank" rel="noopener">dgs-general.com</a></p>
+            <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+              <a class="btn cta" href="tel:+36706070675">📞 Hívás</a>
+              <a class="btn outline" href="mailto:iroda@dgs-general.com">✉️ E-mail küldése</a>
+            </div>
+          </div>
+          <div>
+            <iframe class="map"
+              src="https://www.google.com/maps?q=Beretty%C3%B3%C3%BAjfalu%20D%C3%B3zsa%20Gy%C3%B6rgy%20utca%206%201%2F3&output=embed"
+              loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Irodánk térképe"></iframe>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -215,7 +275,7 @@
 
   <!-- Lebegő CTA mobilon -->
   <div class="cta-stick">
-    <a class="btn" href="#ajanlatkeres">Ingyenes ajánlatkérés</a>
+    <a class="btn cta" href="#ajanlatkeres">Ingyenes ajánlatkérés</a>
   </div>
 
   <!-- Lebegő Facebook ikon -->
@@ -225,7 +285,7 @@
     </a>
   </div>
 
-  <!-- Kapcsolat MODAL -->
+  <!-- Kapcsolat MODAL (megmarad) -->
   <div class="overlay" id="contactModal" aria-hidden="true" role="dialog" aria-labelledby="contactTitle">
     <div class="modal">
       <div class="modal-header">
@@ -239,7 +299,7 @@
           <p><b>E-mail:</b> <a href="mailto:iroda@dgs-general.com">iroda@dgs-general.com</a></p>
           <p><b>Web:</b> <a href="http://dgs-general.com" target="_blank" rel="noopener">dgs-general.com</a></p>
           <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-            <a class="btn" href="tel:+36706070675">📞 Hívás</a>
+            <a class="btn cta" href="tel:+36706070675">📞 Hívás</a>
             <a class="btn outline" href="mailto:iroda@dgs-general.com">✉️ E-mail küldése</a>
           </div>
         </div>
@@ -291,14 +351,18 @@
     closeContact.addEventListener('click',()=>{contactModal.classList.remove('show');contactModal.setAttribute('aria-hidden','true');});
     contactModal.addEventListener('click',(e)=>{if(e.target===contactModal){contactModal.classList.remove('show');contactModal.setAttribute('aria-hidden','true');}});
 
-    // Lightbox
+    // Lightbox a galériához
     const lb=document.getElementById('lightbox');
     const lbImg=document.getElementById('lbImg');
     document.querySelectorAll('.gallery .lb').forEach(img=>{
-      img.addEventListener('click',()=>{lbImg.src=img.src;lb.classList.add('show');lb.setAttribute('aria-hidden','false');});
+      img.addEventListener('click', ()=>{
+        lbImg.src = img.src;
+        lb.classList.add('show');
+        lb.setAttribute('aria-hidden','false');
+      });
     });
-    document.getElementById('closeLightbox').addEventListener('click',()=>{lb.classList.remove('show');lb.setAttribute('aria-hidden','true');lbImg.src="";});
-    lb.addEventListener('click',(e)=>{if(e.target===lb){lb.classList.remove('show');lb.setAttribute('aria-hidden','true');lbImg.src="";}});
+    document.getElementById('closeLightbox').addEventListener('click', ()=>{ lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); lbImg.src=""; });
+    lb.addEventListener('click', (e)=>{ if(e.target===lb){ lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); lbImg.src=""; }});
   </script>
 </body>
 </html>

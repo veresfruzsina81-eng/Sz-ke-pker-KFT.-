@@ -6,13 +6,12 @@
   <title>Szőke Épker KFT. – Minőség kompromisszumok nélkül</title>
   <meta name="description" content="Generálkivitelezés, családi ház és társasház építés, felújítás, homlokzati szigetelés, térkövezés, burkolás és festés — megbízható csapattal.">
 
-  <!-- Favicons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/favicon-180.png">
+  <!-- Favicons (a fájlok a GYÖKÉRBEN legyenek: favicon-16.png, -32.png, -180.png) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
   <meta name="theme-color" content="#0b1220">
 
-  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
   <style>
@@ -44,15 +43,6 @@
     .btn{display:inline-flex;align-items:center;gap:10px;border:none;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0b0f14;box-shadow:0 10px 24px rgba(0,0,0,.25);transition:.15s transform}
     .btn:hover{transform:translateY(-1px)} .btn:active{transform:none}
     .btn.outline{background:transparent;color:var(--text);border:1px solid var(--border)}
-
-    /* Kiemeltebb CTA – erősebb kontraszt */
-    .btn.cta{
-      background:#4da3ff;
-      color:#0b0f14;
-      box-shadow:0 0 0 2px rgba(255,255,255,.08), 0 12px 30px rgba(77,163,255,.35);
-    }
-    .btn.cta:hover{transform:translateY(-1px) scale(1.01)}
-    .btn.cta:active{transform:none}
 
     /* Hero */
     .hero{
@@ -125,12 +115,12 @@
   <header>
     <div class="container nav">
       <a class="brand" href="#">
-        <img src="assets/img/logo.png" alt="Szőke Épker KFT. logó">
+        <img src="logo.jpg" alt="Szőke Épker KFT. logó">
         <span class="brand-name">Szőke Épker KFT.</span>
       </a>
       <nav class="menu" aria-label="Főmenü">
         <a href="#szolgaltatasok">Szolgáltatások</a>
-        <a href="#ajanlatkeres" class="btn cta">Ajánlatkérés</a>
+        <a href="#ajanlatkeres" class="btn">Ajánlatkérés</a>
         <a href="#rolunk">Rólunk</a>
         <a href="#epitoanyagok">Építőanyagok</a>
         <a href="#galeria">Galéria</a>
@@ -157,7 +147,7 @@
     <div class="container hero-inner">
       <div class="hero-card reveal">
         <div class="hero-top">
-          <img class="hero-logo" src="assets/img/logo.png" alt="Szőke Épker KFT.">
+          <img class="hero-logo" src="logo.jpg" alt="Szőke Épker KFT.">
           <span class="pill">Professzionális csapat</span>
         </div>
 
@@ -179,7 +169,7 @@
         </div>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-          <a class="btn cta" href="#ajanlatkeres">📨 Ingyenes ajánlatkérés</a>
+          <a class="btn" href="#ajanlatkeres">📨 Ingyenes ajánlatkérés</a>
           <a class="btn outline" href="#galeria">📷 Referenciák</a>
         </div>
       </div>
@@ -197,7 +187,7 @@
           <input required name="Telefon" placeholder="Telefon" style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
           <input name="Cím" placeholder="Cím" style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
           <textarea required name="Munka rövid leírása" placeholder="Munka rövid leírása" rows="4" style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)"></textarea>
-          <button class="btn cta" type="submit">Elküldés</button>
+          <button class="btn" type="submit">Elküldés</button>
         </form>
       </div>
     </div>
@@ -230,43 +220,17 @@
     </div>
   </section>
 
-  <!-- GALÉRIA (lightbox) -->
+  <!-- GALÉRIA (ékezetes fájlnevek URL-kódolva) -->
   <section id="galeria">
     <div class="container">
       <h2 class="reveal">Galéria</h2>
       <div class="grid cols-3 gallery">
-        <img class="reveal lb" src="kep1.jpg" alt="Referencia 1" loading="lazy" decoding="async">
-        <img class="reveal lb" src="kep2.jpg" alt="Referencia 2" loading="lazy" decoding="async">
-        <img class="reveal lb" src="kep3.jpg" alt="Referencia 3" loading="lazy" decoding="async">
-        <img class="reveal lb" src="kep4.jpg" alt="Referencia 4" loading="lazy" decoding="async">
-        <img class="reveal lb" src="kep5.jpg" alt="Referencia 5" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p1.jpg" alt="Referencia 1" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p2.jpg" alt="Referencia 2" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p3.jpg" alt="Referencia 3" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p4.jpg" alt="Referencia 4" loading="lazy" decoding="async">
+        <img class="reveal lb" src="k%C3%A9p5.jpg" alt="Referencia 5" loading="lazy" decoding="async">
         <img class="reveal lb" src="kep6.png" alt="Miért minket válasszon? – grafika" loading="lazy" decoding="async">
-      </div>
-    </div>
-  </section>
-
-  <!-- KAPCSOLAT – fix kártya az oldal alján -->
-  <section id="kapcsolat">
-    <div class="container">
-      <h2 class="reveal">Kapcsolat</h2>
-      <div class="card reveal">
-        <div class="grid cols-2">
-          <div>
-            <p style="margin-top:0"><b>Cím:</b> 4100 Berettyóújfalu, Dózsa György utca 6 1/3</p>
-            <p><b>Telefon:</b> <a href="tel:+36706070675">+36 70 607 0675</a></p>
-            <p><b>E-mail:</b> <a href="mailto:iroda@dgs-general.com">iroda@dgs-general.com</a></p>
-            <p><b>Web:</b> <a href="http://dgs-general.com" target="_blank" rel="noopener">dgs-general.com</a></p>
-            <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-              <a class="btn cta" href="tel:+36706070675">📞 Hívás</a>
-              <a class="btn outline" href="mailto:iroda@dgs-general.com">✉️ E-mail küldése</a>
-            </div>
-          </div>
-          <div>
-            <iframe class="map"
-              src="https://www.google.com/maps?q=Beretty%C3%B3%C3%BAjfalu%20D%C3%B3zsa%20Gy%C3%B6rgy%20utca%206%201%2F3&output=embed"
-              loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Irodánk térképe"></iframe>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -275,7 +239,7 @@
 
   <!-- Lebegő CTA mobilon -->
   <div class="cta-stick">
-    <a class="btn cta" href="#ajanlatkeres">Ingyenes ajánlatkérés</a>
+    <a class="btn" href="#ajanlatkeres">Ingyenes ajánlatkérés</a>
   </div>
 
   <!-- Lebegő Facebook ikon -->
@@ -299,7 +263,7 @@
           <p><b>E-mail:</b> <a href="mailto:iroda@dgs-general.com">iroda@dgs-general.com</a></p>
           <p><b>Web:</b> <a href="http://dgs-general.com" target="_blank" rel="noopener">dgs-general.com</a></p>
           <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-            <a class="btn cta" href="tel:+36706070675">📞 Hívás</a>
+            <a class="btn" href="tel:+36706070675">📞 Hívás</a>
             <a class="btn outline" href="mailto:iroda@dgs-general.com">✉️ E-mail küldése</a>
           </div>
         </div>

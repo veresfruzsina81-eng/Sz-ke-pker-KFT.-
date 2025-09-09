@@ -6,7 +6,7 @@
   <title>Szőke Épker KFT. – Minőség kompromisszumok nélkül</title>
   <meta name="description" content="Generálkivitelezés, családi ház és társasház építés, felújítás, homlokzati szigetelés, térkövezés, burkolás és festés — megbízható csapattal.">
 
-  <!-- Favicons (gyökérben lévő fájlok) -->
+  <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
@@ -71,7 +71,7 @@
     @media (max-width:900px){.cols-4,.cols-3,.cols-2{grid-template-columns:1fr}}
     .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.22)}
 
-    /* Gallery (rács + egységes arány) */
+    /* Gallery */
     .gallery{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
     @media (max-width:900px){.gallery{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:600px){.gallery{grid-template-columns:1fr}}
@@ -114,7 +114,6 @@
       .hero-card{ padding:14px }
       .hero-logo{ height:42px }
       section{ scroll-margin-top:120px }
-      /* FB gomb mobilon oldalt, nem zavar */
       .fb-stick{ right:10px; top:40%; transform:none; z-index:20 }
       .fb-btn{ width:40px; height:40px; box-shadow:0 4px 12px rgba(0,0,0,.25) }
     }
@@ -145,7 +144,7 @@
     </div>
   </header>
 
-  <!-- SZOLGÁLTATÁSOK – fejléc után, HERO elé -->
+  <!-- SZOLGÁLTATÁSOK – fejléc után -->
   <section id="szolgaltatasok">
     <div class="container">
       <h2 class="reveal">Szolgáltatásaink</h2>
@@ -191,19 +190,41 @@
       </div>
     </div>
   </section>
-  <!-- AJÁNLATKÉRÉS -->
+  <!-- AJÁNLATKÉRÉS (serverless e-mail küldés) -->
   <section id="ajanlatkeres">
     <div class="container">
       <h2 class="reveal">Kérjen ingyenes ajánlatot</h2>
       <div class="card reveal">
-        <p style="margin-top:0;color:var(--muted)">Töltse ki az alábbi mezőket, vagy írjon közvetlenül az <a href="mailto:iroda@dgs-general.com">iroda@dgs-general.com</a> címre.</p>
-        <form action="mailto:iroda@dgs-general.com" method="post" enctype="text/plain" style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
-          <input required name="Név" placeholder="Név" style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
-          <input required name="Telefon" placeholder="Telefon" style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
-          <input name="Cím" placeholder="Cím" style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
-          <textarea required name="Munka rövid leírása" placeholder="Munka rövid leírása" rows="4" style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)"></textarea>
+        <p style="margin-top:0;color:var(--muted)">
+          Töltse ki az alábbi mezőket. Az üzenet biztonságosan kerül továbbításra.
+        </p>
+
+        <form id="contactForm" style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
+          <input required name="name" placeholder="Név" aria-label="Név"
+                 style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+          <input required name="phone" placeholder="Telefon" aria-label="Telefon" pattern="^[0-9+() -]{6,}$"
+                 style="padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+          <input required type="email" name="email" placeholder="E-mail" aria-label="E-mail"
+                 style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+          <input name="address" placeholder="Cím (opcionális)" aria-label="Cím"
+                 style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)">
+          <textarea required name="message" placeholder="Munka rövid leírása" rows="4" aria-label="Üzenet"
+                    style="grid-column:1/-1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text)"></textarea>
+
+          <label style="grid-column:1/-1;display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--muted)">
+            <input type="checkbox" name="consent" required>
+            Elfogadom, hogy az adataimat az ajánlatkérés feldolgozásához kezelik.
+          </label>
+
           <button class="btn" type="submit">Elküldés</button>
         </form>
+
+        <div id="formOk" class="card" style="display:none;margin-top:10px;background:rgba(34,197,94,.12);color:#c8f5d2;border-color:rgba(34,197,94,.3)">
+          ✅ Köszönjük! Üzenetét elküldtük.
+        </div>
+        <div id="formErr" class="card" style="display:none;margin-top:10px;background:rgba(239,68,68,.12);color:#ffd4d4;border-color:rgba(239,68,68,.3)">
+          ⚠️ Hiba történt. Kérjük, próbálja újra, vagy írjon az <a href="mailto:iroda@dgs-general.com">iroda@dgs-general.com</a> címre.
+        </div>
       </div>
     </div>
   </section>
@@ -261,7 +282,7 @@
     </div>
   </div>
 
-  <!-- KAPCSOLAT – ALUL -->
+  <!-- KAPCSOLAT – ALUL (Facebook linkkel) -->
   <section id="kapcsolat">
     <div class="container">
       <h2 class="reveal">Kapcsolat</h2>
@@ -275,6 +296,9 @@
             <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
               <a class="btn" href="tel:+36706070675">📞 Hívás</a>
               <a class="btn outline" href="mailto:iroda@dgs-general.com">✉️ E-mail küldése</a>
+              <a class="btn outline" href="https://www.facebook.com/szokeepkerkft" target="_blank" rel="noopener">
+                🔗 Facebook oldalunk
+              </a>
             </div>
           </div>
           <div>
@@ -344,6 +368,42 @@
         lbImg.src = "";
       }
     });
+
+    // Űrlap beküldés Netlify Function felé
+    (() => {
+      const f = document.getElementById('contactForm');
+      const ok = document.getElementById('formOk');
+      const er = document.getElementById('formErr');
+      if (!f) return;
+
+      const show = (el) => el && (el.style.display = 'block');
+      const hide = (el) => el && (el.style.display = 'none');
+
+      f.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hide(ok); hide(er);
+
+        const formData = new FormData(f);
+        const payload = Object.fromEntries([...formData.entries()].map(([k,v]) => [k, k==='consent' ? true : v]));
+
+        try {
+          const res = await fetch('/.netlify/functions/send-mail', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            f.reset();
+            show(ok);
+          } else {
+            show(er);
+          }
+        } catch (e2) {
+          console.error(e2);
+          show(er);
+        }
+      });
+    })();
   </script>
 </body>
 </html>

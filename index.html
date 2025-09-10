@@ -29,7 +29,7 @@
       --hdrH:92px;
       --hero-img-max:180px;
       --hero-h1-max:34px;
-      --section-y:80px; /* nagyobb szekció-táv mobilhoz is */
+      --section-y:80px;
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;overflow-x:hidden}
@@ -40,7 +40,7 @@
       position:relative;
     }
 
-    /* HÁTTÉR – stabil, homályos */
+    /* HÁTTÉR */
     body::after{
       content:""; position:fixed; inset:0; z-index:-2;
       background:url('hatter32.jpg') center/cover no-repeat;
@@ -201,36 +201,40 @@
     }
 
     /* ===========================
-       FIX #1 – Szolgáltatások mobilon: kisebb levegő, de ne tapadjon
+       FIX #1 – Szolgáltatások mobilon: még szorosabb + stabil tördelés
        =========================== */
     @media (max-width: 480px){
-      /* panel belső padding csökkentése */
-      #szolgaltatasok .panel-wrap{ padding: 18px !important; }
-      /* rács sűrítés, de marad 2 oszlop */
+      #szolgaltatasok .panel-wrap{ padding:16px !important; }
+      #szolgaltatasok h2{ margin-top:0; margin-bottom:12px; }
       #szolgaltatasok .grid{
-        grid-template-columns: repeat(2, minmax(0,1fr)) !important;
-        gap: 10px !important; /* közepes távolság – nem egybe, nem túl levegős */
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap:8px !important;                     /* kisebb rés */
       }
-      /* kártya tartalom szorosabb */
       #szolgaltatasok .card{
-        padding: 12px 10px !important;
-        gap: 10px !important;
+        padding:10px !important;                /* szorosabb belső tér */
+        gap:8px !important;
+        word-break: break-word;
+        overflow-wrap: anywhere;                /* hosszú szavak se lökjék szét */
+        hyphens: auto;
+        align-items:center;
       }
       #szolgaltatasok .card::before{
-        width:40px; height:40px; flex:0 0 40px; font-size:18px;
+        width:38px; height:38px; flex:0 0 38px; font-size:17px;
       }
+      /* picit kisebb szöveg, hogy ne törjön csúnyán */
+      #szolgaltatasok .card{ font-size:14px; line-height:1.25; }
     }
 
     /* ===========================
-       FIX #2 – Hero mobilon: picit nagyobb, de nem teljes
+       FIX #2 – Hero mobilon: egy hangyányit lejjebb és a kép kicsit nagyobb
        =========================== */
     @media (max-width: 480px){
       :root{
-        --hero-img-max: 200px;    /* kicsit nagyobb kép */
-        --hero-h1-max: 36px;      /* kicsit nagyobb cím */
+        --hero-img-max: 190px;   /* csak picit nagyobb a kép */
+        --hero-h1-max: 36px;
       }
-      .hero{ padding: 88px 0 84px !important; } /* finom emelés, nem teljes képernyő */
-      .hero-card{ padding: 22px !important; }
+      .hero{ padding: 92px 0 86px !important; } /* lejjebb, nyugodtabb ritmus */
+      .hero-card{ padding:22px !important; }
     }
   </style>
 </head>
@@ -322,13 +326,16 @@
       <div class="panel-wrap">
         <h2>Rólunk</h2>
         <div class="card">
-          <p>A Szőke Épker Kft. több éves tapasztalattal vállal teljes körű generálkivitelezést, családi házak és társasházak építését, felújításokat, homlokzati szigetelést, térkövezést és burkolást, festést.</p>
-          <p>Célunk, hogy ügyfeleink elégedetten vehessék birtokba ingatlanjukat: a tervezéstől a kulcsátadásig számíthat ránk.</p>
-          <ul style="margin:0;padding-left:18px;color:var(--muted)">
-            <li>Megbízható, összeszokott csapat</li>
-            <li>Pontos, átlátható ajánlatadás</li>
-            <li>Határidő-garancia, tiszta munkaterület</li>
+          <p>A Szőke Épker Kft. megbízható, lelkiismeretes kivitelező csapat. Lakó- és kisebb ipari projektek teljes körű lebonyolítását vállaljuk az engedélyeztetéstől a kulcsátadásig. Munkánk alapja a pontos tervezés, a tiszta kommunikáció és a következetes minőség-ellenőrzés.</p>
+          <p><b>Miért minket válasszon?</b></p>
+          <ul style="margin:0 0 10px 18px;color:var(--muted)">
+            <li><b>Átlátható költségvetés:</b> tételes ajánlat, rejtett tételek nélkül.</li>
+            <li><b>Határidő-garancia:</b> ütemterv, heti státuszjelentés és fotódokumentáció.</li>
+            <li><b>Minőségi alapanyagok:</b> ismert gyártói rendszerek, gyári irányelvek szerint.</li>
+            <li><b>Tapasztalt szakembergárda:</b> összeszokott csapat, felelős műszaki irányítással.</li>
+            <li><b>Tiszta munkaterület:</b> rendezett átadás, garanciavállalással.</li>
           </ul>
+          <p>Szolgáltatásaink lefedik a <b>generálkivitelezést</b>, <b>homlokzati hőszigetelést</b>, <b>térkövezést és burkolást</b>, valamint <b>festést és lakásfelújítást</b>. Célunk, hogy Ön nyugodtan hátradőlhessen, miközben a szerződés szerinti minőségben és időben adjuk át az elkészült munkát.</p>
         </div>
       </div>
     </div>

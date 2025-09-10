@@ -29,7 +29,7 @@
       --hdrH:92px;
       --hero-img-max:180px;
       --hero-h1-max:34px;
-      --section-y:64px;
+      --section-y:72px; /* szekció távolság */
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;overflow-x:hidden}
@@ -93,7 +93,7 @@
     .btn.outline:hover{ box-shadow:0 6px 16px rgba(201,162,124,.25); }
 
     /* Panel + card */
-    .panel-wrap{background:var(--panel);border:2px solid var(--frame);border-radius:18px;box-shadow:0 10px 28px rgba(60,40,20,.08);padding:30px}
+    .panel-wrap{background:var(--panel);border:2px solid var(--frame);border-radius:18px;box-shadow:0 10px 28px rgba(60,40,20,.08);padding:32px}
     .card{background:linear-gradient(#fff,#fdfcf9);border:2px solid var(--frame);border-radius:16px;padding:16px;box-shadow:0 8px 20px rgba(60,40,20,.06);transition:transform .15s ease, box-shadow .15s ease}
     .card:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(60,40,20,.10); }
 
@@ -112,7 +112,6 @@
     }
 
     /* Szolgáltatások */
-    #szolgaltatasok{ padding:64px 0; }
     #szolgaltatasok .grid{
       display:grid;
       grid-template-columns: repeat(2, minmax(0,1fr));
@@ -127,13 +126,13 @@
     @media (max-width:520px){#szolgaltatasok .grid{grid-template-columns:1fr}}
 
     /* Galéria */
-    .gallery{display:grid;gap:18px;grid-template-columns:repeat(3,1fr)}
+    .gallery{display:grid;gap:20px;grid-template-columns:repeat(3,1fr)}
     @media (max-width:900px){.gallery{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:600px){.gallery{grid-template-columns:1fr}}
     .gallery img{width:100%;height:180px;object-fit:cover;border-radius:14px;border:2px solid var(--frame);box-shadow:0 6px 14px rgba(60,40,20,.08);cursor:pointer}
 
     /* Ajánlatkérés */
-    #ajanlatkeres form{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+    #ajanlatkeres form{display:grid;gap:18px;grid-template-columns:1fr 1fr}
     @media (max-width:768px){#ajanlatkeres form{grid-template-columns:1fr}}
     #ajanlatkeres input,#ajanlatkeres textarea{
       width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;
@@ -147,7 +146,7 @@
     /* Kapcsolat */
     .map{width:100%;height:320px;border:0;border-radius:12px}
     footer{border-top:2px solid var(--line);padding:18px 0;text-align:center;color:var(--muted);background:rgba(255,255,255,.86)}
-    .grid.cols-2{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    .grid.cols-2{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
     @media (max-width:768px){ .grid.cols-2{ grid-template-columns:1fr; } }
 
     /* Lebegő Facebook */
@@ -159,6 +158,9 @@
     .logo-stick{position:fixed;right:14px;bottom:14px;z-index:1050}
     .logo-btn{display:inline-flex;align-items:center;justify-content:center;background:transparent !important;border:0 !important;box-shadow:none !important;padding:0;width:auto;height:auto}
     .logo-btn img{height:84px;background:transparent !important;border:0 !important;filter: drop-shadow(0 4px 10px rgba(0,0,0,.22));cursor:pointer}
+
+    /* EXTRA: halvány elválasztó a szekciók között */
+    section:not(:first-of-type){ border-top:1px solid rgba(0,0,0,.045); }
   </style>
 </head>
 <body>
@@ -299,7 +301,7 @@
               </div>
             </div>
             <div>
-              <iframe class="map" src="https://www.google.com/maps?q=Beretty%C3%B3%C3%BAjfalu%20D%C3%B3zsa%20Gy%C3%B6rgy%20utca%206%201%2F3&output=embed" loading="lazy"></iframe>
+              <iframe class="map" src="https://www.google.com/maps?q=Beretty%C3%B3%C3%BAjfalu%20D%C3%B3zsa%20György%20utca%206%201%2F3&output=embed" loading="lazy"></iframe>
             </div>
           </div>
         </div>
@@ -434,7 +436,7 @@
       });
     })();
 
-    /* Biztonsági takarítás – ha maradt idegen overlay */
+    /* Biztonsági takarítás */
     (function(){
       document.querySelectorAll('.overlay').forEach(el=>{
         if(el.id && el.id!=='lightbox') el.remove();

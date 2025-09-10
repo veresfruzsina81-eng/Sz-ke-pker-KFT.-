@@ -15,22 +15,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
   <style>
-    /* ================== ALAP TÉMA ================== */
+    /* ===== ALAP TÉMA ===== */
     :root{
-      --page:#f5f7fa;             /* oldal alap (ne legyen steril fehér) */
+      --page:#f5f7fa;             /* oldal alap */
       --panel:#ffffff;            /* kártyák/panelek háttere */
       --text:#0a0f1a; --muted:#1e293b;
 
-      --accent:#2563eb;           /* kék kiemelés a címeknél */
+      --accent:#2563eb;           /* kék kiemelő */
       --accent2:#f5a524;          /* sárgás pill */
 
       --border:#d7e0ea;
       --border-strong:#c7d3e2;
       --frame:#aebfda;            /* szürkés-kék keret */
-      --frame-strong:#94a8d8;     /* erősebb keretárnyalat */
+      --frame-strong:#94a8d8;
 
       --shadow:0 10px 24px rgba(16,24,40,.10);
       --shadow-soft:0 8px 20px rgba(16,24,40,.08);
+
+      --hdrH-desktop:72px;
+      --hdrH-mobile:84px;
     }
 
     *{box-sizing:border-box}
@@ -40,24 +43,27 @@
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text); background:var(--page);
       position:relative; -webkit-tap-highlight-color:transparent;
+      padding-top:var(--hdrH-desktop);
     }
+    @media (max-width:640px){ body{ padding-top:var(--hdrH-mobile); } }
+    html{ scroll-padding-top:var(--hdrH-desktop); }
+    @media (max-width:640px){ html{ scroll-padding-top:var(--hdrH-mobile); } }
 
-    /* Háttér fotó (KÖZEPES erősség) + enyhe textúra */
+    /* Háttér fotó (ÉLES, közepes erősség) + finom textúra */
     body::after{
       content:""; position:fixed; inset:0; z-index:-1;
       background:url('epito.jpg') center/cover fixed no-repeat;
-      opacity:.28;                            /* közepes láthatóság */
-      filter:grayscale(90%) contrast(.98) brightness(1.04) blur(.5px);
+      opacity:.32;                           /* közepes, látványosabb */
+      filter:grayscale(80%) contrast(1) brightness(1.04); /* nincs blur */
       pointer-events:none;
     }
-    /* beton-hangulatú nagyon finom textúra */
     body::before{
       content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
       background:
         radial-gradient(800px 400px at 20% 10%, rgba(37,99,235,.06), transparent 60%),
         radial-gradient(700px 380px at 80% 0%, rgba(167,139,250,.05), transparent 60%),
         linear-gradient(180deg, rgba(0,0,0,.02), transparent 18%),
-        repeating-linear-gradient( 0deg, rgba(0,0,0,.012), rgba(0,0,0,.012) 2px, transparent 2px, transparent 6px );
+        repeating-linear-gradient(0deg, rgba(0,0,0,.012), rgba(0,0,0,.012) 2px, transparent 2px, transparent 6px);
     }
 
     a{color:inherit;text-decoration:none}
@@ -65,9 +71,9 @@
     .container{max-width:1140px;margin:0 auto;padding:0 18px}
     @media (max-width:640px){ .container{padding:0 14px} }
 
-    /* ================== HEADER / MENÜ ================== */
+    /* ===== HEADER (fixen felül) ===== */
     header{
-      position:sticky; top:0; z-index:100;
+      position:fixed; top:0; left:0; right:0; z-index:1000;
       background:#fff; border-bottom:1px solid var(--border);
       box-shadow:0 10px 24px rgba(16,24,40,.06);
       backdrop-filter:saturate(120%) blur(6px);
@@ -83,9 +89,8 @@
     }
     .brand-name{font-weight:900;letter-spacing:.2px;color:#0b1220;font-size:clamp(18px,2.2vw,22px);white-space:nowrap}
 
-    .menu{
-      display:flex;gap:14px;align-items:center;flex-wrap:wrap;
-    }
+    /* Menüsor – desktop */
+    .menu{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
     .menu a{font-weight:800;color:#0b1220}
 
     .btn{
@@ -96,31 +101,29 @@
     .btn:hover{transform:translateY(-1px)} .btn:active{transform:none}
     .btn.outline{background:#fff;color:var(--accent);border:1px solid var(--accent)}
 
-    /* MOBIL MENÜ – stabil, 2 oszlopos, nem lóg ki */
+    /* Menüsor – mobil: egy sorban, vízszintes görgetéssel */
     @media (max-width:640px){
-      header{ position:sticky; top:0; }
-      .menu{
-        width:100%;
-        display:grid;
-        grid-template-columns:repeat(2,minmax(0,1fr)); /* minmax fix a kilógás ellen */
-        gap:8px 10px; justify-items:stretch; align-items:stretch;
-        padding:6px 0 8px;
+      .nav{ padding:8px 0; }
+      .brand img{ height:36px; }
+      .brand-name{ font-size:15px; }
+      nav.menu{
+        width:100%; display:flex; flex-wrap:nowrap; overflow-x:auto;
+        -webkit-overflow-scrolling:touch; gap:8px; padding:6px 0 8px; scrollbar-width:none;
       }
-      .menu > *{min-width:0}
-      .menu a, .menu .btn, .menu .btn.outline{
+      nav.menu::-webkit-scrollbar{display:none}
+      nav.menu > a, nav.menu > .btn, nav.menu > .btn.outline{
         background:#fff; color:#0b1220; border:2px solid var(--frame);
-        border-radius:12px; padding:10px 12px; text-align:center;
-        box-shadow:0 6px 12px rgba(16,24,40,.06); font-weight:800;
+        border-radius:999px; padding:10px 12px; white-space:nowrap; flex:0 0 auto;
+        box-shadow:0 4px 10px rgba(16,24,40,.06); font-weight:800;
       }
-      .menu .btn{border-color:var(--accent); color:#0b1220; background:#fff}
+      nav.menu > .btn{ border-color:var(--accent); color:#0b1220; background:#fff }
     }
 
-    /* Aktív menü (scroll közben jelölés) */
     nav.menu a.is-active{ color:var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
 
-    /* ================== SZEKCIÓK / CÍMEK ================== */
-    section{padding:42px 0;scroll-margin-top:100px}
-    @media (max-width:640px){ section{scroll-margin-top:24px} }
+    /* ===== SZEKCIÓK / CÍMEK ===== */
+    section{padding:42px 0;scroll-margin-top:calc(var(--hdrH-desktop) + 8px)}
+    @media (max-width:640px){ section{scroll-margin-top:calc(var(--hdrH-mobile) + 8px)} }
 
     h2{
       margin:0 0 12px; font-weight:900; font-size:1.6rem; position:relative; padding-left:14px; color:#0a0f1a;
@@ -129,11 +132,11 @@
       content:""; position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:2px; background:var(--accent);
     }
 
-    /* ================== ANIMÁCIÓ (beúszás) ================== */
+    /* ===== ANIMÁCIÓ ===== */
     .reveal{opacity:0; transform:translateY(22px); transition:opacity .55s ease, transform .55s ease;}
     .reveal.show{opacity:1; transform:translateY(0);}
 
-    /* ================== PANELEK / KÁRTYÁK ================== */
+    /* ===== PANELEK / KÁRTYÁK ===== */
     .panel-wrap{
       background:var(--panel); border:3px solid var(--frame);
       border-radius:18px; box-shadow:var(--shadow-soft); padding:22px;
@@ -142,14 +145,13 @@
       background:var(--panel); border:3px solid var(--frame);
       border-radius:16px; padding:16px; box-shadow:0 8px 20px rgba(16,24,40,.06); color:var(--text);
     }
-
     .grid{display:grid;gap:14px}
     .cols-4{grid-template-columns:repeat(4,1fr)}
     .cols-3{grid-template-columns:repeat(3,1fr)}
     .cols-2{grid-template-columns:repeat(2,1fr)}
     @media (max-width:900px){.cols-4,.cols-3,.cols-2{grid-template-columns:1fr}}
 
-    /* ================== HERO ================== */
+    /* ===== HERO ===== */
     .hero{padding:64px 0 56px}
     .hero-inner{position:relative}
     .hero-card{
@@ -171,7 +173,7 @@
     .hero-cols{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}
     @media (max-width:900px){.hero-cols{grid-template-columns:1fr}}
 
-    /* ================== SZOLGÁLTATÁSAINK ================== */
+    /* ===== SZOLGÁLTATÁSAINK ===== */
     #szolgaltatasok{padding-top:18px;padding-bottom:28px}
     #szolgaltatasok .container{padding:0}
     #szolgaltatasok .panel-wrap{padding:18px 18px 22px}
@@ -191,23 +193,22 @@
       background: var(--accent); color:#fff; flex:0 0 44px;
     }
 
-    /* ================== ŰRLAP ================== */
+    /* ===== ŰRLAP ===== */
     #ajanlatkeres .container,
     #rolunk .container,
     #epitoanyagok .container,
     #galeria .container,
     #ismerjmeg .container,
-    #kapcsolat .container { padding:0 }
+    #kapcsolat .container,
+    #brandpanel .container { padding:0 }
 
-    #ajanlatkeres form{
-      display:grid;gap:10px;grid-template-columns:1fr 1fr
-    }
+    #ajanlatkeres form{display:grid;gap:10px;grid-template-columns:1fr 1fr}
     @media (max-width:768px){ #ajanlatkeres form{grid-template-columns:1fr} }
     #ajanlatkeres input,#ajanlatkeres textarea{
       padding:12px;border-radius:10px;border:1px solid var(--border);background:#fff;color:var(--text)
     }
 
-    /* ================== GALÉRIA ================== */
+    /* ===== GALÉRIA ===== */
     .gallery{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
     @media (max-width:900px){.gallery{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:600px){.gallery{grid-template-columns:1fr}}
@@ -216,11 +217,11 @@
       box-shadow:0 6px 14px rgba(16,24,40,.08); border:3px solid var(--frame)
     }
 
-    /* ================== TÉRKÉP / LÁBLÉC ================== */
+    /* ===== TÉRKÉP / LÁBLÉC ===== */
     .map{width:100%;height:320px;border:0;border-radius:12px}
     footer{border-top:1px solid var(--border);padding:18px 0;text-align:center;color:#475569;background:#fff}
 
-    /* ================== LEBEGŐ ELEMEK ================== */
+    /* ===== LEBEGŐ ELEMEK ===== */
     .fb-stick{position:fixed;right:12px;top:45%;transform:translateY(-50%);z-index:95}
     .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;background:#1877f2;box-shadow:0 6px 18px rgba(16,24,40,.18)}
     .fb-btn svg{width:22px;height:22px;fill:#fff}
@@ -241,7 +242,7 @@
       .brand-float{ right:16px; bottom:16px; }
     }
 
-    /* ================== LIGHTBOX ================== */
+    /* ===== LIGHTBOX ===== */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:120;padding:16px}
     .overlay.show{display:flex}
     .modal{background:#fff;border:3px solid var(--frame);border-radius:16px;max-width:min(1000px,96vw);width:100%;padding:12px;box-shadow:0 14px 36px rgba(16,24,40,.16)}
@@ -251,21 +252,28 @@
     .lb-nav{display:flex;justify-content:space-between;gap:10px;margin-top:10px}
     .lb-nav .btn{flex:1}
 
-    /* ================== MOBIL FINOMHANG ================== */
-    @media (max-width:640px){
-      /* a menü és az első szekció közé egy kis levegő */
-      #szolgaltatasok{ margin-top:8px; }
-      .brand img{ height:36px; }
-      .brand-name{ font-size:15px; }
-      h1{font-size:clamp(24px,7vw,30px)}
-      .lead{font-size:15px}
+    /* ===== OLDAL VÉGI NAGY LOGÓ PANEL ===== */
+    .brand-banner{
+      display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(180deg,#0b1220,#0d1526);
+      border:3px solid var(--frame); border-radius:20px; padding:28px;
+      box-shadow:0 16px 36px rgba(16,24,40,.18);
+    }
+    .brand-banner .inner{
+      display:flex; align-items:center; gap:16px; background:rgba(255,255,255,.08);
+      border:2px solid rgba(255,255,255,.12); border-radius:18px; padding:18px 22px;
+      backdrop-filter: blur(2px);
+    }
+    .brand-banner img{
+      width:min(320px,80vw); height:auto; border-radius:14px; background:#fff; padding:10px;
+      border:3px solid var(--frame); box-shadow:0 10px 22px rgba(0,0,0,.35);
     }
   </style>
 </head>
 <body>
 
   <!-- HEADER -->
-  <header class="reveal">
+  <header>
     <div class="container nav">
       <a class="brand" href="#">
         <img src="logo.jpg" alt="Szőke Épker KFT. logó">
@@ -486,6 +494,17 @@
     </div>
   </section>
 
+  <!-- OLDAL VÉGI NAGY LOGÓ PANEL -->
+  <section id="brandpanel">
+    <div class="container">
+      <div class="brand-banner reveal">
+        <div class="inner">
+          <img src="logo.jpg" alt="Szőke Épker KFT. – logó (kiemelt)">
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer>© 2025 Szőke Épker KFT. • Minden jog fenntartva.</footer>
 
   <!-- Lebegő Facebook ikon -->
@@ -495,7 +514,7 @@
     </a>
   </div>
 
-  <!-- Lebegő céglogó badge a jobb alsó sarokban -->
+  <!-- Lebegő céglogó badge -->
   <div class="brand-float">
     <a href="#" aria-label="Szőke Épker KFT.">
       <img src="logo.jpg" alt="Szőke Épker KFT.">
@@ -542,7 +561,8 @@
       const links=[...document.querySelectorAll('nav.menu a[href^="#"]')];
       const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
       function setActive(){
-        const y=window.scrollY+120; let cur=null;
+        const y=window.scrollY + (window.innerWidth<=640 ? 100 : 80);
+        let cur=null;
         secs.forEach(s=>{ if(s.offsetTop<=y) cur=s; });
         links.forEach(a=>a.classList.toggle('is-active', cur && a.getAttribute('href')==='#'+cur.id));
       }

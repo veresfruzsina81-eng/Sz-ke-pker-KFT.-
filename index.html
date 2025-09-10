@@ -7,16 +7,28 @@
   <meta name="description" content="Generálkivitelezés, családi ház és társasház építés, felújítás, homlokzati szigetelés, térkövezés, burkolás és festés — országosan, megbízható csapattal.">
   <link rel="canonical" href="https://szoke-epker.com/">
 
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/favicon-180.png">
+  <meta name="theme-color" content="#F6F1E9">
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --page:#F6F1E9; --panel:rgba(255,255,255,.88);
-      --text:#3E3A35; --muted:#5f5952;
-      --accent:#C9A27C; --line:#E6D7C6;
-      --hdrH:88px;
+      --page:#F6F1E9; --panel:rgba(255,255,255,.78);
+      --text:#3E3A35; --muted:#6E675F;
+      --accent:#C9A27C; --accent2:#8A6F5A;
+      --line:#E6D7C6; --frame:#EDE1D2;
+      --shadow:0 10px 24px rgba(60,40,20,.10);
+      --shadow-soft:0 8px 20px rgba(60,40,20,.08);
+      --hdrH:92px;
+      --hero-img-max:120px;  /* Hero kép max méret */
+      --hero-h1-max:28px;    /* Hero cím méret */
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;overflow-x:hidden}
@@ -27,16 +39,16 @@
       position:relative;
     }
 
-    /* Háttér – halvány, nem zavar */
+    /* Háttér */
     body::after{
       content:""; position:fixed; inset:0; z-index:-2;
       background:url('hatter32.jpg') center/cover no-repeat fixed;
-      opacity:.35; filter:blur(2px) saturate(105%) contrast(105%);
+      opacity:.38; filter:blur(1px) saturate(112%) grayscale(10%);
       pointer-events:none;
     }
     body::before{
       content:""; position:fixed; inset:0; z-index:-1;
-      background:linear-gradient(180deg, rgba(246,241,233,.35), rgba(246,241,233,.55));
+      background:linear-gradient(180deg, rgba(246,241,233,.76), rgba(246,241,233,.88));
       pointer-events:none;
     }
     @media (max-width:900px){ body::after{ background-attachment:scroll } }
@@ -46,126 +58,102 @@
     .container{max-width:1140px;margin:0 auto;padding:0 18px}
     @media (max-width:640px){ .container{padding:0 16px} }
 
-    /* HEADER (2/5-ben jön a markup) */
+    /* Header */
     header{
       position:fixed; inset:0 0 auto 0; z-index:1100;
-      background:#ffffff; border-bottom:1px solid var(--line);
-      backdrop-filter:blur(6px) saturate(120%);
-      box-shadow:0 8px 18px rgba(0,0,0,.08);
+      background:rgba(255,255,255,.85);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:blur(8px) saturate(120%);
+      box-shadow:0 10px 24px rgba(60,40,20,.06);
     }
     #hdrSpacer{height:var(--hdrH)}
     .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
     .brand{display:flex;align-items:center;gap:10px}
-    .brand img{height:44px;border-radius:12px;background:#fff;padding:6px;border:2px solid var(--accent);box-shadow:0 10px 20px rgba(0,0,0,.22)}
+    .brand img{height:42px;border-radius:12px;background:#fff;padding:6px;border:1px solid var(--line);box-shadow:var(--shadow-soft)}
     .brand-name{font-weight:900;letter-spacing:.2px;font-size:clamp(18px,2.2vw,22px)}
-    .menu{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .menu a{
-      display:inline-flex;align-items:center;justify-content:center;
-      padding:8px 14px;background:#fff;color:#222;
-      border:1.5px solid #222;border-radius:999px;font-weight:800;
-      box-shadow:0 6px 14px rgba(0,0,0,.08);white-space:nowrap;transition:transform .15s, box-shadow .15s
-    }
-    .menu a:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.12)}
-    .menu a.is-active{box-shadow: inset 0 -3px 0 #222}
-    .menu a:empty{display:none!important}
+    .menu{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    .menu a{font-weight:800}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:14px;border:1px solid transparent;background:var(--accent);color:#fff;font-weight:900;box-shadow:var(--shadow);transition:.15s}
+    .btn:hover{transform:translateY(-1px); background:var(--accent2)}
+    .btn.outline{background:#fff;color:var(--accent);border-color:var(--accent);box-shadow:0 2px 8px rgba(201,162,124,.18)}
+    nav.menu a.is-active{ color:var(--accent2); box-shadow: inset 0 -3px 0 var(--accent2); }
     @media (max-width:640px){
-      .nav{padding:calc(8px + env(safe-area-inset-top,0)) 0 8px;display:grid;row-gap:8px}
-      .brand img{height:34px}.brand-name{font-size:15px}
+      .nav{ padding: calc(8px + env(safe-area-inset-top,0)) 0 8px; display:grid; row-gap:8px }
+      .brand img{height:32px}
+      .brand-name{font-size:15px}
       nav.menu{width:100%;display:flex;overflow-x:auto;gap:8px;-webkit-overflow-scrolling:touch}
       nav.menu::-webkit-scrollbar{display:none}
-      nav.menu>a{padding:7px 11px;font-size:13px;flex:0 0 auto}
+      nav.menu > a, nav.menu > .btn, nav.menu > .btn.outline{
+        background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:13px;white-space:nowrap;flex:0 0 auto;box-shadow:0 4px 10px rgba(60,40,20,.06)
+      }
+      nav.menu > .btn{background:var(--accent);color:#fff;border-color:var(--accent)}
     }
 
-    /* Szekciók + kártyák – EGYSÉGES KERET VISSZAHOZVA */
-    section{padding:32px 0;scroll-margin-top:calc(var(--hdrH) + 8px)}
-    h2{margin:0 0 12px;font-weight:900;font-size:1.6rem;position:relative;padding-left:14px}
-    h2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:2px;background:var(--accent)}
+    /* Panel + card */
+    .panel-wrap{background:var(--panel);border:2px solid var(--frame);border-radius:18px;box-shadow:var(--shadow-soft);padding:22px}
+    .card{background:linear-gradient(#fff,#fdfcf9);border:2px solid var(--frame);border-radius:16px;padding:16px;box-shadow:0 8px 20px rgba(60,40,20,.06)}
 
-    .panel-wrap{
-      background:var(--panel);
-      border:1px solid #DDD;
-      border-radius:16px;
-      padding:20px;
-      box-shadow:0 8px 20px rgba(0,0,0,.08);
-      margin-bottom:24px;
-    }
-    .card{
-      background:#fff;
-      border:1px solid #DDD;
-      border-radius:12px;
-      padding:16px;
-      box-shadow:0 6px 14px rgba(0,0,0,.06);
+    /* Hero */
+    .hero{padding:40px 0}
+    .hero-card{background:var(--panel);border:2px solid var(--frame);border-radius:20px;padding:20px;box-shadow:var(--shadow);max-width:680px}
+    .hero-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+    .hero-logo{height:56px;border-radius:14px;background:#fff;padding:6px;border:1px solid var(--line);box-shadow:var(--shadow-soft)}
+    h1{margin:6px 0 10px;font-weight:900;font-size:clamp(22px,3vw,var(--hero-h1-max));line-height:1.14}
+    .lead{color:var(--muted);font-size:15.5px;line-height:1.5}
+    .hero-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,260px);gap:18px;align-items:start}
+    .hero-img{width:100%;aspect-ratio:1/1;max-width:var(--hero-img-max);border-radius:16px;object-fit:cover;box-shadow:0 8px 18px rgba(60,40,20,.12)}
+    @media (max-width:900px){
+      .hero-cols{grid-template-columns:1fr}
+      .hero-img{margin:auto}
     }
 
-    .grid{display:grid;gap:14px}
-    .cols-2{grid-template-columns:repeat(2,1fr)}
-    @media (max-width:900px){ .cols-2{grid-template-columns:1fr} }
-
-    /* SZOLGÁLTATÁS KÁRTYÁK IKONNAL */
+    /* Szolgáltatás kártyák */
     #szolgaltatasok .grid{gap:16px;grid-template-columns:repeat(2,1fr)}
     @media (max-width:520px){#szolgaltatasok .grid{grid-template-columns:1fr}}
-    #szolgaltatasok .card{
-      display:flex;align-items:center;gap:12px;padding:18px 16px;font-weight:800
-    }
+    #szolgaltatasok .card{display:flex;align-items:center;gap:12px;padding:18px 16px;font-weight:800}
     #szolgaltatasok .card::before{
       content: attr(data-icon);
-      display:inline-flex;align-items:center;justify-content:center;font-size:20px;width:40px;height:40px;border-radius:50%;
-      background:#fff;border:1.5px solid var(--accent);margin-right:4px;flex:0 0 40px;
-      box-shadow:0 4px 10px rgba(0,0,0,.08);
+      display:inline-flex;align-items:center;justify-content:center;font-size:22px;width:44px;height:44px;border-radius:999px;
+      background:#fff;border:2px solid var(--accent);box-shadow:0 4px 10px rgba(60,40,20,.06);flex:0 0 44px;
     }
 
-    /* HERO – SOKKAL KISEBB */
-    .hero{padding:16px 0}
-    .hero-card{max-width:560px;margin:0 auto;padding:12px;border:1px solid #DDD;border-radius:14px;background:var(--panel);box-shadow:0 10px 24px rgba(0,0,0,.12)}
-    .hero-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-    .hero-logo{height:34px;border-radius:10px;background:#fff;padding:4px;border:2px solid var(--accent);box-shadow:0 8px 18px rgba(0,0,0,.22)}
-    h1{margin:2px 0 6px;font-weight:900;font-size:clamp(20px,2.2vw,26px);line-height:1.16}
-    .lead{color:var(--muted);font-size:14px}
-    .hero-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,120px);gap:10px;align-items:start}
-    .hero-img{width:100%;aspect-ratio:1/1;max-width:120px;border-radius:10px;object-fit:cover;box-shadow:0 8px 18px rgba(0,0,0,.18);margin-left:auto}
-    @media (max-width:900px){ .hero-cols{grid-template-columns:1fr} .hero-img{max-width:120px;margin-left:0} }
-
-    /* REFERENCIÁK – fix, kockás grid, kisebb képek */
-    .gallery{display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
+    /* Galéria */
+    .gallery{display:grid;gap:14px;grid-template-columns:repeat(3,1fr)}
     @media (max-width:900px){.gallery{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:600px){.gallery{grid-template-columns:1fr}}
-    .gallery img{width:100%;height:180px;object-fit:cover;border-radius:12px;border:1px solid #DDD;box-shadow:0 6px 14px rgba(0,0,0,.08)}
+    .gallery img{width:100%;height:180px;object-fit:cover;border-radius:12px;border:2px solid var(--frame);box-shadow:0 6px 14px rgba(60,40,20,.08);cursor:pointer}
 
-    /* AJÁNLATKÉRÉS – modern mezők */
+    /* Ajánlatkérés */
     #ajanlatkeres form{display:grid;gap:12px;grid-template-columns:1fr 1fr}
     @media (max-width:768px){#ajanlatkeres form{grid-template-columns:1fr}}
     #ajanlatkeres input,#ajanlatkeres textarea{
-      width:100%;padding:12px 14px;border:1px solid #DDD;border-radius:12px;background:#fff;
-      box-shadow:inset 0 6px 12px rgba(0,0,0,.04);transition:border-color .2s, box-shadow .2s;
+      width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;
+      transition:border-color .2s, box-shadow .2s;
     }
-    #ajanlatkeres input:focus,#ajanlatkeres textarea:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%, transparent)}
-    #ajanlatkeres button{
-      border:1.5px solid #222;border-radius:999px;padding:10px 18px;background:#fff;color:#222;font-weight:900;
-      box-shadow:0 10px 22px rgba(0,0,0,.10);cursor:pointer;transition:.2s;
+    #ajanlatkeres input:focus,#ajanlatkeres textarea:focus{
+      outline:0;border-color:var(--accent);
+      box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
     }
-    #ajanlatkeres button:hover{transform:translateY(-2px)}
 
-    /* LÁBLÉC */
-    footer{border-top:1px solid var(--line);padding:18px 0;text-align:center;color:var(--muted);background:rgba(255,255,255,.92)}
+    /* Kapcsolat */
+    .map{width:100%;height:320px;border:0;border-radius:12px}
+    footer{border-top:2px solid var(--line);padding:18px 0;text-align:center;color:var(--muted);background:rgba(255,255,255,.86)}
 
-    /* LEBEGŐK – Facebook (jobb oldali közép), Céglogó (jobb alsó, kocka) */
-    .fb-stick{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:1060}
-    .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;background:#1877F2;box-shadow:0 12px 24px rgba(0,0,0,.28)}
-    .fb-btn svg{width:22px;height:22px;fill:#fff}
+    /* Lebegő Facebook */
+    .fb-stick{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:1050}
+    .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:999px;background:#1877f2;box-shadow:0 6px 18px rgba(16,24,40,.18)}
+    .fb-btn svg{width:20px;height:20px;fill:#fff}
 
-    .floating-logo{position:fixed;right:16px;bottom:16px;z-index:1060;width:84px;height:84px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid var(--accent);box-shadow:0 20px 40px rgba(0,0,0,.30)}
-    .floating-logo img{width:56px;height:56px;border-radius:10px}
-
-    /* Beúszás */
-    .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease, transform .6s ease}
-    .reveal.show{opacity:1;transform:none}
-    @media (prefers-reduced-motion: reduce){.reveal,.reveal.show{transition:none;transform:none;opacity:1}}
+    /* Lebegő logó */
+    .logo-stick{position:fixed;right:14px;bottom:14px;z-index:1050}
+    .logo-btn{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:12px;background:#fff;box-shadow:0 8px 20px rgba(0,0,0,.18);border:2px solid var(--line)}
+    .logo-btn img{max-width:70%;height:auto}
   </style>
 </head>
 <body>
 
   <!-- HEADER -->
-  <header class="reveal">
+  <header>
     <div class="container nav">
       <a class="brand" href="#" aria-label="Főoldal">
         <img src="logo.jpg" alt="Szőke Épker KFT. logó">
@@ -182,7 +170,7 @@
     </div>
   </header>
   <div id="hdrSpacer" aria-hidden="true"></div>
-  <!-- SZOLGÁLTATÁSAINK (ikonos kártyák) -->
+  <!-- SZOLGÁLTATÁSAINK -->
   <section id="szolgaltatasok" class="reveal">
     <div class="container">
       <div class="panel-wrap">
@@ -197,13 +185,13 @@
     </div>
   </section>
 
-  <!-- HERO – kicsi -->
+  <!-- HERO -->
   <section class="hero reveal">
     <div class="container">
       <div class="hero-card">
         <div class="hero-top">
           <img class="hero-logo" src="logo.jpg" alt="Szőke Épker KFT.">
-          <span style="font-weight:900;border:1.5px solid #222;border-radius:999px;padding:6px 10px;background:#fff;box-shadow:0 6px 14px rgba(0,0,0,.08)">Ország bármely pontján</span>
+          <span style="font-weight:900;border:2px solid #222;border-radius:999px;padding:6px 10px;background:#fff;box-shadow:0 6px 14px rgba(0,0,0,.08)">Ország bármely pontján</span>
         </div>
         <h1>Minőség kompromisszumok nélkül</h1>
         <div class="hero-cols">
@@ -216,8 +204,8 @@
               <li>Garanciális átadás, tiszta munkaterület</li>
             </ul>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-              <a href="#ajanlatkeres" style="border:1.5px solid #222;border-radius:999px;padding:8px 14px;background:#fff;color:#222;font-weight:900;box-shadow:0 10px 22px rgba(0,0,0,.10)">📨 Ingyenes ajánlatkérés</a>
-              <a href="#referenciak" style="border:1.5px solid #222;border-radius:999px;padding:8px 14px;background:#fff;color:#222;font-weight:800;box-shadow:0 6px 14px rgba(0,0,0,.08)">📷 Referenciák</a>
+              <a href="#ajanlatkeres" style="border:2px solid #222;border-radius:999px;padding:8px 14px;background:#fff;color:#222;font-weight:900;box-shadow:0 10px 22px rgba(0,0,0,.10)">📨 Ingyenes ajánlatkérés</a>
+              <a href="#referenciak" style="border:2px solid #222;border-radius:999px;padding:8px 14px;background:#fff;color:#222;font-weight:800;box-shadow:0 6px 14px rgba(0,0,0,.08)">📷 Referenciák</a>
             </div>
           </div>
           <div><img class="hero-img" src="hero.jpg" alt="Építkezés"></div>
@@ -225,19 +213,19 @@
       </div>
     </div>
   </section>
-  <!-- REFERENCIÁK (képek lightboxhoz .lb osztállyal) -->
+  <!-- REFERENCIÁK -->
   <section id="referenciak" class="reveal">
     <div class="container">
       <div class="panel-wrap">
         <h2>Referenciák</h2>
         <p style="color:var(--muted);margin-top:0">Válogatás elkészült munkáinkból.</p>
         <div class="gallery">
-          <img class="lb" src="kep1.jpg" alt="Referencia 1" loading="lazy" decoding="async">
-          <img class="lb" src="kep2.jpg" alt="Referencia 2" loading="lazy" decoding="async">
-          <img class="lb" src="kep3.jpg" alt="Referencia 3" loading="lazy" decoding="async">
-          <img class="lb" src="kep4.jpg" alt="Referencia 4" loading="lazy" decoding="async">
-          <img class="lb" src="kep5.jpg" alt="Referencia 5" loading="lazy" decoding="async">
-          <img class="lb" src="kep6.png" alt="Grafika"  loading="lazy" decoding="async">
+          <img class="lb" src="kep1.jpg" alt="Referencia 1">
+          <img class="lb" src="kep2.jpg" alt="Referencia 2">
+          <img class="lb" src="kep3.jpg" alt="Referencia 3">
+          <img class="lb" src="kep4.jpg" alt="Referencia 4">
+          <img class="lb" src="kep5.jpg" alt="Referencia 5">
+          <img class="lb" src="kep6.png" alt="Referencia 6">
         </div>
       </div>
     </div>
@@ -249,15 +237,9 @@
       <div class="panel-wrap">
         <h2>Rólunk</h2>
         <div class="card">
-          <p style="margin-top:0">
-            A Szőke Épker Kft. több éves tapasztalattal vállal <b>teljes körű generálkivitelezést</b>, családi házak és társasházak építését,
-            <b>felújítást</b>, <b>homlokzati szigetelést</b>, <b>térkövezést</b> és <b>burkolást</b>, <b>festést</b>.
-          </p>
-          <p>
-            Célunk, hogy ügyfeleink elégedetten vehessék birtokba ingatlanjukat: a tervezéstől a kulcsátadásig számíthat ránk.
-            Nincsenek rejtett költségek vagy csúszó határidők — <b>amit ígérünk, azt megcsináljuk</b>.
-          </p>
-          <ul style="margin:0; padding-left:18px; color:var(--muted)">
+          <p>A Szőke Épker Kft. több éves tapasztalattal vállal teljes körű generálkivitelezést, családi házak és társasházak építését, felújításokat, homlokzati szigetelést, térkövezést és burkolást, festést.</p>
+          <p>Célunk, hogy ügyfeleink elégedetten vehessék birtokba ingatlanjukat: a tervezéstől a kulcsátadásig számíthat ránk.</p>
+          <ul style="margin:0;padding-left:18px;color:var(--muted)">
             <li>Megbízható, összeszokott csapat</li>
             <li>Pontos, átlátható ajánlatadás</li>
             <li>Határidő-garancia, tiszta munkaterület</li>
@@ -273,21 +255,14 @@
       <div class="panel-wrap">
         <h2>Kérjen ingyenes ajánlatot</h2>
         <div class="card">
-          <p style="margin-top:0;color:var(--muted)">
-            Töltse ki az alábbi mezőket, üzenete biztonságosan továbbításra kerül.
-          </p>
-
-          <form name="ajanlat" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <form name="ajanlat" method="POST" data-netlify="true">
             <input type="hidden" name="form-name" value="ajanlat">
-            <p style="display:none"><label>Ne töltse ki: <input name="bot-field"></label></p>
-
             <input required name="Név" placeholder="Név">
             <input required name="Telefon" placeholder="Telefon">
             <input required type="email" name="Email" placeholder="E-mail" style="grid-column:1/-1">
             <input name="Cím" placeholder="Cím (opcionális)" style="grid-column:1/-1">
             <textarea required name="Üzenet" placeholder="Munka rövid leírása" rows="4" style="grid-column:1/-1"></textarea>
-
-            <button type="submit">📨 Ajánlatkérés elküldése</button>
+            <button class="btn" type="submit">📨 Ajánlatkérés elküldése</button>
           </form>
         </div>
       </div>
@@ -302,20 +277,18 @@
         <div class="card">
           <div class="grid cols-2">
             <div>
-              <p style="margin-top:0"><b>Cím:</b> 4100 Berettyóújfalu, Dózsa György utca 6 1/3</p>
+              <p><b>Cím:</b> 4100 Berettyóújfalu, Dózsa György utca 6 1/3</p>
               <p><b>Telefon:</b> <a href="tel:+36706070675">+36 70 607 0675</a></p>
               <p><b>E-mail:</b> <a href="mailto:info@szoke-epker.com">info@szoke-epker.com</a></p>
-              <p><b>Web:</b> <a href="https://szoke-epker.com" target="_blank" rel="noopener">szoke-epker.com</a></p>
-              <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-                <a href="tel:+36706070675" style="border:1.5px solid #222;border-radius:999px;padding:8px 14px;background:#fff;color:#222;font-weight:800;box-shadow:0 6px 14px rgba(0,0,0,.08)">📞 Hívás</a>
-                <a href="#ajanlatkeres" style="border:1.5px solid #222;border-radius:999px;padding:8px 14px;background:#fff;color:#222;font-weight:800;box-shadow:0 6px 14px rgba(0,0,0,.08)">✉️ Üzenet küldése</a>
-                <a href="https://www.facebook.com/szokeepkerkft" target="_blank" rel="noopener" style="border:1.5px solid #222;border-radius:999px;padding:8px 14px;background:#fff;color:#222;font-weight:800;box-shadow:0 6px 14px rgba(0,0,0,.08)">🔗 Facebook</a>
+              <p><b>Web:</b> <a href="https://szoke-epker.com">szoke-epker.com</a></p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+                <a class="btn" href="tel:+36706070675">📞 Hívás</a>
+                <a class="btn outline" href="#ajanlatkeres">✉️ Üzenet küldése</a>
+                <a class="btn outline" href="https://facebook.com/szokeepkerkft" target="_blank">🔗 Facebook</a>
               </div>
             </div>
             <div>
-              <iframe class="map"
-                src="https://www.google.com/maps?q=Beretty%C3%B3%C3%BAjfalu%20D%C3%B3zsa%20Gy%C3%B6rgy%20utca%206%201%2F3&output=embed"
-                loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen title="Irodánk térképe"></iframe>
+              <iframe class="map" src="https://www.google.com/maps?q=Beretty%C3%B3%C3%BAjfalu%20D%C3%B3zsa%20Gy%C3%B6rgy%20utca%206%201%2F3&output=embed" loading="lazy"></iframe>
             </div>
           </div>
         </div>
@@ -323,50 +296,51 @@
     </div>
   </section>
 
-  <!-- LEBEGŐ GOMBOK – Facebook (jobb közép) + céglogó (jobb alsó, kocka) -->
-  <div class="fb-stick" aria-hidden="false">
-    <a class="fb-btn" href="https://www.facebook.com/szokeepkerkft" target="_blank" rel="noopener" aria-label="Facebook oldalunk">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
+  <!-- LEBEGŐ FACEBOOK -->
+  <div class="fb-stick">
+    <a class="fb-btn" href="https://facebook.com/szokeepkerkft" target="_blank" aria-label="Facebook">
+      <svg viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
     </a>
   </div>
 
-  <a class="floating-logo" href="#" aria-label="Szőke Épker KFT.">
-    <img src="logo.jpg" alt="Szőke Épker KFT.">
-  </a>
+  <!-- LEBEGŐ LOGÓ -->
+  <div class="logo-stick">
+    <div class="logo-btn"><img src="logo.jpg" alt="Szőke Épker KFT."></div>
+  </div>
   <!-- LÁBLÉC -->
-  <footer class="reveal">© 2025 Szőke Épker KFT. • Minden jog fenntartva.</footer>
+  <footer>© 2025 Szőke Épker KFT. • Minden jog fenntartva.</footer>
 
-  <!-- LIGHTBOX – képek nagyításhoz -->
+  <!-- LIGHTBOX (képek nagyításhoz) -->
   <div class="overlay" id="lightbox" aria-hidden="true" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1200">
-    <div class="modal" role="dialog" aria-label="Kép nagyítás" style="background:#fff;border:1px solid #DDD;border-radius:14px;padding:12px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.32)">
+    <div class="modal" role="dialog" aria-label="Kép nagyítás" style="background:#fff;border:2px solid var(--frame);border-radius:14px;padding:12px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.32)">
       <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px">
         <span style="opacity:.7">Kép megnyitva</span>
-        <button class="close" aria-label="Bezárás" id="closeLightbox" style="background:#fff;border:1px solid #DDD;border-radius:10px;padding:6px 10px;cursor:pointer">✕</button>
+        <button class="close" aria-label="Bezárás" id="closeLightbox" style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 10px;cursor:pointer">✕</button>
       </div>
       <img id="lbImg" src="" alt="" style="max-width:86vw;max-height:70vh;border-radius:8px;display:block">
       <div class="lb-nav" style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
-        <button id="lbPrev" style="border:1.5px solid #222;border-radius:999px;padding:6px 12px;background:#fff;color:#222;font-weight:800;cursor:pointer">◀ Előző</button>
-        <button id="lbNext" style="border:1.5px solid #222;border-radius:999px;padding:6px 12px;background:#fff;color:#222;font-weight:800;cursor:pointer">Következő ▶</button>
+        <button id="lbPrev" class="btn outline" type="button">◀ Előző</button>
+        <button id="lbNext" class="btn" type="button">Következő ▶</button>
       </div>
     </div>
   </div>
 
   <!-- SCRIPTEK -->
   <script>
-    /* 1) Header offset – spacer + scroll-padding frissítése */
+    /* Header offset – spacer + scroll-padding frissítése */
     (function(){
       function setHeaderOffset(){
         const h=document.querySelector('header'); if(!h) return;
-        const px=(h.offsetHeight||88)+'px';
+        const px=(h.offsetHeight||92)+'px';
         document.documentElement.style.setProperty('--hdrH',px);
         const sp=document.getElementById('hdrSpacer'); if(sp) sp.style.height=px;
       }
       window.addEventListener('load',setHeaderOffset);
       window.addEventListener('resize',setHeaderOffset);
-      setTimeout(setHeaderOffset,100);
+      setTimeout(setHeaderOffset,120);
     })();
 
-    /* 2) Smooth scroll + aktív menü jelölés */
+    /* Smooth scroll + aktív menü jelölés */
     document.querySelectorAll('a[href^="#"]').forEach(a=>{
       a.addEventListener('click',e=>{
         const id=a.getAttribute('href');
@@ -380,7 +354,7 @@
       const links=[...document.querySelectorAll('nav.menu a[href^="#"]')];
       const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
       function setActive(){
-        const pad=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hdrH'))||88;
+        const pad=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hdrH'))||90;
         const y=window.scrollY+pad+10; let cur=null;
         secs.forEach(s=>{ if(s.offsetTop<=y) cur=s; });
         links.forEach(a=>a.classList.toggle('is-active',cur && a.getAttribute('href')==='#'+cur.id));
@@ -389,7 +363,7 @@
       window.addEventListener('load',setActive);
     })();
 
-    /* 3) Beúszás (reveal) aktiválás */
+    /* Beúszás (reveal) aktiválás */
     (function(){
       const io='IntersectionObserver' in window
         ? new IntersectionObserver((entries)=>{
@@ -411,14 +385,14 @@
       window.addEventListener('load',boot);
     })();
 
-    /* 4) LIGHTBOX – működés (X / Előző / Következő) */
+    /* LIGHTBOX – működés (X / Előző / Következő) */
     (function(){
       const lb=document.getElementById('lightbox');
       const img=document.getElementById('lbImg');
       const btnX=document.getElementById('closeLightbox');
       const prev=document.getElementById('lbPrev');
       const next=document.getElementById('lbNext');
-      const thumbs=Array.from(document.querySelectorAll('img.lb'));
+      const thumbs=[...document.querySelectorAll('img.lb')];
       let idx=-1;
 
       function openAt(i){
@@ -450,14 +424,10 @@
       });
     })();
 
-    /* 5) Biztonsági takarítás – ha maradt régi lightbox/overlay máshonnan, tüntessük el */
+    /* Biztonsági takarítás – ha maradt idegen overlay/lightbox */
     (function(){
       document.querySelectorAll('.overlay').forEach(el=>{
         if(el.id && el.id!=='lightbox') el.remove();
-      });
-      // üres menük eltüntetése (ha valahol üres <a> maradt)
-      document.querySelectorAll('nav.menu a').forEach(a=>{
-        if(!a.textContent.trim()) a.remove();
       });
     })();
   </script>

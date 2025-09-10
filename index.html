@@ -27,9 +27,9 @@
       --shadow:0 10px 24px rgba(60,40,20,.10);
       --shadow-soft:0 8px 20px rgba(60,40,20,.08);
       --hdrH:92px;
-      --hero-img-max:180px;
-      --hero-h1-max:34px;
-      --section-y:80px; /* nagyobb szekció-táv mobilhoz is */
+      --hero-img-max:200px;  /* nagyobb hero kép */
+      --hero-h1-max:36px;    /* nagyobb hero cím */
+      --section-y:64px;      /* kevesebb levegő */
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;overflow-x:hidden}
@@ -40,7 +40,7 @@
       position:relative;
     }
 
-    /* HÁTTÉR – stabil, homályos */
+    /* Háttér */
     body::after{
       content:""; position:fixed; inset:0; z-index:-2;
       background:url('hatter32.jpg') center/cover no-repeat;
@@ -89,22 +89,19 @@
     }
     .btn:hover{transform:translateY(-1px); background:var(--accent2)}
     .btn.outline{background:#fff;color:var(--accent);border-color:var(--accent);box-shadow:0 2px 8px rgba(201,162,124,.18)}
-    .btn:focus-visible{outline:0;box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent)}
-    .btn.outline:hover{ box-shadow:0 6px 16px rgba(201,162,124,.25); }
 
     /* Panel + card */
     section{ padding: var(--section-y) 0; }
     section + section{ margin-top: 32px; }
-    .panel-wrap{background:var(--panel);border:2px solid var(--frame);border-radius:18px;box-shadow:0 10px 28px rgba(60,40,20,.08);padding:34px}
-    .card{background:linear-gradient(#fff,#fdfcf9);border:2px solid var(--frame);border-radius:16px;padding:16px;box-shadow:0 8px 20px rgba(60,40,20,.06);transition:transform .15s ease, box-shadow .15s ease}
-    .card:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(60,40,20,.10); }
+    .panel-wrap{background:var(--panel);border:2px solid var(--frame);border-radius:18px;box-shadow:0 10px 28px rgba(60,40,20,.08);padding:28px}
+    .card{background:linear-gradient(#fff,#fdfcf9);border:2px solid var(--frame);border-radius:16px;padding:16px;box-shadow:0 8px 20px rgba(60,40,20,.06)}
 
     /* Hero */
     .hero{padding:72px 0}
-    .hero-card{background:var(--panel);border:2px solid var(--frame);border-radius:20px;padding:20px;box-shadow:var(--shadow);max-width:1100px}
+    .hero-card{background:var(--panel);border:2px solid var(--frame);border-radius:20px;padding:20px;box-shadow:var(--shadow);max-width:1180px}
     .hero-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
     h1{margin:6px 0 10px;font-weight:900;font-size:clamp(22px,3vw,var(--hero-h1-max));line-height:1.14}
-    h2{margin:0 0 18px;font-size:clamp(22px,2.2vw,28px);line-height:1.2;font-weight:900;letter-spacing:.2px}
+    h2{margin:0 0 18px;font-size:clamp(22px,2.2vw,28px);line-height:1.2;font-weight:900}
     .lead{color:var(--muted);font-size:16px;line-height:1.6}
     .hero-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,340px);gap:22px;align-items:start}
     .hero-img{width:100%;aspect-ratio:1/1;max-width:var(--hero-img-max);border-radius:16px;object-fit:cover;box-shadow:0 8px 18px rgba(60,40,20,.12)}
@@ -113,91 +110,43 @@
       .hero-img{margin:auto}
     }
 
-    /* Szolgáltatások – alapból 2 oszlop, nagyon kis telón 1 */
+    /* Szolgáltatások */
     #szolgaltatasok .grid{
       display:grid;
       grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:26px;
+      gap:18px;
     }
-    #szolgaltatasok .card{display:flex;align-items:center;gap:14px;padding:22px 18px;font-weight:800}
+    #szolgaltatasok .card{
+      display:grid;
+      grid-template-columns:48px 1fr;
+      align-items:center;
+      gap:12px;
+      padding:16px;
+      font-size:18px;
+      line-height:1.25;
+      word-break:break-word;
+    }
     #szolgaltatasok .card::before{
-      content: attr(data-icon);
-      display:inline-flex;align-items:center;justify-content:center;font-size:20px;width:44px;height:44px;border-radius:999px;
-      background:#fff;border:2px solid var(--accent);box-shadow:0 4px 10px rgba(60,40,20,.06);flex:0 0 44px;
+      grid-column:1; grid-row:1;
+      width:44px;height:44px;
+      display:flex;align-items:center;justify-content:center;
+      background:#fff;border:2px solid var(--accent);border-radius:999px;
+      box-shadow:0 4px 10px rgba(60,40,20,.06);
+      font-size:20px;
     }
     @media (max-width:380px){ #szolgaltatasok .grid{ grid-template-columns:1fr; } }
 
-    /* Galéria */
-    .gallery{display:grid;gap:20px;grid-template-columns:repeat(3,1fr)}
-    @media (max-width:900px){.gallery{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:600px){.gallery{grid-template-columns:1fr}}
-    .gallery img{width:100%;height:180px;object-fit:cover;border-radius:14px;border:2px solid var(--frame);box-shadow:0 6px 14px rgba(60,40,20,.08);cursor:pointer}
-
-    /* Ajánlatkérés */
-    #ajanlatkeres form{display:grid;gap:18px;grid-template-columns:1fr 1fr}
-    @media (max-width:768px){#ajanlatkeres form{grid-template-columns:1fr}}
-    #ajanlatkeres input,#ajanlatkeres textarea{
-      width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;
-      transition:border-color .2s, box-shadow .2s;
-    }
-    #ajanlatkeres input:focus,#ajanlatkeres textarea:focus{
-      outline:0;border-color:var(--accent);
-      box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
-    }
-
-    /* Kapcsolat */
-    .map{width:100%;height:320px;border:0;border-radius:12px}
-    footer{border-top:2px solid var(--line);padding:18px 0;text-align:center;color:var(--muted);background:rgba(255,255,255,.86)}
-    .grid.cols-2{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
-    @media (max-width:768px){ .grid.cols-2{ grid-template-columns:1fr; } }
-
-    /* Lebegő Facebook */
-    .fb-stick{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:1050}
-    .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:999px;background:#1877f2;box-shadow:0 6px 18px rgba(16,24,40,.18)}
-    .fb-btn svg{width:20px;height:20px;fill:#fff}
-
-    /* Lebegő LOGÓ */
-    .logo-stick{position:fixed;right:14px;bottom:14px;z-index:1050}
-    .logo-btn{display:inline-flex;align-items:center;justify-content:center;background:transparent !important;border:0 !important;box-shadow:none !important;padding:0;width:auto;height:auto}
-    .logo-btn img{height:84px;background:transparent !important;border:0 !important;filter: drop-shadow(0 4px 10px rgba(0,0,0,.22));cursor:pointer}
-
-    /* EXTRA: halvány elválasztó a szekciók között */
-    section:not(:first-of-type){ border-top:1px solid rgba(0,0,0,.045); }
-
-    /* --- MOBIL FEJLÉC stabilizálás (≤ 640px) --- */
-    @media (max-width: 640px){
-      header{ background: rgba(255,255,255,.95); }
-      .nav{
-        display:grid;
-        grid-template-columns: 1fr;
-        align-items:start;
-        row-gap:8px;
-        padding:8px 0;
-      }
-      .brand{ gap:8px; }
-      .brand-name{ font-size:16px; white-space:nowrap; }
-      nav.menu{
-        order:2;
-        display:flex;
-        overflow-x:auto;
-        gap:10px;
-        padding-bottom:6px;
-        -webkit-overflow-scrolling:touch;
-      }
-      nav.menu::-webkit-scrollbar{ display:none; }
-      nav.menu a{
-        flex:0 0 auto;
-        font-size:14px;
-        background:#fff;
-        border:1px solid var(--line);
-        border-radius:999px;
-        padding:6px 10px;
-        font-weight:800;
-      }
-      /* Lebegők ne takarjanak */
-      .fb-stick{ right:10px; bottom:92px; top:auto; transform:none; }
-      .logo-stick{ right:10px; bottom:12px; }
-      .logo-btn img{ height:64px; }
+    /* Mobil fejléc */
+    @media (max-width:640px){
+      header{ background:rgba(255,255,255,.95); }
+      .nav{display:grid;grid-template-columns:1fr;row-gap:8px;padding:8px 0}
+      .brand-name{font-size:16px;white-space:nowrap}
+      nav.menu{order:2;display:flex;overflow-x:auto;gap:10px;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+      nav.menu::-webkit-scrollbar{display:none}
+      nav.menu a{flex:0 0 auto;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-weight:800}
+      .fb-stick{right:10px;bottom:92px;top:auto;transform:none}
+      .logo-stick{right:10px;bottom:12px}
+      .logo-btn img{height:64px}
     }
   </style>
 </head>
@@ -271,12 +220,12 @@
         <h2>Referenciák</h2>
         <p style="color:var(--muted);margin-top:0">Válogatás elkészült munkáinkból.</p>
         <div class="gallery">
-          <img class="lb" src="kep1.jpg" alt="Referencia 1" loading="lazy">
-          <img class="lb" src="kep2.jpg" alt="Referencia 2" loading="lazy">
-          <img class="lb" src="kep3.jpg" alt="Referencia 3" loading="lazy">
-          <img class="lb" src="kep4.jpg" alt="Referencia 4" loading="lazy">
-          <img class="lb" src="kep5.jpg" alt="Referencia 5" loading="lazy">
-          <img class="lb" src="kep6.png" alt="Referencia 6" loading="lazy">
+          <img class="lb" src="kep1.jpg" alt="Referencia 1">
+          <img class="lb" src="kep2.jpg" alt="Referencia 2">
+          <img class="lb" src="kep3.jpg" alt="Referencia 3">
+          <img class="lb" src="kep4.jpg" alt="Referencia 4">
+          <img class="lb" src="kep5.jpg" alt="Referencia 5">
+          <img class="lb" src="kep6.png" alt="Referencia 6">
         </div>
       </div>
     </div>
@@ -329,13 +278,13 @@
           <div class="grid cols-2">
             <div>
               <p><b>Cím:</b> 4100 Berettyóújfalu, Dózsa György utca 6 1/3</p>
-              <p><b>Telefon:</b> <a href="tel:+36706070675" rel="noopener">+36 70 607 0675</a></p>
+              <p><b>Telefon:</b> <a href="tel:+36706070675">+36 70 607 0675</a></p>
               <p><b>E-mail:</b> <a href="mailto:info@szoke-epker.com">info@szoke-epker.com</a></p>
-              <p><b>Web:</b> <a href="https://szoke-epker.com" target="_blank" rel="noopener">szoke-epker.com</a></p>
+              <p><b>Web:</b> <a href="https://szoke-epker.com" target="_blank">szoke-epker.com</a></p>
               <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
                 <a class="btn" href="tel:+36706070675">📞 Hívás</a>
                 <a class="btn outline" href="#ajanlatkeres">✉️ Üzenet küldése</a>
-                <a class="btn outline" href="https://facebook.com/szokeepkerkft" target="_blank" rel="noopener">🔗 Facebook</a>
+                <a class="btn outline" href="https://facebook.com/szokeepkerkft" target="_blank">🔗 Facebook</a>
               </div>
             </div>
             <div>
@@ -349,7 +298,7 @@
 
   <!-- LEBEGŐ FACEBOOK -->
   <div class="fb-stick">
-    <a class="fb-btn" href="https://facebook.com/szokeepkerkft" target="_blank" rel="noopener" aria-label="Facebook">
+    <a class="fb-btn" href="https://facebook.com/szokeepkerkft" target="_blank" aria-label="Facebook">
       <svg viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>
     </a>
   </div>
@@ -362,22 +311,7 @@
   <!-- LÁBLÉC -->
   <footer>© 2025 Szőke Épker KFT. • Minden jog fenntartva.</footer>
 
-  <!-- LIGHTBOX -->
-  <div class="overlay" id="lightbox" aria-hidden="true" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1200">
-    <div class="modal" role="dialog" aria-label="Kép nagyítás" style="background:#fff;border:2px solid var(--frame);border-radius:14px;padding:12px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.32)">
-      <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px">
-        <span style="opacity:.7">Kép megnyitva</span>
-        <button class="close" aria-label="Bezárás" id="closeLightbox" style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 10px;cursor:pointer">✕</button>
-      </div>
-      <img id="lbImg" src="" alt="" style="max-width:86vw;max-height:70vh;border-radius:8px;display:block">
-      <div class="lb-nav" style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
-        <button id="lbPrev" class="btn outline" type="button">◀ Előző</button>
-        <button id="lbNext" class="btn" type="button">Következő ▶</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCRIPTEK -->
+  <!-- SCRIPT -->
   <script>
     (function(){
       function setHeaderOffset(){
@@ -435,7 +369,7 @@
       window.addEventListener('load',boot);
     })();
 
-    /* LIGHTBOX */
+    /* Lightbox */
     (function(){
       const lb=document.getElementById('lightbox');
       const img=document.getElementById('lbImg');
@@ -445,21 +379,14 @@
       const thumbs=[...document.querySelectorAll('img.lb')];
       let idx=-1;
 
-      function openAt(i){
-        if(i<0||i>=thumbs.length) return;
+      function openAt(i){ if(i<0||i>=thumbs.length) return;
         idx=i; img.src=thumbs[idx].src;
         lb.style.display='flex'; lb.setAttribute('aria-hidden','false');
-        document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden';
-      }
-      function close(){
-        lb.style.display='none'; lb.setAttribute('aria-hidden','true');
-        img.src=''; document.documentElement.style.overflow=''; document.body.style.overflow='';
-      }
-      function step(d){
-        if(!thumbs.length) return;
-        idx=(idx+d+thumbs.length)%thumbs.length;
-        img.src=thumbs[idx].src;
-      }
+        document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden'; }
+      function close(){ lb.style.display='none'; lb.setAttribute('aria-hidden','true');
+        img.src=''; document.documentElement.style.overflow=''; document.body.style.overflow=''; }
+      function step(d){ if(!thumbs.length) return;
+        idx=(idx+d+thumbs.length)%thumbs.length; img.src=thumbs[idx].src; }
 
       thumbs.forEach((n,i)=> n.addEventListener('click',()=>openAt(i)));
       btnX?.addEventListener('click',close);
@@ -471,13 +398,6 @@
         if(e.key==='Escape') close();
         if(e.key==='ArrowLeft') step(-1);
         if(e.key==='ArrowRight') step(1);
-      });
-    })();
-
-    /* Biztonsági takarítás */
-    (function(){
-      document.querySelectorAll('.overlay').forEach(el=>{
-        if(el.id && el.id!=='lightbox') el.remove();
       });
     })();
   </script>

@@ -240,6 +240,49 @@
       .hero{ padding: 92px 0 86px !important; } /* nyugodtabb ritmus */
       .hero-card{ padding:22px !important; }
     }
+
+    /* =========================================
+       FESZESÍTŐ PATCH (óvatos, visszafogott módosítások)
+       – minden más marad érintetlen
+       ========================================= */
+    :root{
+      --section-y: 52px;           /* 60 → 52px (kb. -13%) */
+      --hero-img-max: 172px;       /* 180 → 172px (kb. -4%) */
+      --hero-h1-max: 33px;         /* 34 → 33px */
+    }
+    .nav{ gap:12px; padding:8px 0; }
+    .menu{ gap:10px; }
+    .btn{ padding:10px 14px; border-radius:12px; }
+    .panel-wrap{ padding:28px; }
+    .card{ padding:14px; }
+    .hero{ padding:64px 0; }
+    .hero-card{ padding:18px; }
+    .hero-top{ gap:10px; margin-bottom:6px; }
+    h1{ margin:4px 0 8px; line-height:1.12; }
+    h2{ margin:0 0 14px; }
+    .lead{ line-height:1.5; }
+    .hero-cols{ gap:18px; }
+    #szolgaltatasok .grid{ gap:20px; }
+    #szolgaltatasok .card{ padding:18px 14px; gap:12px; }
+    .gallery{ gap:16px; }
+    .gallery img{ height:170px; }
+    #ajanlatkeres form{ gap:14px; }
+    #ajanlatkeres input,#ajanlatkeres textarea{ padding:11px 12px; }
+    .grid.cols-2{ gap:22px; }
+    footer{ padding:14px 0; }
+
+    /* Mobilon még egy fokkal szorosabb */
+    @media (max-width:640px){
+      .container{ padding:0 14px; }
+      .panel-wrap{ padding:22px; }
+      .card{ padding:12px; }
+      .hero{ padding:56px 0; }
+      .hero-card{ padding:16px; }
+      #szolgaltatasok .grid{ gap:12px; }
+      .gallery{ gap:14px; }
+      .gallery img{ height:160px; }
+      #ajanlatkeres form{ gap:12px; }
+    }
   </style>
 </head>
 <body>

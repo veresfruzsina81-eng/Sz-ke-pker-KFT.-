@@ -199,6 +199,39 @@
       .logo-stick{ right:10px; bottom:12px; }
       .logo-btn img{ height:64px; }
     }
+
+    /* ===========================
+       FIX #1 – Szolgáltatások mobilon: kisebb levegő, de ne tapadjon
+       =========================== */
+    @media (max-width: 480px){
+      /* panel belső padding csökkentése */
+      #szolgaltatasok .panel-wrap{ padding: 18px !important; }
+      /* rács sűrítés, de marad 2 oszlop */
+      #szolgaltatasok .grid{
+        grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+        gap: 10px !important; /* közepes távolság – nem egybe, nem túl levegős */
+      }
+      /* kártya tartalom szorosabb */
+      #szolgaltatasok .card{
+        padding: 12px 10px !important;
+        gap: 10px !important;
+      }
+      #szolgaltatasok .card::before{
+        width:40px; height:40px; flex:0 0 40px; font-size:18px;
+      }
+    }
+
+    /* ===========================
+       FIX #2 – Hero mobilon: picit nagyobb, de nem teljes
+       =========================== */
+    @media (max-width: 480px){
+      :root{
+        --hero-img-max: 200px;    /* kicsit nagyobb kép */
+        --hero-h1-max: 36px;      /* kicsit nagyobb cím */
+      }
+      .hero{ padding: 88px 0 84px !important; } /* finom emelés, nem teljes képernyő */
+      .hero-card{ padding: 22px !important; }
+    }
   </style>
 </head>
 <body>
@@ -264,6 +297,7 @@
       </div>
     </div>
   </section>
+
   <!-- REFERENCIÁK -->
   <section id="referenciak" class="reveal">
     <div class="container">

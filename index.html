@@ -29,7 +29,7 @@
       --hdrH:92px;
       --hero-img-max:180px;
       --hero-h1-max:34px;
-      --section-y:80px;
+      --section-y:60px; /* KORÁBBI 80px -> összehúzva minden szekció */
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;overflow-x:hidden}
@@ -40,7 +40,7 @@
       position:relative;
     }
 
-    /* HÁTTÉR */
+    /* HÁTTÉR – stabil, homályos */
     body::after{
       content:""; position:fixed; inset:0; z-index:-2;
       background:url('hatter32.jpg') center/cover no-repeat;
@@ -200,6 +200,11 @@
       .logo-btn img{ height:64px; }
     }
 
+    /* ===== Globális szekciószűkítés mobilon ===== */
+    @media (max-width: 480px){
+      section{ padding:40px 0 !important; } /* minden menüpont alatti rész kompaktabb */
+    }
+
     /* ===========================
        FIX #1 – Szolgáltatások mobilon: még szorosabb + stabil tördelés
        =========================== */
@@ -221,19 +226,18 @@
       #szolgaltatasok .card::before{
         width:38px; height:38px; flex:0 0 38px; font-size:17px;
       }
-      /* picit kisebb szöveg, hogy ne törjön csúnyán */
       #szolgaltatasok .card{ font-size:14px; line-height:1.25; }
     }
 
     /* ===========================
-       FIX #2 – Hero mobilon: egy hangyányit lejjebb és a kép kicsit nagyobb
+       FIX #2 – Hero mobilon: lejjebb és a kép kicsit nagyobb
        =========================== */
     @media (max-width: 480px){
       :root{
-        --hero-img-max: 190px;   /* csak picit nagyobb a kép */
+        --hero-img-max: 190px;   /* kicsit nagyobb a kép */
         --hero-h1-max: 36px;
       }
-      .hero{ padding: 92px 0 86px !important; } /* lejjebb, nyugodtabb ritmus */
+      .hero{ padding: 92px 0 86px !important; } /* nyugodtabb ritmus */
       .hero-card{ padding:22px !important; }
     }
   </style>

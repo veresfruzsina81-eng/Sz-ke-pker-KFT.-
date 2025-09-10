@@ -21,14 +21,14 @@
       --accent:#2563eb; --accent2:#f5a524;
       --border:#d7e0ea; --frame:#aebfda; --frame-strong:#94a8d8;
       --shadow:0 10px 24px rgba(16,24,40,.10); --shadow-soft:0 8px 20px rgba(16,24,40,.08);
-      --hdrH:92px; /* JS pontosítja valós magasságra */
+      --hdrH:92px; /* JS pontosítja */
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;overflow-x:hidden}
     body{
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text); background:var(--page); position:relative; -webkit-tap-highlight-color:transparent;
-      padding-top:var(--hdrH);
+      /* padding-top-t a spacer váltja, itt NINCS padding */
     }
     html{ scroll-padding-top:var(--hdrH); }
 
@@ -60,6 +60,9 @@
       box-shadow:0 10px 24px rgba(16,24,40,.06);
       backdrop-filter:saturate(120%) blur(6px);
     }
+    /* Spacer: a header valós magasságának megfelelő helyet foglal el */
+    #hdrSpacer{ height:var(--hdrH); }
+
     .nav{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:10px 0; flex-wrap:wrap; }
     .brand{display:flex;align-items:center;gap:10px;min-width:0}
     .brand img{
@@ -90,7 +93,7 @@
       nav.menu::-webkit-scrollbar{display:none}
       nav.menu > a, nav.menu > .btn, nav.menu > .btn.outline{
         background:#fff; color:#0b1220; border:2px solid var(--frame);
-        border-radius:999px; padding:7px 10px; font-size:13.5px; line-height:1.05;
+        border-radius:999px; padding:6px 10px; font-size:13px; line-height:1.05;
         white-space:nowrap; flex:0 0 auto; box-shadow:0 4px 10px rgba(16,24,40,.06);
       }
       nav.menu > .btn{ border-color:var(--accent); color:#0b1220; background:#fff }
@@ -141,7 +144,7 @@
       display:flex;align-items:center;gap:12px;text-align:left;padding:18px 16px;font-weight:800;font-size:17px;
       background:linear-gradient(#ffffff,#fbfdff);
     }
-    /* IKONBUBORÉKOK: sötét kör + kék keret */
+    /* IKONBUBORÉKOK: sötét kör + kék keret (kontrasztos) */
     #szolgaltatasok .card::before{
       content: attr(data-icon);
       display:inline-flex; align-items:center; justify-content:center;
@@ -193,7 +196,7 @@
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.68);display:none;align-items:flex-start;justify-content:center;z-index:2000;padding:12px}
     .overlay.show{display:flex}
     .overlay .modal{ margin-top:calc(var(--hdrH) + 8px); }
-    .modal{background:#fff;border:3px solid var(--frame);border-radius:16px;max-width:min(1000px,96vw);width:100%;padding:12px;box-shadow:0 14px 36px rgba(16,24,40,.16); max-height:calc(100vh - var(--hdrH) - 24px); overflow:auto;}
+    .modal{background:#fff;border:3px solid var(--frame);border-radius:16px;max-width:min(1000px,96vw);width:100%;padding:12px;box-shadow:0 14px 36px rgba(0,0,0,.16); max-height:calc(100vh - var(--hdrH) - 24px); overflow:auto;}
     .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px; position:sticky; top:0; background:#fff; padding-bottom:6px; z-index:1;}
     .close{background:transparent;border:none;color:var(--text);font-size:28px;line-height:1;cursor:pointer}
     #lbImg{width:100%;max-height:calc(100vh - var(--hdrH) - 100px);object-fit:contain;border-radius:12px}
@@ -233,6 +236,8 @@
       </nav>
     </div>
   </header>
+  <!-- FIX: valódi hely a headernek -->
+  <div id="hdrSpacer" aria-hidden="true"></div>
 
   <!-- SZOLGÁLTATÁSOK -->
   <section id="szolgaltatasok" class="reveal">
@@ -465,13 +470,15 @@
 
   <!-- SCRIPT-ek -->
   <script>
-    /* Fejléc valós magassága -> scroll-padding és body padding */
+    /* Fejléc valós magassága -> spacer + scroll-padding */
     (function(){
       function setHeaderOffset(){
         const h = document.querySelector('header');
         if(!h) return;
         const px = (h.offsetHeight||92) + 'px';
         document.documentElement.style.setProperty('--hdrH', px);
+        const sp = document.getElementById('hdrSpacer');
+        if (sp) sp.style.height = px;
       }
       window.addEventListener('load', setHeaderOffset);
       window.addEventListener('resize', setHeaderOffset);

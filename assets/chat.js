@@ -1,5 +1,5 @@
 // assets/chat.js
-// Felső üdvözlés/hint nélkül. Intent-alapú válaszok, quick reply-k, kényelmi vezérlés.
+// NYITÁSKORI ÜDVÖZLÉS VISSZAKAPCSOLVA. Intent-alapú válaszok, quick reply-k.
 
 (function(){
   const box   = document.getElementById('aiChat');
@@ -16,9 +16,14 @@
     box.setAttribute('aria-hidden','false');
     input?.focus();
 
-    // Ha maradt hint elem a HTML-ben, töröljük
-    const hint = box.querySelector('.ai-chat__hint');
-    if (hint) hint.remove();
+    // Üdvözlő üzenet (egyszer jelenjen meg)
+    if (!box._greeted){
+      addBubble(
+        "A chat csak Szőke Épker Kft. üzleti kérdésekre válaszol (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat).",
+        "bot"
+      );
+      box._greeted = true;
+    }
   }
   function close(){
     box.classList.remove('open');

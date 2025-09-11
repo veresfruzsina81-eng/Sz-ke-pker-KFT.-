@@ -135,7 +135,7 @@
     /* 2×2 marad; csak 380px alatt tör 1 oszlopra */
     @media (max-width:380px){
       #szolgaltatasok .grid{ grid-template-columns:1fr; }
-      #szolgaltatasok .card{ font-size:15px; gap:10px; } /* picit kisebb betű szűk kijelzőn */
+      #szolgaltatasok .card{ font-size:15px; gap:10px; }
     }
 
     /* Galéria */
@@ -163,7 +163,7 @@
     @media (max-width:768px){ .grid.cols-2{ grid-template-columns:1fr; } }
 
     /* Lebegők */
-    .fb-stick{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:1205} /* z-index fölé emelve a chatnek */
+    .fb-stick{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:1205}
     .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:999px;background:#1877f2;box-shadow:0 6px 18px rgba(16,24,40,.18)}
     .fb-btn svg{width:20px;height:20px;fill:#fff}
 
@@ -173,7 +173,7 @@
 
     section:not(:first-of-type){ border-top:1px solid rgba(0,0,0,.045); }
 
-    /* Mobil fejléchez finomítások + FB gomb új helyzete */
+    /* Mobil fejléchez finomítások + FB gomb helyzete */
     @media (max-width: 640px){
       header{ background: rgba(255,255,255,.95); }
       .nav{
@@ -191,8 +191,8 @@
         flex:0 0 auto; font-size:14px; background:#fff; border:1px solid var(--line);
         border-radius:999px; padding:6px 10px; font-weight:800;
       }
-      /* FIX: FB ikon feljebb, közelebb a középhez, ne takarja a chatet */
-      .fb-stick{ right:10px; top:40%; bottom:auto; transform:translateY(-40%); }
+      /* FIX: FB ikon minimálisan lejjebb, hogy ne takarja a kártyákat */
+      .fb-stick{ right:10px; top:48%; bottom:auto; transform:translateY(-48%); }
       .logo-stick{ right:10px; bottom:12px; }
       .logo-btn img{ height:64px; }
     }
@@ -234,18 +234,18 @@
       .logo-btn img{ height:64px; }
     }
 
-    /* ===== Chat – modernebb, kontrasztosabb ===== */
+    /* ===== Chat – gyors és határozott kinézet ===== */
     .ai-chat-launcher{
       position: fixed;
       right: 18px; bottom: 18px;
       width: 56px; height: 56px;
       border-radius: 50%;
-      backdrop-filter: blur(10px);
-      background: rgba(255,255,255,.3);
-      border: 1px solid rgba(0,0,0,.08);
-      box-shadow: 0 10px 30px rgba(0,0,0,.2);
+      background:#ffffff;
+      border: 1px solid rgba(0,0,0,.12);
+      box-shadow: 0 10px 26px rgba(0,0,0,.22);
       display: grid; place-items: center;
-      cursor: pointer; z-index: 1204; /* FB alatt picivel, de elég magas */
+      cursor: pointer; z-index: 1204;
+      font-size: 22px; line-height: 1;
     }
     .ai-chat{
       position: fixed;
@@ -254,26 +254,27 @@
       max-height: min(72vh, 720px);
       display: none; flex-direction: column;
       overflow: hidden;
-      border-radius: 18px;
-      background: rgba(255,255,255,.92);       /* FIX: látványosabb fehér háttér */
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(0,0,0,.10);
-      box-shadow: 0 22px 60px rgba(0,0,0,.28);  /* FIX: erősebb árnyék */
-      z-index: 1206;                            /* FB felett */
+      border-radius: 16px;
+      background:#ffffff;                 /* FIX: nincs blur → gyorsabb */
+      border: 1px solid rgba(0,0,0,.12);
+      box-shadow: 0 18px 48px rgba(0,0,0,.28);
+      z-index: 1206;
+      contain: layout paint;              /* FIX: teljesítmény */
+      transform: translateZ(0);
     }
     .ai-chat.is-open{ display: flex; }
     .ai-chat__head{
       padding: 12px 14px; font-weight: 900;
       border-bottom: 1px solid rgba(0,0,0,.08);
       display:flex;align-items:center;justify-content:space-between;
-      background: linear-gradient(180deg,#ffffff,#f7f7f7);
+      background:#f7f7f7;
     }
-    .ai-chat__body{ padding: 12px; overflow: auto; }
+    .ai-chat__body{ padding: 12px; overflow: auto; -webkit-overflow-scrolling: touch; }
     .ai-chat__hint{
       font-size: 14px; opacity: .92; background:#fff; border:1px solid rgba(0,0,0,.08);
       padding:10px 12px; border-radius:12px;
     }
-    /* Alap „buborék” stílus bármilyen div/p bejegyzésre, ha a chat.js nem ad saját osztályt */
+    /* buborék stílus */
     .ai-chat__body > div, .ai-chat__body > p{
       max-width: 85%;
       margin: 8px 0;
@@ -282,11 +283,12 @@
       border:1px solid rgba(0,0,0,.08);
       background:#ffffff;
       box-shadow: 0 4px 12px rgba(0,0,0,.06);
+      word-break: break-word;
     }
     .ai-chat__body .from-bot{ background:#f3f6ff; }
     .ai-chat__body .from-user{ background:#eaf8ef; margin-left:auto; }
     .ai-chat__input{
-      display:flex;gap:8px;padding:10px;border-top:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.95)
+      display:flex;gap:8px;padding:10px;border-top:1px solid rgba(0,0,0,.08);background:#fff
     }
     .ai-chat__input input{
       flex:1;border:1px solid rgba(0,0,0,.12);border-radius:12px;padding:10px 12px;background:#fff;outline:none
@@ -295,7 +297,22 @@
       border:0;border-radius:12px;padding:10px 14px;font-weight:800;background:#2a6df4;color:#fff;cursor:pointer
     }
 
-    /* ===== Üdvözlő „hullámos” toast ===== */
+    /* ===== Kis tooltip a chat gomb fölött ===== */
+    #chat-tip{
+      position:fixed; right:18px; bottom:82px; z-index:1300; display:none;
+      max-width:min(320px, 86vw);
+    }
+    #chat-tip .bubble{
+      position:relative; background:#fff; border:1px solid rgba(0,0,0,.12);
+      border-radius:14px; padding:10px 12px; box-shadow:0 10px 26px rgba(0,0,0,.18); font-size:14px;
+    }
+    #chat-tip .bubble:after{
+      content:""; position:absolute; right:18px; bottom:-8px; width:14px; height:14px;
+      background:#fff; border-left:1px solid rgba(0,0,0,.12); border-bottom:1px solid rgba(0,0,0,.12);
+      transform:rotate(45deg);
+    }
+
+    /* ===== Üdvözlő „hullámos” toast (marad) ===== */
     #hello-toast{ position:fixed; inset:0; display:none; place-items:start center; z-index:1300; padding-top:18px; }
     #hello-toast .hello-card{
       position:relative; max-width:min(520px,92vw); color:#1a1f2b; padding:16px 18px; background:#fff;
@@ -493,6 +510,12 @@
   </div>
   <button class="ai-chat-launcher" id="aiChatOpen" aria-label="Chat megnyitása">💬</button>
 
+  <!-- Kis tooltip a chat gomb fölött -->
+  <!-- FIX -->
+  <div id="chat-tip" aria-hidden="true">
+    <div class="bubble">Szia! Ha segítség kell, itt vagyok — kérdezz bátran!</div>
+  </div>
+
   <!-- LIGHTBOX -->
   <div class="overlay" id="lightbox" aria-hidden="true" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1200">
     <div class="modal" role="dialog" aria-label="Kép nagyítás" style="background:#fff;border:2px solid var(--frame);border-radius:14px;padding:12px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.32)">
@@ -508,7 +531,7 @@
     </div>
   </div>
 
-  <!-- Üdvözlő toast -->
+  <!-- Üdvözlő toast (hullámos) -->
   <div id="hello-toast" aria-hidden="true">
     <div class="hello-card">
       <button class="hello-x" aria-label="Bezárás">×</button>
@@ -627,17 +650,20 @@
       const openBtn = document.getElementById('aiChatOpen');
       const panel   = document.getElementById('aiChat');
       const closeBtn= document.getElementById('aiChatClose');
-      const body    = document.getElementById('aiChatBody');
+      const bodyEl  = document.getElementById('aiChatBody');
       if(!openBtn || !panel) return;
 
       const open  = ()=>{
         panel.classList.add('is-open');
         panel.setAttribute('aria-hidden','false');
-        if(body && body.children.length === 1){ // csak a hint van
+        // üdvözlő bejegyzés csak egyszer
+        if(bodyEl && !panel.dataset.greeted){
           const b = document.createElement('div');
           b.className = 'from-bot';
-          b.textContent = 'Szia! Ha segítség kell, itt vagyok — írja meg röviden a kérdést (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat).';
-          body.appendChild(b);
+          b.textContent = 'Szia! Írja meg röviden a kérdést (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat).';
+          bodyEl.appendChild(b);
+          panel.dataset.greeted = '1';
+          bodyEl.scrollTop = bodyEl.scrollHeight;
         }
       };
       const close = ()=>{
@@ -648,18 +674,36 @@
       closeBtn?.addEventListener('click', close);
     })();
 
-    /* Üdvözlő „hullámos” toast – munkamenetenként egyszer (sessionStorage) */
+    /* FIX: Chat tooltip a gomb fölött – munkamenetenként egyszer, 6 mp-ig */
     (function(){
-      const KEY='helloToastSeenSession';
+      const KEY='chatTipSeen';
+      const tip=document.getElementById('chat-tip');
+      const btn=document.getElementById('aiChatOpen');
+      if(!tip || !btn) return;
+      try{
+        if(!sessionStorage.getItem(KEY)){
+          tip.style.display='block';
+          sessionStorage.setItem(KEY,'1');
+          setTimeout(()=>{ tip.style.display='none'; }, 6000);
+        }
+      }catch(e){
+        tip.style.display='block';
+        setTimeout(()=>{ tip.style.display='none'; }, 6000);
+      }
+    })();
+
+    /* Üdvözlő „hullámos” toast – marad opcionálisan, napi egyszer */
+    (function(){
+      const KEY='helloToastSeenDate';
+      const today=new Date().toISOString().slice(0,10);
       const wrap=document.getElementById('hello-toast');
       if(!wrap) return;
       const show=()=>{ wrap.style.display='grid'; wrap.setAttribute('aria-hidden','false'); };
-      const hide=()=>{ wrap.style.display='none'; wrap.setAttribute('aria-hidden','true'); try{ sessionStorage.setItem(KEY,'1'); }catch(e){} };
+      const hide=()=>{ wrap.style.display='none'; wrap.setAttribute('aria-hidden','true'); try{ localStorage.setItem(KEY,today); }catch(e){} };
       try{
-        if(!sessionStorage.getItem(KEY)){ setTimeout(show, 700); }
+        if(localStorage.getItem(KEY)!==today){ setTimeout(show, 900); }
       }catch(e){
-        // ha privát mód miatt nem elérhető, akkor is megjelenítjük
-        setTimeout(show, 700);
+        setTimeout(show, 900);
       }
       wrap.addEventListener('click',(e)=>{ if(e.target.id==='hello-toast') hide(); });
       wrap.querySelector('.hello-x')?.addEventListener('click', hide);

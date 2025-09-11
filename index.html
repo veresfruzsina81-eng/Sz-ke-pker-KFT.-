@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
-  <!-- Chat CSS (külön fájl) -->
+  <!-- Chat CSS (külön fájl) — maradhat, de nem kötelező -->
   <link rel="stylesheet" href="assets/chat.css">
 
   <style>
@@ -124,7 +124,6 @@
     }
     #szolgaltatasok .card{
       display:flex;align-items:center;gap:14px;padding:22px 18px;font-weight:800;
-      /* FIX: ne lógjon ki hosszú szó esetén sem */
       overflow:hidden; overflow-wrap:anywhere; word-break:normal; hyphens:auto;
     }
     #szolgaltatasok .card::before{
@@ -138,13 +137,13 @@
       #szolgaltatasok .card{ font-size:15px; gap:10px; }
     }
 
-    /* Galéria */
+    /* Galéria (ha kell) */
     .gallery{display:grid;gap:20px;grid-template-columns:repeat(3,1fr)}
     @media (max-width:900px){.gallery{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:600px){.gallery{grid-template-columns:1fr}}
     .gallery img{width:100%;height:180px;object-fit:cover;border-radius:14px;border:2px solid var(--frame);box-shadow:0 6px 14px rgba(60,40,20,.08);cursor:pointer}
 
-    /* Ajánlatkérés */
+    /* Ajánlatkérés (ha kell) */
     #ajanlatkeres form{display:grid;gap:18px;grid-template-columns:1fr 1fr}
     @media (max-width:768px){#ajanlatkeres form{grid-template-columns:1fr}}
     #ajanlatkeres input,#ajanlatkeres textarea{
@@ -191,13 +190,13 @@
         flex:0 0 auto; font-size:14px; background:#fff; border:1px solid var(--line);
         border-radius:999px; padding:6px 10px; font-weight:800;
       }
-      /* FIX: FB ikon minimálisan lejjebb, hogy ne takarja a kártyákat */
+      /* FB ikon kicsit lejjebb, hogy ne érjen a kártyákhoz */
       .fb-stick{ right:10px; top:48%; bottom:auto; transform:translateY(-48%); }
       .logo-stick{ right:10px; bottom:12px; }
       .logo-btn img{ height:64px; }
     }
 
-    /* ======= KOMPAKTÍTÓ OVERRIDE (feszesebb ritmus + logó BAL alsó) ======= */
+    /* ======= KOMPAKTÍTÓ OVERRIDE ======= */
     :root{ --section-y: 30px; --hero-img-max:150px; --hero-h1-max:30px; }
     section + section{ margin-top: 8px !important; }
     .panel-wrap{ padding:14px !important; border-radius:14px !important; }
@@ -234,7 +233,7 @@
       .logo-btn img{ height:64px; }
     }
 
-    /* ===== Chat – gyors és határozott kinézet ===== */
+    /* ===== Chat – gyors, kontrasztos, akadásmentes ===== */
     .ai-chat-launcher{
       position: fixed;
       right: 18px; bottom: 18px;
@@ -255,11 +254,11 @@
       display: none; flex-direction: column;
       overflow: hidden;
       border-radius: 16px;
-      background:#ffffff;                 /* FIX: nincs blur → gyorsabb */
+      background:#ffffff;                 /* nincs blur → gyorsabb */
       border: 1px solid rgba(0,0,0,.12);
       box-shadow: 0 18px 48px rgba(0,0,0,.28);
       z-index: 1206;
-      contain: layout paint;              /* FIX: teljesítmény */
+      contain: layout paint;              /* teljesítmény */
       transform: translateZ(0);
     }
     .ai-chat.is-open{ display: flex; }
@@ -269,12 +268,12 @@
       display:flex;align-items:center;justify-content:space-between;
       background:#f7f7f7;
     }
-    .ai-chat__body{ padding: 12px; overflow: auto; -webkit-overflow-scrolling: touch; }
-    .ai-chat__hint{
-      font-size: 14px; opacity: .92; background:#fff; border:1px solid rgba(0,0,0,.08);
-      padding:10px 12px; border-radius:12px;
+    .ai-chat__body{
+      padding: 12px; overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
     }
-    /* buborék stílus */
     .ai-chat__body > div, .ai-chat__body > p{
       max-width: 85%;
       margin: 8px 0;
@@ -297,7 +296,7 @@
       border:0;border-radius:12px;padding:10px 14px;font-weight:800;background:#2a6df4;color:#fff;cursor:pointer
     }
 
-    /* ===== Kis tooltip a chat gomb fölött ===== */
+    /* Tooltip buborék a chat gomb felett */
     #chat-tip{
       position:fixed; right:18px; bottom:82px; z-index:1300; display:none;
       max-width:min(320px, 86vw);
@@ -310,22 +309,6 @@
       content:""; position:absolute; right:18px; bottom:-8px; width:14px; height:14px;
       background:#fff; border-left:1px solid rgba(0,0,0,.12); border-bottom:1px solid rgba(0,0,0,.12);
       transform:rotate(45deg);
-    }
-
-    /* ===== Üdvözlő „hullámos” toast (marad) ===== */
-    #hello-toast{ position:fixed; inset:0; display:none; place-items:start center; z-index:1300; padding-top:18px; }
-    #hello-toast .hello-card{
-      position:relative; max-width:min(520px,92vw); color:#1a1f2b; padding:16px 18px; background:#fff;
-      border-radius:20px; border:2px solid #f2e9df; box-shadow:0 16px 40px rgba(0,0,0,.18);
-      -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40"><path d="M3,7 C10,4 16,10 23,7 C30,4 36,10 43,7 C50,4 56,10 63,7 C70,4 76,10 83,7 C90,4 96,10 97,7 L97,33 C90,36 84,30 77,33 C70,36 64,30 57,33 C50,36 44,30 37,33 C30,36 24,30 17,33 C10,36 4,30 3,33 Z" fill="#000"/></svg>') center/100% 100% no-repeat;
-      animation: hello-pop .45s cubic-bezier(.2,.8,.2,1) both;
-    }
-    @keyframes hello-pop{ from{transform:translateY(-10px) scale(.96);opacity:0} to{transform:translateY(0) scale(1);opacity:1} }
-    .hello-title{ font-weight:800; font-size:20px; margin-bottom:4px; }
-    .hello-text{ font-size:15px; opacity:.9; }
-    .hello-x{
-      position:absolute; top:6px; right:8px; width:28px; height:28px; border-radius:50%;
-      border:1px solid rgba(0,0,0,.1); background:#fff; cursor:pointer; font-size:20px; line-height:1;
     }
   </style>
 </head>
@@ -501,7 +484,10 @@
       <button class="ai-chat__close" id="aiChatClose" type="button">✕</button>
     </div>
     <div class="ai-chat__body" id="aiChatBody">
-      <div class="ai-chat__hint">Üdvözöljük! A chat csak üzleti kérdésekre válaszol (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat).</div>
+      <!-- CSAK a Kft-s üzenet marad bent fixen -->
+      <div class="from-bot kft-msg">
+        A chat csak Szőke Épker Kft. üzleti kérdésekre válaszol (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat).
+      </div>
     </div>
     <form class="ai-chat__input" id="aiChatForm" autocomplete="off">
       <input id="aiChatInput" placeholder="Írja ide az üzenetet…" />
@@ -510,8 +496,7 @@
   </div>
   <button class="ai-chat-launcher" id="aiChatOpen" aria-label="Chat megnyitása">💬</button>
 
-  <!-- Kis tooltip a chat gomb fölött -->
-  <!-- FIX -->
+  <!-- Tooltip a chat gomb fölött -->
   <div id="chat-tip" aria-hidden="true">
     <div class="bubble">Szia! Ha segítség kell, itt vagyok — kérdezz bátran!</div>
   </div>
@@ -530,16 +515,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Üdvözlő toast (hullámos) -->
-  <div id="hello-toast" aria-hidden="true">
-    <div class="hello-card">
-      <button class="hello-x" aria-label="Bezárás">×</button>
-      <div class="hello-title">Szia! 👋</div>
-      <div class="hello-text">Ha segítség kell, itt vagyok — kérdezz bátran!</div>
-    </div>
-  </div>
-
   <!-- SCRIPTEK -->
   <script>
     (function(){
@@ -644,74 +619,47 @@
       });
     })();
 
-    /* Chat toggle – ha a külső chat.js nem kezeli, ez biztosítja
-       + első megnyitáskor üdvözlő buborék, ha üres a chat */
+    /* Chat toggle – NINCS automatikus extra köszöntő, csak a Kft-s üzenet marad */
     (function(){
       const openBtn = document.getElementById('aiChatOpen');
       const panel   = document.getElementById('aiChat');
       const closeBtn= document.getElementById('aiChatClose');
       const bodyEl  = document.getElementById('aiChatBody');
-      if(!openBtn || !panel) return;
+      if(!openBtn || !panel || !bodyEl) return;
 
       const open  = ()=>{
         panel.classList.add('is-open');
         panel.setAttribute('aria-hidden','false');
-        // üdvözlő bejegyzés csak egyszer
-        if(bodyEl && !panel.dataset.greeted){
-          const b = document.createElement('div');
-          b.className = 'from-bot';
-          b.textContent = 'Szia! Írja meg röviden a kérdést (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat).';
-          bodyEl.appendChild(b);
-          panel.dataset.greeted = '1';
-          bodyEl.scrollTop = bodyEl.scrollHeight;
+        // biztos ami biztos: ha valaki törölte a Kft-s bubit, pótoljuk
+        if(!bodyEl.querySelector('.kft-msg')){
+          const msg=document.createElement('div');
+          msg.className='from-bot kft-msg';
+          msg.textContent='A chat csak Szőke Épker Kft. üzleti kérdésekre válaszol (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat).';
+          bodyEl.appendChild(msg);
         }
+        requestAnimationFrame(()=>{ bodyEl.scrollTop = bodyEl.scrollHeight; });
       };
       const close = ()=>{
         panel.classList.remove('is-open');
         panel.setAttribute('aria-hidden','true');
       };
-      openBtn.addEventListener('click', open);
-      closeBtn?.addEventListener('click', close);
+      openBtn.addEventListener('click', open, {passive:true});
+      closeBtn?.addEventListener('click', close, {passive:true});
     })();
 
-    /* FIX: Chat tooltip a gomb fölött – munkamenetenként egyszer, 6 mp-ig */
+    /* Tooltip megjelenítés: betöltéskor azonnal, majd percenként */
     (function(){
-      const KEY='chatTipSeen';
       const tip=document.getElementById('chat-tip');
-      const btn=document.getElementById('aiChatOpen');
-      if(!tip || !btn) return;
-      try{
-        if(!sessionStorage.getItem(KEY)){
-          tip.style.display='block';
-          sessionStorage.setItem(KEY,'1');
-          setTimeout(()=>{ tip.style.display='none'; }, 6000);
-        }
-      }catch(e){
+      if(!tip) return;
+      function show(){
         tip.style.display='block';
-        setTimeout(()=>{ tip.style.display='none'; }, 6000);
+        setTimeout(()=>{ tip.style.display='none'; }, 6000); // 6 mp
       }
+      window.addEventListener('load', show);
+      setInterval(show, 60000); // 1 percenként ismét
     })();
 
-    /* Üdvözlő „hullámos” toast – marad opcionálisan, napi egyszer */
-    (function(){
-      const KEY='helloToastSeenDate';
-      const today=new Date().toISOString().slice(0,10);
-      const wrap=document.getElementById('hello-toast');
-      if(!wrap) return;
-      const show=()=>{ wrap.style.display='grid'; wrap.setAttribute('aria-hidden','false'); };
-      const hide=()=>{ wrap.style.display='none'; wrap.setAttribute('aria-hidden','true'); try{ localStorage.setItem(KEY,today); }catch(e){} };
-      try{
-        if(localStorage.getItem(KEY)!==today){ setTimeout(show, 900); }
-      }catch(e){
-        setTimeout(show, 900);
-      }
-      wrap.addEventListener('click',(e)=>{ if(e.target.id==='hello-toast') hide(); });
-      wrap.querySelector('.hello-x')?.addEventListener('click', hide);
-    })();
-  </script>
-
-  <!-- Netlify AJAX submit + toast (változatlan) -->
-  <script>
+    /* Netlify AJAX submit + toast (ha használod) */
     (function(){
       const form = document.forms.ajanlat;
       if(!form) return;
@@ -754,7 +702,7 @@
     })();
   </script>
 
-  <!-- Chat működés (frontend) -->
+  <!-- (opcionális) Külső chat.js, ha van saját logika -->
   <script src="assets/chat.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 // netlify/functions/ai.js
 // Netlify env: OPENAI_API_KEY
-// Visszatérés: KIZÁRÓLAG JSON { intent, reply, needed_fields, quick_replies, summary }
+// Visszatérés: JSON { intent, reply, needed_fields, quick_replies, summary }
 
 const CONTACT = {
   company: "Szőke Épker KFT.",
@@ -24,11 +24,10 @@ const cors = {
 };
 
 const SYSTEM_PROMPT = `
-Te a Szőke Épker KFT. ügyfélszolgálati asszisztense vagy. Mindig magyarul válaszolj, röviden, udvariasan, tárgyilagosan.
-Csak üzleti témákra válaszolj: ajánlatkérés, ár/árképzés, határidő/ütemezés, szolgáltatások, referencia, kapcsolat.
-Ha a kérdés nem üzleti, udvariasan jelezd, hogy a chat üzleti kérdésekre válaszol.
+Te a Szőke Épker KFT. ügyfélszolgálati asszisztense vagy. Magyarul válaszolj, udvariasan és tárgyilagosan.
+Csak üzleti témákra válaszolj: ajánlatkérés, ár/árképzés, határidő/ütemezés, szolgáltatások, referencia, kapcsolat, valamint "miért minket" jellegű kérdések.
 
-Cégadatok (használd a válaszban, ha releváns):
+Cégadatok (használd, ha releváns):
 - Telefon: +36 70 607 0675
 - E-mail: info@szoke-epker.com
 - Web: https://szoke-epker.com
@@ -37,23 +36,50 @@ Szolgáltatások: Generálkivitelezés; Homlokzati hőszigetelés; Térkövezés
 
 Kimenet MINDIG kizárólag JSON legyen, magyarázat nélkül, pontosan ebben a sémában:
 {
-  "intent": "offer|pricing|timeline|contact|reference|general|non_business",
-  "reply": "rövid, közérthető magyar válasz",
+  "intent": "offer|pricing|timeline|contact|reference|general|non_business|why_us",
+  "reply": "rövid vagy hosszabb magyar válasz (a feladat szerint)",
   "needed_fields": ["ha hiányzik adat: külön mezők (pl. 'helyszín', 'terület (m²)', 'anyag', 'határidő')"],
   "quick_replies": ["max 4 javasolt gomb"],
   "summary": "1 mondatos összegzés leadhez (ha értelmezhető)"
 }
 
-Irányelvek:
-- Stílus: rövid bekezdés vagy max. 3 bullet; felesleges sallang nélkül.
-- Ha hiányzik info az ajánlathoz, kérd be célzottan a "needed_fields"-ben.
-- Kapcsolat kérésnél add vissza tömören a telefont és e-mailt; quick_replies: ["Telefonhívás","E-mail küldése","Ajánlatkérés"].
-- Árkérésnél ha NEM derül ki a szolgáltatás: kérdezd meg: "Melyik szolgáltatás áráról szeretne érdeklődni a Szőke Épker KFT.-nél? (térkövezés, szigetelés, festés, generálkivitelezés)" és tedd a "needed_fields"-be: ["szolgáltatás"].
-- Ha a szolgáltatás meg van nevezve árkérésnél: rövid magyarázat után ZÁRJ ezzel a fix sorral:
+Árkérés:
+- Ha NEM derül ki a szolgáltatás: kérdezd meg: "Melyik szolgáltatás áráról szeretne érdeklődni a Szőke Épker KFT.-nél? (térkövezés, szigetelés, festés, generálkivitelezés)" és tedd a "needed_fields"-be: ["szolgáltatás"].
+- Ha meg van nevezve a szolgáltatás: rövid tájékoztatás a fő tényezőkről, majd ZÁRJ ezzel a fix sorral:
   "Kérjük, vegye fel a kapcsolatot velünk: Telefon: +36 70 607 0675 • E-mail: info@szoke-epker.com".
-- Határidőnél jelezd, hogy pontos ütem a felmérés után adható; kérd be a kívánt időablakot.
-- Referenciánál javasold a galéria megtekintését; kérdezd meg, melyik szolgáltatás érdekli.
-- Non-business témát udvariasan utasítsd el és adj quick_replies-t: ["Ajánlatkérés","Kapcsolat"].
+
+Kapcsolat: adj tömör kontaktot; quick_replies: ["Telefonhívás","E-mail küldése","Ajánlatkérés"].
+Határidő: jelezd, hogy pontos ütem felmérés után adható; kérd be a kívánt időablakot.
+Referencia: javasold a galériát; kérdezd meg, melyik szolgáltatás érdekli.
+Non-business: udvarias elutasítás + quick_replies: ["Ajánlatkérés","Kapcsolat"].
+
+"Miért minket?" (intent=why_us):
+- Alapértelmezetten ADJ **hosszabb** választ, strukturáltan, a 4 szolgáltatásra külön alfejezettel.
+- Minta szerkezet (markdown-szerű, de sima szövegként add vissza):
+  1) Nyitó 2–3 mondatos bekezdés, amely kiemeli: átlátható költségvetés, határidő-követés, minőség-ellenőrzés, rendezett átadás.
+  2) "Térkövezés és burkolás – miért jó választásunk?" → 3–5 pont a következőkből:
+     - rétegrend és fagyálló alapozás, teherbírás és vízelvezetés,
+     - ipari minőségű fugázás és szegélyezés,
+     - precíz szintezés és vágáskép, egységes hézag,
+     - tartósságot növelő anyagválasztás, tiszta átadás.
+  3) "Homlokzati hőszigetelés – mitől prémium?" → 3–5 pont:
+     - gyártói rendszerben dolgozunk (ragasztó, háló, alapozó, nemesvakolat),
+     - hőhídmentes csomópontok és páratechnika,
+     - dűbelezési terv és mechanikai rögzítés,
+     - rendszergarancia és dokumentált kivitelezés.
+  4) "Festés, lakásfelújítás – különbséget jelentő részletek" → 3–5 pont:
+     - pormentes takarás, precíz előkészítés (glettelés, csiszolás),
+     - prémium festékek, fedőképesség és moshatóság,
+     - tiszta munkaterület, gyors, ütemezett kivitelezés,
+     - színmintázás és anyagjavaslat.
+  5) "Generálkivitelezés – biztos kézben a projekt" → 3–5 pont:
+     - tételes, átlátható költségvetés, rejtett tételek nélkül,
+     - határidő-követés, ütemterv és rendszeres státuszjelentés,
+     - felelős műszaki irányítás, ellenőrzött alvállalkozók,
+     - jogszabályi és gyártói előírások betartása.
+  6) Záró cselekvésre ösztönzés + **KÖTELEZŐ** kontakt sor:
+     "Kérjük, vegye fel a kapcsolatot velünk: Telefon: +36 70 607 0675 • E-mail: info@szoke-epker.com".
+- Ha a felhasználó egyetlen szolgáltatásról kérdezi a "miért minket"-et (pl. „miért vagytok jók térkövezésben”), akkor csak az adott alfejezetet írd meg 4–6 erős ponttal, majd a kötelező kontakt sorral zárd.
 `;
 
 export async function handler(event) {
@@ -85,7 +111,7 @@ export async function handler(event) {
       body: JSON.stringify({
         model: "gpt-4o-mini",
         temperature: 0.3,
-        max_tokens: 400,
+        max_tokens: 900,
         messages
       })
     });
@@ -100,6 +126,15 @@ export async function handler(event) {
     let out;
     try { out = JSON.parse(text); }
     catch { out = { intent: "general", reply: text, needed_fields: [], quick_replies: [], summary: "" }; }
+
+    // Biztonság kedvéért: ha why_us és nincs a kontakt sor a végén, illesszük be.
+    if (out?.intent === "why_us" && typeof out.reply === "string") {
+      const contactLine = "Kérjük, vegye fel a kapcsolatot velünk: Telefon: +36 70 607 067 5 • E-mail: info@szoke-epker.com";
+      const clean = out.reply.replace(/\s+$/,'');
+      if (!/info@szoke-epker\.com/i.test(clean)) {
+        out.reply = clean + "\n\nKérjük, vegye fel a kapcsolatot velünk: Telefon: +36 70 607 0675 • E-mail: info@szoke-epker.com";
+      }
+    }
 
     return json(out, 200);
 

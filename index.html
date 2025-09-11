@@ -18,6 +18,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
+  <!-- Chat CSS (külön fájl) -->
+  <link rel="stylesheet" href="assets/chat.css">
+
   <style>
     :root{
       --page:#F6F1E9; --panel:rgba(255,255,255,.78);
@@ -185,7 +188,7 @@
       .logo-btn img{ height:64px; }
     }
 
-    /* ===== FESZESÍTŐ PATCH + TURBÓ + ULTRA ===== */
+    /* ======= KOMPAKTÍTÓ OVERRIDE (feszesebb ritmus + logó BAL alsó) ======= */
     :root{ --section-y: 30px; --hero-img-max:150px; --hero-h1-max:30px; }
     section + section{ margin-top: 8px !important; }
     .panel-wrap{ padding:14px !important; border-radius:14px !important; }
@@ -207,6 +210,9 @@
     .nav{ gap:6px !important; padding:4px 0 !important; }
     .menu{ gap:6px !important; }
     .btn{ padding:8px 10px !important; border-radius:10px !important; }
+
+    /* LOGÓ áthelyezése BAL alsó sarokba */
+    .logo-stick{ left:14px !important; right:auto !important; bottom:14px !important; }
     @media (max-width:640px){
       section{ padding:24px 0 !important; }
       .panel-wrap{ padding:12px !important; }
@@ -216,67 +222,9 @@
       #szolgaltatasok .grid{ gap:6px !important; }
       .gallery{ gap:6px !important; }
       .gallery img{ height:125px !important; }
+      .logo-stick{ left:10px !important; bottom:10px !important; }
+      .logo-btn img{ height:64px; }
     }
-    /* Optikai tömörítés */
-    body::before{ background: linear-gradient(180deg, rgba(246,241,233,.36), rgba(246,241,233,.52)) !important; }
-
-    /* ===== PRO UPGRADE PACK – glass, hover, anim ===== */
-    :root{
-      --radius-lg:16px; --radius-sm:12px;
-      --glass:rgba(255,255,255,.68); --glass-strong:rgba(255,255,255,.78);
-      --shadow-md:0 10px 24px rgba(60,40,20,.12);
-      --shadow-lg:0 18px 40px rgba(60,40,20,.16);
-      --ring: color-mix(in srgb, var(--accent) 38%, transparent);
-    }
-    * { transition: box-shadow .18s ease, transform .18s ease, background-color .18s ease, border-color .18s ease; }
-    @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
-
-    header{
-      background: var(--glass-strong) !important;
-      backdrop-filter: blur(10px) saturate(140%);
-      -webkit-backdrop-filter: blur(10px) saturate(140%);
-    }
-    .panel-wrap{
-      background: var(--glass) !important;
-      backdrop-filter: blur(10px) saturate(140%);
-      -webkit-backdrop-filter: blur(10px) saturate(140%);
-      border-radius: var(--radius-lg) !important;
-      box-shadow: var(--shadow-md) !important;
-    }
-    .card{
-      background: linear-gradient(#fff,#fefcf8) !important;
-      border-radius: var(--radius-sm) !important;
-      box-shadow: 0 8px 22px rgba(60,40,20,.10) !important;
-    }
-    h1,h2{ letter-spacing:.1px; }
-    .btn{ border-radius:12px !important; box-shadow:var(--shadow-md); transform:translateY(0); }
-    .btn:hover{ transform:translateY(-2px); box-shadow:var(--shadow-lg); }
-    .btn:active{ transform:translateY(0); }
-    .btn:focus-visible{ outline:0; box-shadow:0 0 0 3px var(--ring), var(--shadow-md); }
-
-    nav.menu a{ position:relative; padding-bottom:4px; }
-    nav.menu a::after{
-      content:""; position:absolute; left:0; right:0; bottom:0; height:2px;
-      background: color-mix(in srgb, var(--accent2) 80%, #000 0%);
-      transform:scaleX(0); transform-origin:left; transition:transform .18s ease;
-    }
-    nav.menu a:hover::after{ transform:scaleX(1); }
-
-    .gallery img{ will-change:transform; transform:translateZ(0); }
-    .gallery img:hover{ transform:translateY(-3px) scale(1.01); box-shadow:0 14px 32px rgba(60,40,20,.18); }
-
-    #ajanlatkeres input,#ajanlatkeres textarea{ border-radius:12px !important; background:#fff !important; }
-    #ajanlatkeres input:focus,#ajanlatkeres textarea:focus{ border-color:var(--accent) !important; box-shadow:0 0 0 3px var(--ring) !important; }
-    .input-error{ border-color:#c0392b !important; }
-    .input-success{ border-color:#27ae60 !important; }
-
-    .toast{
-      position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
-      background:#fff; color:var(--text); border:2px solid var(--frame);
-      border-radius:12px; padding:10px 14px; box-shadow:var(--shadow-lg); z-index:2000;
-    }
-    .toast.ok{ border-color:#27ae60; }
-    .toast.err{ border-color:#c0392b; }
   </style>
 </head>
 <body>
@@ -360,7 +308,6 @@
       </div>
     </div>
   </section>
-
   <!-- RÓLUNK -->
   <section id="rolunk" class="reveal">
     <div class="container">
@@ -436,7 +383,7 @@
     </a>
   </div>
 
-  <!-- LEBEGŐ LOGÓ -->
+  <!-- LEBEGŐ LOGÓ (BAL ALSÓ SAROK) -->
   <div class="logo-stick">
     <div class="logo-btn"><img src="logo.jpg" alt="Szőke Épker KFT."></div>
   </div>
@@ -444,6 +391,21 @@
   <!-- LÁBLÉC -->
   <footer>© 2025 Szőke Épker KFT. • Minden jog fenntartva.</footer>
 
+  <!-- CHAT MARKUP (jobb alsó sarok) -->
+  <div class="ai-chat" id="aiChat" aria-hidden="true">
+    <div class="ai-chat__head">
+      <div class="ai-chat__title">Chat</div>
+      <button class="ai-chat__close" id="aiChatClose" type="button">✕</button>
+    </div>
+    <div class="ai-chat__body" id="aiChatBody">
+      <div class="ai-chat__hint">Üdvözöljük! A chat csak üzleti kérdésekre válaszol (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat).</div>
+    </div>
+    <form class="ai-chat__input" id="aiChatForm" autocomplete="off">
+      <input id="aiChatInput" placeholder="Írja ide az üzenetet…" />
+      <button type="submit">Küldés</button>
+    </form>
+  </div>
+  <button class="ai-chat-launcher" id="aiChatOpen" aria-label="Chat megnyitása">💬</button>
   <!-- LIGHTBOX -->
   <div class="overlay" id="lightbox" aria-hidden="true" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1200">
     <div class="modal" role="dialog" aria-label="Kép nagyítás" style="background:#fff;border:2px solid var(--frame);border-radius:14px;padding:12px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,.32)">
@@ -458,6 +420,7 @@
       </div>
     </div>
   </div>
+
   <!-- SCRIPTEK -->
   <script>
     (function(){
@@ -563,7 +526,7 @@
     })();
   </script>
 
-  <!-- Netlify AJAX submit + toast üzenet -->
+  <!-- (Ha használod) Netlify AJAX submit + toast üzenet – a tied változatlanul maradt -->
   <script>
     (function(){
       const form = document.forms.ajanlat;
@@ -606,5 +569,8 @@
       });
     })();
   </script>
+
+  <!-- Chat működés (frontend) -->
+  <script src="assets/chat.js"></script>
 </body>
 </html>

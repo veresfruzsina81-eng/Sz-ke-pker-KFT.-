@@ -29,7 +29,7 @@
       --hdrH:92px;
       --hero-img-max:180px;
       --hero-h1-max:34px;
-      --section-y:60px; /* KORÁBBI 80px -> összehúzva minden szekció */
+      --section-y:60px;
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;overflow-x:hidden}
@@ -40,7 +40,7 @@
       position:relative;
     }
 
-    /* HÁTTÉR – stabil, homályos */
+    /* HÁTTÉR */
     body::after{
       content:""; position:fixed; inset:0; z-index:-2;
       background:url('hatter32.jpg') center/cover no-repeat;
@@ -113,7 +113,7 @@
       .hero-img{margin:auto}
     }
 
-    /* Szolgáltatások – alapból 2 oszlop, nagyon kis telón 1 */
+    /* Szolgáltatások */
     #szolgaltatasok .grid{
       display:grid;
       grid-template-columns: repeat(2, minmax(0,1fr));
@@ -151,191 +151,132 @@
     .grid.cols-2{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
     @media (max-width:768px){ .grid.cols-2{ grid-template-columns:1fr; } }
 
-    /* Lebegő Facebook */
+    /* Lebegők */
     .fb-stick{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:1050}
     .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:999px;background:#1877f2;box-shadow:0 6px 18px rgba(16,24,40,.18)}
     .fb-btn svg{width:20px;height:20px;fill:#fff}
 
-    /* Lebegő LOGÓ */
     .logo-stick{position:fixed;right:14px;bottom:14px;z-index:1050}
     .logo-btn{display:inline-flex;align-items:center;justify-content:center;background:transparent !important;border:0 !important;box-shadow:none !important;padding:0;width:auto;height:auto}
     .logo-btn img{height:84px;background:transparent !important;border:0 !important;filter: drop-shadow(0 4px 10px rgba(0,0,0,.22));cursor:pointer}
 
-    /* EXTRA: halvány elválasztó a szekciók között */
     section:not(:first-of-type){ border-top:1px solid rgba(0,0,0,.045); }
 
-    /* --- MOBIL FEJLÉC stabilizálás (≤ 640px) --- */
+    /* Mobil fejléchez finomítások */
     @media (max-width: 640px){
       header{ background: rgba(255,255,255,.95); }
       .nav{
-        display:grid;
-        grid-template-columns: 1fr;
-        align-items:start;
-        row-gap:8px;
-        padding:8px 0;
+        display:grid; grid-template-columns: 1fr; align-items:start;
+        row-gap:8px; padding:8px 0;
       }
       .brand{ gap:8px; }
       .brand-name{ font-size:16px; white-space:nowrap; }
       nav.menu{
-        order:2;
-        display:flex;
-        overflow-x:auto;
-        gap:10px;
-        padding-bottom:6px;
+        order:2; display:flex; overflow-x:auto; gap:10px; padding-bottom:6px;
         -webkit-overflow-scrolling:touch;
       }
       nav.menu::-webkit-scrollbar{ display:none; }
       nav.menu a{
-        flex:0 0 auto;
-        font-size:14px;
-        background:#fff;
-        border:1px solid var(--line);
-        border-radius:999px;
-        padding:6px 10px;
-        font-weight:800;
+        flex:0 0 auto; font-size:14px; background:#fff; border:1px solid var(--line);
+        border-radius:999px; padding:6px 10px; font-weight:800;
       }
-      /* Lebegők ne takarjanak */
       .fb-stick{ right:10px; bottom:92px; top:auto; transform:none; }
       .logo-stick{ right:10px; bottom:12px; }
       .logo-btn img{ height:64px; }
     }
 
-    /* ===== Globális szekciószűkítés mobilon ===== */
-    @media (max-width: 480px){
-      section{ padding:40px 0 !important; } /* minden menüpont alatti rész kompaktabb */
-    }
-
-    /* ===========================
-       FIX #1 – Szolgáltatások mobilon: még szorosabb + stabil tördelés
-       =========================== */
-    @media (max-width: 480px){
-      #szolgaltatasok .panel-wrap{ padding:16px !important; }
-      #szolgaltatasok h2{ margin-top:0; margin-bottom:12px; }
-      #szolgaltatasok .grid{
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap:8px !important;                     /* kisebb rés */
-      }
-      #szolgaltatasok .card{
-        padding:10px !important;                /* szorosabb belső tér */
-        gap:8px !important;
-        word-break: break-word;
-        overflow-wrap: anywhere;                /* hosszú szavak se lökjék szét */
-        hyphens: auto;
-        align-items:center;
-      }
-      #szolgaltatasok .card::before{
-        width:38px; height:38px; flex:0 0 38px; font-size:17px;
-      }
-      #szolgaltatasok .card{ font-size:14px; line-height:1.25; }
-    }
-
-    /* ===========================
-       FIX #2 – Hero mobilon: lejjebb és a kép kicsit nagyobb
-       =========================== */
-    @media (max-width: 480px){
-      :root{
-        --hero-img-max: 190px;   /* kicsit nagyobb a kép */
-        --hero-h1-max: 36px;
-      }
-      .hero{ padding: 92px 0 86px !important; } /* nyugodtabb ritmus */
-      .hero-card{ padding:22px !important; }
-    }
-
-    /* =========================================
-       FESZESÍTŐ PATCH (óvatos, visszafogott módosítások)
-       – minden más marad érintetlen
-       ========================================= */
-    :root{
-      --section-y: 52px;           /* 60 → 52px (kb. -13%) */
-      --hero-img-max: 172px;       /* 180 → 172px (kb. -4%) */
-      --hero-h1-max: 33px;         /* 34 → 33px */
-    }
-    .nav{ gap:12px; padding:8px 0; }
-    .menu{ gap:10px; }
-    .btn{ padding:10px 14px; border-radius:12px; }
-    .panel-wrap{ padding:28px; }
-    .card{ padding:14px; }
-    .hero{ padding:64px 0; }
-    .hero-card{ padding:18px; }
-    .hero-top{ gap:10px; margin-bottom:6px; }
-    h1{ margin:4px 0 8px; line-height:1.12; }
-    h2{ margin:0 0 14px; }
-    .lead{ line-height:1.5; }
-    .hero-cols{ gap:18px; }
-    #szolgaltatasok .grid{ gap:20px; }
-    #szolgaltatasok .card{ padding:18px 14px; gap:12px; }
-    .gallery{ gap:16px; }
-    .gallery img{ height:170px; }
-    #ajanlatkeres form{ gap:14px; }
-    #ajanlatkeres input,#ajanlatkeres textarea{ padding:11px 12px; }
-    .grid.cols-2{ gap:22px; }
-    footer{ padding:14px 0; }
-
-    /* Mobilon még egy fokkal szorosabb */
+    /* ===== FESZESÍTŐ PATCH + TURBÓ + ULTRA ===== */
+    :root{ --section-y: 30px; --hero-img-max:150px; --hero-h1-max:30px; }
+    section + section{ margin-top: 8px !important; }
+    .panel-wrap{ padding:14px !important; border-radius:14px !important; }
+    .card{ padding:10px !important; border-radius:12px !important; }
+    .hero{ padding:36px 0 !important; }
+    .hero-card{ padding:12px !important; }
+    .hero-top{ margin-bottom:2px !important; gap:6px !important; }
+    h1{ margin:2px 0 4px !important; line-height:1.08 !important; }
+    h2{ margin:0 0 8px !important; }
+    .hero-cols{ gap:14px !important; }
+    #szolgaltatasok .grid{ gap:8px !important; }
+    #szolgaltatasok .card{ padding:10px !important; gap:8px !important; }
+    #szolgaltatasok .card::before{ width:34px; height:34px; flex:0 0 34px; font-size:16px; }
+    .gallery{ gap:8px !important; }
+    .gallery img{ height:135px !important; box-shadow:0 4px 10px rgba(60,40,20,.06) !important; }
+    #ajanlatkeres form{ gap:8px !important; }
+    #ajanlatkeres input,#ajanlatkeres textarea{ padding:9px 10px !important; }
+    .grid.cols-2{ gap:12px !important; }
+    .nav{ gap:6px !important; padding:4px 0 !important; }
+    .menu{ gap:6px !important; }
+    .btn{ padding:8px 10px !important; border-radius:10px !important; }
     @media (max-width:640px){
-      .container{ padding:0 14px; }
-      .panel-wrap{ padding:22px; }
-      .card{ padding:12px; }
-      .hero{ padding:56px 0; }
-      .hero-card{ padding:16px; }
-      #szolgaltatasok .grid{ gap:12px; }
-      .gallery{ gap:14px; }
-      .gallery img{ height:160px; }
-      #ajanlatkeres form{ gap:12px; }
+      section{ padding:24px 0 !important; }
+      .panel-wrap{ padding:12px !important; }
+      .card{ padding:8px !important; }
+      .hero{ padding:28px 0 !important; }
+      .hero-card{ padding:10px !important; }
+      #szolgaltatasok .grid{ gap:6px !important; }
+      .gallery{ gap:6px !important; }
+      .gallery img{ height:125px !important; }
     }
+    /* Optikai tömörítés */
+    body::before{ background: linear-gradient(180deg, rgba(246,241,233,.36), rgba(246,241,233,.52)) !important; }
 
-    /* ====== TURBÓ-FESZES OVERRIDE (agresszívabb szűkítés) ====== */
+    /* ===== PRO UPGRADE PACK – glass, hover, anim ===== */
     :root{
-      --section-y: 38px;        /* 52 → 38px */
-      --hero-img-max: 160px;    /* 172 → 160px */
-      --hero-h1-max: 31px;      /* 33 → 31px */
+      --radius-lg:16px; --radius-sm:12px;
+      --glass:rgba(255,255,255,.68); --glass-strong:rgba(255,255,255,.78);
+      --shadow-md:0 10px 24px rgba(60,40,20,.12);
+      --shadow-lg:0 18px 40px rgba(60,40,20,.16);
+      --ring: color-mix(in srgb, var(--accent) 38%, transparent);
     }
-    section + section{ margin-top: 14px; }
-    .panel-wrap{ padding: 20px !important; }
-    .card{ padding: 12px !important; }
-    footer{ padding: 10px 0 !important; }
+    * { transition: box-shadow .18s ease, transform .18s ease, background-color .18s ease, border-color .18s ease; }
+    @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
 
-    .nav{ gap: 8px !important; padding: 6px 0 !important; }
-    .menu{ gap: 8px !important; }
-    .btn{ padding: 9px 12px !important; border-radius: 10px !important; }
-
-    .hero{ padding: 48px 0 !important; }
-    .hero-card{ padding: 14px !important; }
-    .hero-top{ gap: 8px !important; margin-bottom: 4px !important; }
-    h1{ margin: 2px 0 6px !important; line-height: 1.10 !important; }
-    h2{ margin: 0 0 10px !important; }
-    .lead{ line-height: 1.45 !important; }
-
-    .hero-cols{ gap: 14px !important; }
-    #szolgaltatasok .grid{ gap: 12px !important; }
-    #szolgaltatasok .card{ padding: 14px 12px !important; gap: 10px !important; }
-
-    .gallery{ gap: 10px !important; }
-    .gallery img{ height: 150px !important; }
-
-    #ajanlatkeres form{ gap: 10px !important; }
-    #ajanlatkeres input, #ajanlatkeres textarea{ padding: 10px 11px !important; }
-
-    .grid.cols-2{ gap: 16px !important; }
-
-    p, ul, ol{ margin: 0.5em 0 !important; }
-    ul, ol{ padding-inline-start: 1em !important; }
-
-    @media (max-width: 640px){
-      .container{ padding: 0 12px !important; }
-      .panel-wrap{ padding: 16px !important; }
-      .card{ padding: 10px !important; }
-      .hero{ padding: 40px 0 !important; }
-      .hero-card{ padding: 12px !important; }
-      #szolgaltatasok .grid{ gap: 10px !important; }
-      .gallery{ gap: 8px !important; }
-      .gallery img{ height: 140px !important; }
-      #ajanlatkeres form{ gap: 8px !important; }
+    header{
+      background: var(--glass-strong) !important;
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
     }
-    @media (max-width: 480px){
-      section{ padding: 28px 0 !important; }
-      h1{ font-size: clamp(22px, 6.4vw, var(--hero-h1-max)) !important; }
+    .panel-wrap{
+      background: var(--glass) !important;
+      backdrop-filter: blur(10px) saturate(140%);
+      -webkit-backdrop-filter: blur(10px) saturate(140%);
+      border-radius: var(--radius-lg) !important;
+      box-shadow: var(--shadow-md) !important;
     }
+    .card{
+      background: linear-gradient(#fff,#fefcf8) !important;
+      border-radius: var(--radius-sm) !important;
+      box-shadow: 0 8px 22px rgba(60,40,20,.10) !important;
+    }
+    h1,h2{ letter-spacing:.1px; }
+    .btn{ border-radius:12px !important; box-shadow:var(--shadow-md); transform:translateY(0); }
+    .btn:hover{ transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+    .btn:active{ transform:translateY(0); }
+    .btn:focus-visible{ outline:0; box-shadow:0 0 0 3px var(--ring), var(--shadow-md); }
+
+    nav.menu a{ position:relative; padding-bottom:4px; }
+    nav.menu a::after{
+      content:""; position:absolute; left:0; right:0; bottom:0; height:2px;
+      background: color-mix(in srgb, var(--accent2) 80%, #000 0%);
+      transform:scaleX(0); transform-origin:left; transition:transform .18s ease;
+    }
+    nav.menu a:hover::after{ transform:scaleX(1); }
+
+    .gallery img{ will-change:transform; transform:translateZ(0); }
+    .gallery img:hover{ transform:translateY(-3px) scale(1.01); box-shadow:0 14px 32px rgba(60,40,20,.18); }
+
+    #ajanlatkeres input,#ajanlatkeres textarea{ border-radius:12px !important; background:#fff !important; }
+    #ajanlatkeres input:focus,#ajanlatkeres textarea:focus{ border-color:var(--accent) !important; box-shadow:0 0 0 3px var(--ring) !important; }
+    .input-error{ border-color:#c0392b !important; }
+    .input-success{ border-color:#27ae60 !important; }
+
+    .toast{
+      position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
+      background:#fff; color:var(--text); border:2px solid var(--frame);
+      border-radius:12px; padding:10px 14px; box-shadow:var(--shadow-lg); z-index:2000;
+    }
+    .toast.ok{ border-color:#27ae60; }
+    .toast.err{ border-color:#c0392b; }
   </style>
 </head>
 <body>
@@ -517,7 +458,6 @@
       </div>
     </div>
   </div>
-
   <!-- SCRIPTEK -->
   <script>
     (function(){
@@ -619,6 +559,50 @@
     (function(){
       document.querySelectorAll('.overlay').forEach(el=>{
         if(el.id && el.id!=='lightbox') el.remove();
+      });
+    })();
+  </script>
+
+  <!-- Netlify AJAX submit + toast üzenet -->
+  <script>
+    (function(){
+      const form = document.forms.ajanlat;
+      if(!form) return;
+
+      function showToast(msg, ok=true){
+        const t = document.createElement('div');
+        t.className = 'toast ' + (ok ? 'ok' : 'err');
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(()=>{ t.remove(); }, 3800);
+      }
+
+      function encode(data){
+        return [...data.entries()]
+          .map(([k,v]) => encodeURIComponent(k)+'='+encodeURIComponent(v))
+          .join('&');
+      }
+
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const fd = new FormData(form);
+        fd.append('form-name', form.getAttribute('name') || 'ajanlat');
+
+        try{
+          const res = await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type':'application/x-www-form-urlencoded' },
+            body: encode(fd)
+          });
+          if(res.ok){
+            form.reset();
+            showToast('Köszönjük! Hamarosan felvesszük Önnel a kapcsolatot.', true);
+          }else{
+            showToast('Hoppá! Nem sikerült elküldeni. Próbálja újra.', false);
+          }
+        }catch(err){
+          showToast('Hálózati hiba. Kérjük, próbálja meg később.', false);
+        }
       });
     })();
   </script>

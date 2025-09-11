@@ -122,14 +122,21 @@
       grid-template-columns: repeat(2, minmax(0,1fr));
       gap:26px;
     }
-    #szolgaltatasok .card{display:flex;align-items:center;gap:14px;padding:22px 18px;font-weight:800}
+    #szolgaltatasok .card{
+      display:flex;align-items:center;gap:14px;padding:22px 18px;font-weight:800;
+      /* FIX: ne lógjon ki hosszú szó esetén sem */
+      overflow:hidden; overflow-wrap:anywhere; word-break:normal; hyphens:auto;
+    }
     #szolgaltatasok .card::before{
       content: attr(data-icon);
       display:inline-flex;align-items:center;justify-content:center;font-size:20px;width:44px;height:44px;border-radius:999px;
       background:#fff;border:2px solid var(--accent);box-shadow:0 4px 10px rgba(60,40,20,.06);flex:0 0 44px;
     }
-    /* megmarad a 2x2; csak 380px alatt tör 1 oszlopra */
-    @media (max-width:380px){ #szolgaltatasok .grid{ grid-template-columns:1fr; } } /* FIX: csak nagyon szűk mobilon törjön */
+    /* 2×2 marad; csak 380px alatt tör 1 oszlopra */
+    @media (max-width:380px){
+      #szolgaltatasok .grid{ grid-template-columns:1fr; }
+      #szolgaltatasok .card{ font-size:15px; gap:10px; } /* picit kisebb betű szűk kijelzőn */
+    }
 
     /* Galéria */
     .gallery{display:grid;gap:20px;grid-template-columns:repeat(3,1fr)}
@@ -156,7 +163,7 @@
     @media (max-width:768px){ .grid.cols-2{ grid-template-columns:1fr; } }
 
     /* Lebegők */
-    .fb-stick{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:1050}
+    .fb-stick{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:1205} /* z-index fölé emelve a chatnek */
     .fb-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:999px;background:#1877f2;box-shadow:0 6px 18px rgba(16,24,40,.18)}
     .fb-btn svg{width:20px;height:20px;fill:#fff}
 
@@ -184,8 +191,8 @@
         flex:0 0 auto; font-size:14px; background:#fff; border:1px solid var(--line);
         border-radius:999px; padding:6px 10px; font-weight:800;
       }
-      /* FIX: FB ikon középre feljebb, ne ütközzön a chattel */
-      .fb-stick{ right:10px; top:45%; bottom:auto; transform:translateY(-45%); } /* ← módosítva */
+      /* FIX: FB ikon feljebb, közelebb a középhez, ne takarja a chatet */
+      .fb-stick{ right:10px; top:40%; bottom:auto; transform:translateY(-40%); }
       .logo-stick{ right:10px; bottom:12px; }
       .logo-btn img{ height:64px; }
     }
@@ -202,7 +209,6 @@
     h2{ margin:0 0 8px !important; }
     .hero-cols{ gap:14px !important; }
     #szolgaltatasok .grid{ gap:8px !important; }
-    #szolgaltatasok .card{ padding:10px !important; gap:8px !important; }
     #szolgaltatasok .card::before{ width:34px; height:34px; flex:0 0 34px; font-size:16px; }
     .gallery{ gap:8px !important; }
     .gallery img{ height:135px !important; box-shadow:0 4px 10px rgba(60,40,20,.06) !important; }
@@ -228,47 +234,59 @@
       .logo-btn img{ height:64px; }
     }
 
-    /* ===== Chat – modern (glass) kinézet ===== */
+    /* ===== Chat – modernebb, kontrasztosabb ===== */
     .ai-chat-launcher{
       position: fixed;
       right: 18px; bottom: 18px;
       width: 56px; height: 56px;
       border-radius: 50%;
       backdrop-filter: blur(10px);
-      background: rgba(255,255,255,.25);
-      border: 1px solid rgba(255,255,255,.35);
-      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      background: rgba(255,255,255,.3);
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,.2);
       display: grid; place-items: center;
-      cursor: pointer; z-index: 1200;
+      cursor: pointer; z-index: 1204; /* FB alatt picivel, de elég magas */
     }
     .ai-chat{
       position: fixed;
       right: 12px; bottom: 86px;
-      width: min(360px, 92vw);
-      max-height: min(70vh, 680px);
+      width: min(380px, 92vw);
+      max-height: min(72vh, 720px);
       display: none; flex-direction: column;
       overflow: hidden;
-      border-radius: 20px;
-      backdrop-filter: blur(14px);
-      background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.35));
-      border: 1px solid rgba(255,255,255,.5);
-      box-shadow: 0 20px 50px rgba(0,0,0,.22);
-      z-index: 1200;
+      border-radius: 18px;
+      background: rgba(255,255,255,.92);       /* FIX: látványosabb fehér háttér */
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: 0 22px 60px rgba(0,0,0,.28);  /* FIX: erősebb árnyék */
+      z-index: 1206;                            /* FB felett */
     }
     .ai-chat.is-open{ display: flex; }
     .ai-chat__head{
-      padding: 12px 14px; font-weight: 800;
-      border-bottom: 1px solid rgba(0,0,0,.06);
+      padding: 12px 14px; font-weight: 900;
+      border-bottom: 1px solid rgba(0,0,0,.08);
       display:flex;align-items:center;justify-content:space-between;
-      background: rgba(255,255,255,.55);
+      background: linear-gradient(180deg,#ffffff,#f7f7f7);
     }
     .ai-chat__body{ padding: 12px; overflow: auto; }
     .ai-chat__hint{
-      font-size: 14px; opacity: .85; background:#fff; border:1px solid rgba(0,0,0,.08);
+      font-size: 14px; opacity: .92; background:#fff; border:1px solid rgba(0,0,0,.08);
       padding:10px 12px; border-radius:12px;
     }
+    /* Alap „buborék” stílus bármilyen div/p bejegyzésre, ha a chat.js nem ad saját osztályt */
+    .ai-chat__body > div, .ai-chat__body > p{
+      max-width: 85%;
+      margin: 8px 0;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,.06);
+    }
+    .ai-chat__body .from-bot{ background:#f3f6ff; }
+    .ai-chat__body .from-user{ background:#eaf8ef; margin-left:auto; }
     .ai-chat__input{
-      display:flex;gap:8px;padding:10px;border-top:1px solid rgba(0,0,0,.06);background:rgba(255,255,255,.55)
+      display:flex;gap:8px;padding:10px;border-top:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.95)
     }
     .ai-chat__input input{
       flex:1;border:1px solid rgba(0,0,0,.12);border-radius:12px;padding:10px 12px;background:#fff;outline:none
@@ -603,37 +621,52 @@
       });
     })();
 
-    /* Chat toggle – ha a külső chat.js nem kezeli, ez biztosítja */
+    /* Chat toggle – ha a külső chat.js nem kezeli, ez biztosítja
+       + első megnyitáskor üdvözlő buborék, ha üres a chat */
     (function(){
       const openBtn = document.getElementById('aiChatOpen');
       const panel   = document.getElementById('aiChat');
       const closeBtn= document.getElementById('aiChatClose');
+      const body    = document.getElementById('aiChatBody');
       if(!openBtn || !panel) return;
-      const open  = ()=>{ panel.classList.add('is-open'); panel.setAttribute('aria-hidden','false'); };
-      const close = ()=>{ panel.classList.remove('is-open'); panel.setAttribute('aria-hidden','true'); };
+
+      const open  = ()=>{
+        panel.classList.add('is-open');
+        panel.setAttribute('aria-hidden','false');
+        if(body && body.children.length === 1){ // csak a hint van
+          const b = document.createElement('div');
+          b.className = 'from-bot';
+          b.textContent = 'Szia! Ha segítség kell, itt vagyok — írja meg röviden a kérdést (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat).';
+          body.appendChild(b);
+        }
+      };
+      const close = ()=>{
+        panel.classList.remove('is-open');
+        panel.setAttribute('aria-hidden','true');
+      };
       openBtn.addEventListener('click', open);
       closeBtn?.addEventListener('click', close);
     })();
 
-    /* Üdvözlő „hullámos” toast – napi egyszer */
+    /* Üdvözlő „hullámos” toast – munkamenetenként egyszer (sessionStorage) */
     (function(){
-      const KEY='helloToastSeenDate';
-      const today=new Date().toISOString().slice(0,10);
+      const KEY='helloToastSeenSession';
       const wrap=document.getElementById('hello-toast');
       if(!wrap) return;
       const show=()=>{ wrap.style.display='grid'; wrap.setAttribute('aria-hidden','false'); };
-      const hide=()=>{ wrap.style.display='none'; wrap.setAttribute('aria-hidden','true'); localStorage.setItem(KEY,today); };
-      if(localStorage.getItem(KEY)!==today){
-        setTimeout(show, 600);
-      }else{
-        wrap.style.display='none';
+      const hide=()=>{ wrap.style.display='none'; wrap.setAttribute('aria-hidden','true'); try{ sessionStorage.setItem(KEY,'1'); }catch(e){} };
+      try{
+        if(!sessionStorage.getItem(KEY)){ setTimeout(show, 700); }
+      }catch(e){
+        // ha privát mód miatt nem elérhető, akkor is megjelenítjük
+        setTimeout(show, 700);
       }
       wrap.addEventListener('click',(e)=>{ if(e.target.id==='hello-toast') hide(); });
       wrap.querySelector('.hello-x')?.addEventListener('click', hide);
     })();
   </script>
 
-  <!-- (Ha használod) Netlify AJAX submit + toast üzenet – a tied változatlanul maradt -->
+  <!-- Netlify AJAX submit + toast (változatlan) -->
   <script>
     (function(){
       const form = document.forms.ajanlat;

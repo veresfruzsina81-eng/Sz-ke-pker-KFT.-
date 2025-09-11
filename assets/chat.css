@@ -1,0 +1,64 @@
+/* Logo bal alsó sarok */
+.logo-stick{ left:14px; right:auto; bottom:14px; }
+@media (max-width:640px){ .logo-stick{ left:10px; bottom:10px; } }
+
+/* Launcher gomb (jobb alsó sarok) */
+.ai-chat-launcher{
+  position: fixed; right: 16px; bottom: 16px; z-index: 1400;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 54px; height: 54px; border-radius: 999px;
+  background: var(--accent); color: #fff; font-weight: 900; cursor: pointer;
+  box-shadow: 0 14px 28px rgba(0,0,0,.18);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.ai-chat-launcher:hover{ transform: translateY(-2px); }
+
+/* Chat ablak */
+.ai-chat{
+  position: fixed; right: 16px; bottom: 82px; z-index: 1400;
+  width: 360px; max-width: calc(100vw - 24px); height: 460px; display: none;
+  background: var(--glass, rgba(255,255,255,.7));
+  border: 2px solid var(--frame); border-radius: 16px;
+  box-shadow: 0 22px 48px rgba(0,0,0,.22);
+  backdrop-filter: blur(10px) saturate(140%); -webkit-backdrop-filter: blur(10px) saturate(140%);
+  overflow: hidden;
+}
+.ai-chat.open{ display:flex; flex-direction:column; }
+
+.ai-chat__head{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:10px 12px; background:rgba(255,255,255,.88); border-bottom:1px solid var(--frame);
+}
+.ai-chat__title{ font-weight:900; }
+.ai-chat__close{
+  background:#fff; border:1px solid var(--line); border-radius:10px; padding:6px 10px; cursor:pointer;
+}
+
+.ai-chat__body{
+  flex:1; overflow:auto; padding:12px; display:flex; flex-direction:column; gap:10px;
+}
+.ai-chat__hint{
+  font-size:14px; color: var(--muted);
+  background:#fff; border:1px dashed var(--line); border-radius:12px; padding:8px 10px;
+}
+
+.bubble{
+  max-width:80%; background:#fff; border:2px solid var(--frame);
+  border-radius:12px; padding:8px 10px;
+}
+.bubble.me{ align-self:flex-end; }
+.bubble.bot{ align-self:flex-start; background:rgba(255,255,255,.9); }
+
+.ai-chat__input{
+  display:flex; gap:8px; padding:10px; background: rgba(255,255,255,.9); border-top:1px solid var(--frame);
+}
+.ai-chat__input input{
+  flex:1; border:2px solid var(--line); border-radius:10px; padding:10px 12px; background:#fff;
+}
+.ai-chat__input button{
+  border-radius:10px; padding:10px 14px; background:var(--accent); color:#fff; border:1px solid transparent; font-weight:900;
+}
+
+@media (max-width:480px){
+  .ai-chat{ right:8px; left:8px; bottom:80px; width:auto; height:60vh; }
+}

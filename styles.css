@@ -9,10 +9,10 @@ body{
   font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   color:var(--ink); line-height:1.6; background:var(--bg);
 }
-/* halvány építőipari háttér – a gyökérben lévő bg-construction.jpg-t használjuk */
+/* háttér */
 body::before{
   content:""; position:fixed; inset:0;
-  background:url('bg-construction.jpg') center/cover no-repeat;
+  background:url('hatter.png') center/cover no-repeat;
   opacity:.18; pointer-events:none; z-index:-1;
 }
 img{max-width:100%;height:auto;display:block}
@@ -22,10 +22,10 @@ a{text-decoration:none;color:inherit}
 /* ===== header ===== */
 .site-header{position:sticky;top:0;z-index:50;background:rgba(248,244,239,.92);
   backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--ring)}
-.nav{display:flex;align-items:center;justify-content:space-between;min-height:66px}
+.nav{display:flex;align-items:center;justify-content:space-between;min-height:70px}
 .brand{display:flex;gap:10px;align-items:center}
-.brand img{height:38px}
-.brand-text{font-weight:800}
+.brand img{height:52px}   /* nagyobb logó a menüben */
+.brand-text{font-weight:800;font-size:1.2rem}
 .nav-links{display:flex;gap:12px;align-items:center}
 .nav-links a{padding:8px 10px;border-radius:999px}
 .nav-links a:hover{background:var(--ring)}
@@ -69,7 +69,7 @@ a{text-decoration:none;color:inherit}
 
 /* ===== why ===== */
 .why .head{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:8px}
-.why .head img{height:34px}
+.why .head img{height:60px} /* nagyobb logó itt */
 .why .section-card p{color:var(--muted)}
 .bullets{margin:12px 0 0;padding-left:20px} .bullets li{margin:6px 0}
 
@@ -112,10 +112,8 @@ input:focus,textarea:focus{outline:2px solid rgba(217,169,122,.35);border-color:
   .nav-links{display:none}
   .nav-toggle{display:block}
   .nav.open .nav-links{
-    display:flex;position:absolute;top:66px;left:16px;right:16px;flex-direction:column;gap:6px;
+    display:flex;position:absolute;top:70px;left:16px;right:16px;flex-direction:column;gap:6px;
     background:#fff;border:1px solid var(--ring);border-radius:12px;padding:12px
   }
   .hero-inner{grid-template-columns:1fr;gap:18px}
 }
-
-

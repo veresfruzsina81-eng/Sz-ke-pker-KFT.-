@@ -3,11 +3,12 @@
   --card:#ffffff;
   --ink:#1f1f1f;
   --muted:#6b6b6b;
-  --brand:#b88a62;         /* finom barna akcentus */
+  --brand:#b88a62;
   --radius:16px;
   --shadow:0 10px 30px rgba(0,0,0,.08);
-  --speed:1.6s;            /* beúszás: MÉG lassabb, elegánsabb */
-  --ease:cubic-bezier(.22,1,.36,1); /* kifinomult ease-out */
+  --speed:2s;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --bgmask:.78; /* háttér halványítás erőssége */
 }
 
 *{box-sizing:border-box}
@@ -29,7 +30,7 @@ body{
 }
 .header-inner{display:flex; align-items:center; justify-content:space-between; padding:10px 0}
 .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit}
-.brand img{height:54px; width:auto}          /* nagyobb fejléc logó */
+.brand img{height:54px; width:auto}
 .brand-text{font-weight:700}
 .main-nav a{margin-left:18px; text-decoration:none; color:#333}
 .main-nav a:hover{color:var(--brand)}
@@ -42,12 +43,10 @@ body{
   color:#fff;
   border:none;
 }
-.main-nav .pill:hover{
-  background:#a1734e; /* sötétebb barna hover */
-}
+.main-nav .pill:hover{ background:#a1734e; }
 
 /* SECTION BASIC */
-.section{padding:64px 0}
+.section{padding:64px 0; position:relative}
 .section-title{
   font-size:clamp(28px,3.5vw,42px);
   margin:0 0 22px; position:relative;
@@ -58,11 +57,30 @@ body{
 }
 .soft-bg{background:linear-gradient(180deg,#f5efe9, #f8f6f2)}
 
-/* HÁTTÉR utility-k (PNG fájlok) */
-.bg-1{ background:url("hatter1.png") no-repeat center/cover; }
-.bg-2{ background:url("hatter2.png") no-repeat center/cover; }
-.bg-3{ background:url("hatter3.png") no-repeat center/cover; }
-.bg-4{ background:url("hatter4.png") no-repeat center/cover; }
+/* HÁTTÉR utility-k (PNG fájlok + halványító fedőréteg) */
+.bg-1{
+  background:
+    linear-gradient(rgba(255,255,255,var(--bgmask)), rgba(255,255,255,var(--bgmask))),
+    url("hatter1.png") center/cover no-repeat;
+}
+.bg-2{
+  background:
+    linear-gradient(rgba(255,255,255,var(--bgmask)), rgba(255,255,255,var(--bgmask))),
+    url("hatter2.png") center/cover no-repeat;
+}
+.bg-3{
+  background:
+    linear-gradient(rgba(255,255,255,var(--bgmask)), rgba(255,255,255,var(--bgmask))),
+    url("hatter3.png") center/cover no-repeat;
+}
+.bg-4{
+  background:
+    linear-gradient(rgba(255,255,255,var(--bgmask)), rgba(255,255,255,var(--bgmask))),
+    url("hatter4.png") center/cover no-repeat;
+}
+
+/* Biztos ami biztos: a tartalom a fedőréteg fölött legyen */
+.section > .container{ position:relative; z-index:1 }
 
 /* Typographic helpers */
 .lead{
@@ -88,7 +106,7 @@ body{
   width:140px; opacity:.9; filter:drop-shadow(0 6px 14px rgba(0,0,0,.12));
 }
 
-/* REVEALS – finomabb, lassabb beúszás balról/jobbról */
+/* REVEALS – finom, lassú beúszás */
 .reveal-from-left{
   opacity:0; transform:translateX(-56px);
   will-change:transform,opacity;
@@ -102,21 +120,17 @@ body{
   transition:transform var(--speed) var(--ease), opacity var(--speed) var(--ease);
 }
 
-/* SERVICES GRID (stabil, nem ugrik) */
+/* SERVICES GRID */
 .services{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:22px;
   align-items:stretch;
 }
-.service-card{
-  perspective:1000px;    /* fliphez */
-  min-height:210px;      /* egységes magasság – nem fogja tolni a layoutot */
-}
+.service-card{ perspective:1000px; min-height:210px; }
 .card-inner{
   position:relative; width:100%; height:100%;
-  transform-style:preserve-3d;
-  transition:transform .6s var(--ease);
+  transform-style:preserve-3d; transition:transform .6s var(--ease);
 }
 .service-card:hover .card-inner{ transform:rotateY(180deg) }
 .card-face{
@@ -137,16 +151,10 @@ body{
 .about-biglogo{display:grid; place-items:center; padding-top:10px}
 .about-biglogo img{width:min(280px,40%); filter:drop-shadow(0 8px 18px rgba(0,0,0,.12))}
 
-/* TWO-COL (kép bal, szöveg jobb – magasságban is igazítva) */
-.two-col{
-  display:grid; grid-template-columns:1.1fr .9fr; gap:28px; align-items:stretch;
-}
-.two-col .media img{
-  width:100%; display:block; border-radius:18px; box-shadow:var(--shadow);
-}
-.two-col .copy{
-  display:flex; flex-direction:column; justify-content:center; /* a képhez igazított függőleges közép */
-}
+/* TWO-COL */
+.two-col{display:grid; grid-template-columns:1.1fr .9fr; gap:28px; align-items:stretch}
+.two-col .media img{width:100%; display:block; border-radius:18px; box-shadow:var(--shadow)}
+.two-col .copy{display:flex; flex-direction:column; justify-content:center}
 .two-col .copy p{margin:0 0 12px; max-width:68ch}
 .two-col .copy ul{margin:6px 0 0 1.2em}
 .two-col .copy li{margin:4px 0}
@@ -167,7 +175,7 @@ body{
   box-shadow:var(--shadow)
 }
 
-/* MODAL (fixed overlay, nem tol el semmit) */
+/* MODAL */
 .no-scroll{overflow:hidden}
 .modal{
   position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
@@ -190,7 +198,7 @@ body{
 
 /* CONTACT */
 .contact-grid{display:grid; grid-template-columns:1fr 1.2fr; gap:26px; align-items:start}
-.contact-logo{width:160px; margin-bottom:12px}  /* nagyobb logó a kapcsolatnál */
+.contact-logo{width:160px; margin-bottom:12px}
 .contact-map iframe{width:100%; height:320px; border:0; border-radius:14px; box-shadow:var(--shadow)}
 .fb-link{text-decoration:none; color:#155; display:inline-flex; align-items:center; gap:8px}
 .fb-ico{

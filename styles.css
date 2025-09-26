@@ -1,6 +1,6 @@
 /* ===== Alap ===== */
 :root{
-  --bg: #f6efe7;
+  --bg:#f6efe7;
   --paper:#fff8f0;
   --ink:#2a2a2a;
   --muted:#6b6259;
@@ -35,10 +35,11 @@ p{margin:0 0 12px}
   border-bottom:1px solid #0001;
 }
 .nav{display:flex; align-items:center; gap:16px; padding:10px 0}
-.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-weight:700}
-.brand img{width:56px}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-weight:800}
+.brand img{width:58px}
+.brand-text{letter-spacing:.2px}
 .menu{margin-left:auto; display:flex; gap:18px; align-items:center}
-.menu a{text-decoration:none; color:var(--ink); padding:8px 10px; position:relative}
+.menu a{text-decoration:none; color:var(--ink); padding:8px 10px; position:relative; font-weight:600}
 .menu a::after{content:""; position:absolute; left:10px; right:10px; bottom:2px; height:2px; background:transparent; transition:.25s}
 .menu a:hover::after{background:var(--brand)}
 .menu .cta{background:var(--brand); color:#fff; border-radius:999px; padding:8px 14px}
@@ -46,7 +47,7 @@ p{margin:0 0 12px}
 .hamburger{display:none; margin-left:auto; background:none; border:0; padding:6px}
 .hamburger span{display:block; width:26px; height:2px; background:#333; margin:6px 0}
 
-/* mob menü */
+/* mobil menü */
 @media (max-width:880px){
   .hamburger{display:block}
   .menu{position:fixed; inset:64px 0 auto 0; display:grid; gap:12px; padding:16px;
@@ -55,26 +56,23 @@ p{margin:0 0 12px}
 }
 
 /* ===== Hero ===== */
-.hero-grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:40px; align-items:center}
-@media (max-width:980px){ .hero-grid{grid-template-columns:1fr; gap:22px} }
-
-.hero-photo{position:relative; border-radius:18px; overflow:hidden; box-shadow:var(--shadow)}
-.hero-photo img{display:block; width:100%; height:auto; object-fit:cover}
-.overlay-card{
-  position:absolute; left:16px; bottom:16px; right:16px;
-  background: #fffefcde; backdrop-filter: blur(3px);
-  border:1px solid #00000012; border-radius:16px; padding:16px 18px;
+.hero-grid{
+  display:grid; grid-template-columns: 1.15fr .85fr; gap:36px; align-items:center;
 }
-.pill{display:inline-block; font-size:13px; padding:6px 10px; border-radius:999px; background:#fff; border:1px solid #0001; margin-bottom:6px}
-.hero-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
+@media (max-width:980px){ .hero-grid{grid-template-columns:1fr} }
 
+.hero-left{display:grid; gap:14px}
+.hero-photo{border-radius:18px; overflow:hidden; box-shadow:var(--shadow)}
+.hero-photo img{width:100%; height:auto; object-fit:cover}
+.hero-copy .pill{
+  display:inline-block; font-size:13px; padding:6px 10px; border-radius:999px; background:#fff; border:1px solid #0001; margin-bottom:6px
+}
+.hero-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:999px; padding:10px 16px; text-decoration:none; transition:.25s}
 .btn.primary{background:var(--brand); color:#fff}
 .btn.primary:hover{background:var(--brand-dark)}
 .btn.ghost{border:1px solid #0002; color:#333; background:#fff6}
-.btn.wide{width:100%}
-
-.logo-big{width:min(320px, 48vw); margin:0 auto; filter: drop-shadow(0 6px 18px rgba(0,0,0,.18))}
+.logo-big{width:min(340px, 48vw); margin-inline:auto; filter: drop-shadow(0 6px 18px rgba(0,0,0,.18))}
 
 /* ===== Services (flip) ===== */
 .service-cards{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--gap); margin-top:16px}
@@ -89,7 +87,7 @@ p{margin:0 0 12px}
 .card-back{transform:rotateY(180deg); text-align:center; gap:10px; padding:26px}
 .card .mini-logo{width:48px; opacity:.9}
 
-/* ikonok */
+/* ikonok a kártyákhoz */
 .icon{ width:54px; height:54px; border-radius:12px; background:var(--accent); position:relative }
 .icon::after{content:""; position:absolute; inset:0; background:center/60% no-repeat}
 .icon.brick::after{ background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232a2a2a"><path d="M3 5h18v4H3V5Zm0 6h18v4H3v-4Zm0 6h18v2H3v-2Zm3-8v2h5V9H6Zm7 0v2h5V9h-5Zm-7 6v2h5v-2H6Zm7 0v2h5v-2h-5Z"/></svg>'); }
@@ -113,17 +111,19 @@ p{margin:0 0 12px}
 .i.i-trend::after{background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232b5d93"><path d="M3 17 9 11l4 4 8-8v4h2V5h-7v2h4l-7 7-4-4-7 7"/></svg>')}
 .i.i-map::after{background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232b5d93"><path d="M12 2C8.1 2 5 5.1 5 9a7.1 7.1 0 0 0 1.1 3.7L12 22l5.9-9.3A7.1 7.1 0 0 0 19 9c0-3.9-3.1-7-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>')}
 
-/* ===== References masonry ===== */
-.masonry{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gap); align-items:start; margin-top:14px}
-@media (max-width:900px){ .masonry{grid-template-columns:repeat(2,1fr)} }
-@media (max-width:560px){ .masonry{grid-template-columns:1fr} }
+/* ===== Owner (Bemutatkozás) ===== */
+.owner-grid{display:grid; grid-template-columns:1fr 1.1fr; gap:var(--gap); align-items:center}
+@media (max-width:980px){ .owner-grid{grid-template-columns:1fr} }
+.owner-photo{border-radius:18px; overflow:hidden; box-shadow:var(--shadow)}
+.owner-photo img{width:100%; height:auto; object-fit:cover}
+.owner-copy p{color:var(--ink)}
 
-.tile img{width:100%; border-radius:14px; box-shadow:var(--shadow); object-fit:cover; display:block}
-.tile.big img{aspect-ratio: 4/3}
-.tile.mid img{aspect-ratio: 5/4}
-.tile.small img{aspect-ratio: 1/1}
-
-/* Lightbox */
+/* ===== Referenciák ===== */
+.grid-refs{display:grid; grid-template-columns: repeat(3,1fr); gap:var(--gap); margin-top:14px}
+@media (max-width:900px){ .grid-refs{grid-template-columns: repeat(2,1fr)} }
+@media (max-width:560px){ .grid-refs{grid-template-columns: 1fr} }
+.ref img{border-radius:14px; box-shadow:var(--shadow); transition: transform .25s}
+.ref:hover img{transform:translateY(-4px)}
 #lightbox{position:fixed; inset:0; background:rgba(0,0,0,.72); display:grid; place-items:center; opacity:0; pointer-events:none; transition:.25s; z-index:60}
 #lightbox.open{opacity:1; pointer-events:auto}
 #lightbox img{max-width:min(92vw, 1100px); max-height:86vh; border-radius:14px}
@@ -136,7 +136,7 @@ label span{color:#c04848}
 input,textarea{border:1px solid #0002; border-radius:12px; padding:10px 12px; font:inherit; background:#fff}
 .card-form.sent .btn.primary{background:#28a745}
 
-/* ===== Contact ===== */
+/* ===== Kapcsolat ===== */
 .contact-grid{display:grid; grid-template-columns:1.1fr 1.5fr; gap:var(--gap); align-items:start}
 @media (max-width:920px){ .contact-grid{grid-template-columns:1fr} }
 .contact-info p{margin:6px 0}
@@ -148,10 +148,14 @@ input,textarea{border:1px solid #0002; border-radius:12px; padding:10px 12px; fo
 /* ===== Footer ===== */
 .footer{padding:28px 0; text-align:center; color:var(--muted)}
 
-/* ===== Reveal (balról, lassabb 0.8s) ===== */
-.reveal{opacity:0; transform:translateX(-26px); transition:opacity .8s ease, transform .8s ease}
-.reveal.in{opacity:1; transform:none}
+/* ===== Beúszások (0.5s) ===== */
+.reveal-left, .reveal-right{
+  opacity:0; transition: opacity .5s ease, transform .5s ease; will-change:opacity, transform;
+}
+.reveal-left{transform:translateX(-26px)}
+.reveal-right{transform:translateX(26px)}
+.reveal-left.in, .reveal-right.in{opacity:1; transform:none}
 
-/* Anchor offset */
+/* Anchor offset a sticky header miatt */
 :target{scroll-margin-top:80px}
 

@@ -6,7 +6,7 @@
   --brand:#b88a62;
   --radius:16px;
   --shadow:0 10px 30px rgba(0,0,0,.08);
-  --speed:2s;
+  --speed:3s;  /* beúszás lassabb */
   --ease:cubic-bezier(.22,1,.36,1);
   --bgmask:.78; /* háttér halványítás erőssége */
 }
@@ -106,13 +106,11 @@ body{
   width:140px; opacity:.9; filter:drop-shadow(0 6px 14px rgba(0,0,0,.12));
 }
 
-/* REVEALS – finom, lassú beúszás */
-.reveal-from-left{
-  opacity:0; transform:translateX(-56px);
-  will-change:transform,opacity;
-}
+/* REVEALS – minden elem jobbról lassan */
+.reveal-from-left,
 .reveal-from-right{
-  opacity:0; transform:translateX(56px);
+  opacity:0;
+  transform:translateX(80px);  /* jobbról indul */
   will-change:transform,opacity;
 }
 .reveal-in{

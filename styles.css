@@ -6,7 +6,7 @@
   --brand:#b88a62;         /* finom barna akcentus */
   --radius:16px;
   --shadow:0 10px 30px rgba(0,0,0,.08);
-  --speed:1.2s;            /* beúszás: lassabb, elegánsabb */
+  --speed:1.6s;            /* beúszás: MÉG lassabb, elegánsabb */
   --ease:cubic-bezier(.22,1,.36,1); /* kifinomult ease-out */
 }
 
@@ -58,10 +58,11 @@ body{
 }
 .soft-bg{background:linear-gradient(180deg,#f5efe9, #f8f6f2)}
 
-/* HÁTTÉR utility-k */
-.bg-1{ background:url("hatter1.jpg") no-repeat center/cover; }
-.bg-2{ background:url("hatter2.jpg") no-repeat center/cover; }
-.bg-3{ background:url("hatter3.jpg") no-repeat center/cover; }
+/* HÁTTÉR utility-k (PNG fájlok) */
+.bg-1{ background:url("hatter1.png") no-repeat center/cover; }
+.bg-2{ background:url("hatter2.png") no-repeat center/cover; }
+.bg-3{ background:url("hatter3.png") no-repeat center/cover; }
+.bg-4{ background:url("hatter4.png") no-repeat center/cover; }
 
 /* Typographic helpers */
 .lead{

@@ -1,7 +1,6 @@
 /* ---- Alapok ---- */
 :root{
   --bg: #faf6ef;
-  --panel: #fff8ef;
   --text: #2b2319;
   --muted: #6e5f4e;
   --brand: #2a67a3;   /* logó kék */
@@ -13,28 +12,26 @@
 html,body{margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   color:var(--text);
   background: url("hatter.png") center/cover fixed, var(--bg);
 }
 img{max-width:100%;display:block}
-
-/* konténer */
 .container{width:min(1120px, 92%);margin-inline:auto}
 
 /* ---- NAV ---- */
 .header{
   position:sticky; top:0; z-index:1000;
-  background: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.78);
   backdrop-filter: blur(6px);
-  border-bottom:1px solid #eee6da;
+  border-bottom:1px solid #eee2d3;
 }
 .nav{
   display:flex; align-items:center; justify-content:space-between;
   gap:16px; padding:10px 0;
 }
 .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit}
-.brand img{height:92px} /* nagyobb logó a menüben */
+.brand img{height:98px}              /* nagyobb logó a menüben */
 .brand-text{font-weight:700; letter-spacing:.3px}
 
 .nav-toggle{display:none;background:none;border:0;font-size:28px;line-height:1;cursor:pointer}
@@ -42,11 +39,10 @@ img{max-width:100%;display:block}
 .nav-links a{color:var(--text); text-decoration:none; padding:10px 12px; border-radius:999px}
 .nav-links a:hover{background:#f1e7d9}
 
-/* mobil nav */
 @media (max-width:900px){
   .nav-toggle{display:block}
   .nav-links{
-    position:absolute; right:16px; top:70px;
+    position:absolute; right:16px; top:74px;
     background:#fff; border:1px solid #eee3d6; border-radius:16px;
     padding:10px; display:none; flex-direction:column; gap:6px; box-shadow:var(--shadow);
   }
@@ -55,57 +51,72 @@ img{max-width:100%;display:block}
 
 /* ---- HERO ---- */
 .hero{
-  display:grid; grid-template-columns: 1.1fr .9fr; align-items:center;
-  gap:40px; padding:56px 0 32px;
+  display:grid; grid-template-columns: 1fr .75fr 1fr; align-items:center;
+  gap:36px; padding:58px 0 34px;
 }
 .chip{
   display:inline-block; background:#fff; border:2px solid #1f1f1f10;
-  border-radius:999px; padding:8px 14px; color:#5a4b3a; font-weight:600;
+  border-radius:999px; padding:8px 14px; color:#5a4b3a; font-weight:700;
   box-shadow: 0 6px 18px rgba(0,0,0,.06);
 }
-.hero h1{font-size: clamp(32px, 4.4vw, 56px); line-height:1.05; margin:14px 0}
-.hero p{color:var(--muted); font-size: clamp(16px, 1.5vw, 18px)}
+.hero h1{font-size: clamp(36px, 4.8vw, 64px); line-height:1.03; margin:14px 0}
+.hero p{color:var(--muted); font-size: clamp(16px, 1.5vw, 19px)}
 .hero-cta{display:flex; gap:12px; margin-top:18px}
 .btn,.btn-outline{
-  display:inline-block; padding:12px 18px; border-radius:14px; font-weight:700; text-decoration:none
+  display:inline-block; padding:12px 18px; border-radius:14px; font-weight:800; text-decoration:none
 }
 .btn{background:var(--accent); color:#3b2b1b}
 .btn:hover{filter:brightness(.95)}
 .btn-outline{border:2px solid #cdb195; color:#5a4b3a; background:#fff}
 
-.hero-right{position:relative}
-.hero-img-wrap{position:relative; max-width:520px; margin-left:-40px} /* balra húzás */
-.hero-img{border-radius:16px; box-shadow:var(--shadow)}
-.hero-logo-overlay{
-  position:absolute; top:50%; right:-90px; transform:translateY(-50%);
-  height:150px; opacity:.95; filter: drop-shadow(0 6px 20px rgba(0,0,0,.1));
+/* középső nagy logó */
+.hero-center{display:flex; align-items:center; justify-content:center; min-height:220px}
+.hero-center-logo{
+  height:210px; width:auto; opacity:.98;
+  filter: drop-shadow(0 10px 28px rgba(0,0,0,.12));
 }
 
-/* ---- SZEKCIÓK ---- */
-.section{padding:64px 0}
-.section-title{font-size: clamp(28px, 3vw, 40px); margin:0 0 22px}
-.soft-bg{background:rgba(255,255,255,.6); border-top:1px solid #efe6da; border-bottom:1px solid #efe6da}
+/* jobb oldali kép (külön, nem átlógva) */
+.hero-photo{
+  border-radius:20px; box-shadow:var(--shadow);
+  transform:translateX(-12px);   /* kis balra húzás, hogy középen hely legyen */
+}
 
-/* Szolgáltatás kártyák */
+/* ---- SZEKCIÓ ---- */
+.section{padding:66px 0}
+.section-title{font-size: clamp(28px, 3.1vw, 42px); margin:0 0 22px}
+
+/* Szolgáltatás kártyák — FLIP */
 .cards{display:grid; grid-template-columns: repeat(4,1fr); gap:18px}
 @media (max-width:1000px){ .cards{grid-template-columns: repeat(2,1fr)} }
 @media (max-width:560px){ .cards{grid-template-columns: 1fr} }
 
-.card{
-  background:#fff; border:1px solid #f0e6d8; border-radius:18px; padding:22px; text-align:center;
-  box-shadow:var(--shadow); transition:transform .25s ease, box-shadow .25s ease;
-  min-height:180px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+.flip{perspective:1000px; cursor:pointer}
+.flip-inner{
+  position:relative; width:100%; min-height:190px; transform-style:preserve-3d;
+  transition: transform .7s cubic-bezier(.2,.7,.2,1);
 }
-.card:hover{transform:translateY(-4px); box-shadow:0 12px 34px rgba(0,0,0,.12)}
-.card-ico{font-size:40px; margin-bottom:10px}
+.flip:hover .flip-inner, .flip.active .flip-inner{ transform: rotateY(180deg); }
+
+.flip-front, .flip-back{
+  position:absolute; inset:0; border-radius:18px; padding:22px;
+  background:#ffffff; border:1px solid #f0e6d8; box-shadow:var(--shadow);
+  backface-visibility:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+}
+.flip-front .ico{font-size:44px; margin-bottom:10px}
+.flip-front h3{margin:0}
+
+.flip-back{transform: rotateY(180deg)}
+.flip-back p{margin:0 0 10px; color:#4e4336}
+.mini-logo{height:28px; opacity:.95}
 
 /* Rólunk */
 .about-grid{display:grid; grid-template-columns: 1.2fr .8fr; align-items:center; gap:26px}
-.about-logo{height:95px} /* picit nagyobb */
+.about-logo{height:100px}
 
 /* Miért minket */
-.why-grid{display:grid; grid-template-columns: .7fr 1.3fr; gap:26px; align-items:start}
-.why-logo{height:95px; justify-self:center} /* picit nagyobb */
+.why-grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:26px; align-items:center}
+.why-logo{height:100px; justify-self:center}
 .why-list{margin:0; padding-left:18px}
 .why-list li{margin:10px 0; color:#4f4337}
 
@@ -127,7 +138,7 @@ img{max-width:100%;display:block}
 
 /* Ajánlatkérés */
 .quote{
-  background:#fff7eb; border:1px solid #f0e1cd; border-radius:22px;
+  background:rgba(255,247,235,.9); border:1px solid #f0e1cd; border-radius:22px;
   padding:22px; box-shadow:var(--shadow); max-width:720px
 }
 .quote label{display:block; font-weight:700; margin:14px 0 6px}
@@ -139,18 +150,22 @@ img{max-width:100%;display:block}
 
 /* Kapcsolat */
 .contact-grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:26px; align-items:center}
-.contact-logo{height:95px} /* picit nagyobb */
+.contact-logo{height:100px}
 
 /* Láb */
-.footer{border-top:1px solid #efe6da; background:rgba(255,255,255,.7)}
+.footer{border-top:1px solid #efe6da; background:rgba(255,255,255,.65)}
 .footer-inner{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 0}
-.footer-logo{height:70px}
-.fb-link{display:inline-flex; align-items:center; gap:8px; color:#355997; text-decoration:none; font-weight:700}
+.footer-logo{height:74px}
+.fb-link{display:inline-flex; align-items:center; gap:8px; color:#355997; text-decoration:none; font-weight:800}
 .fb-link svg{width:20px; height:20px; fill:#355997}
 
-/* ---- Beúszó animációk ---- */
-.reveal-left,.reveal-right{opacity:0; transform:translateX(0); transition:opacity .6s ease, transform .6s ease}
-.reveal-left{transform:translateX(-40px)}
-.reveal-right{transform:translateX(40px)}
+/* ---- Lassú oldalirányú beúszások ---- */
+.reveal-left,.reveal-right{
+  opacity:0; transform:translateX(0);
+  transition: opacity 1.1s cubic-bezier(.2,.7,.2,1) var(--delay,0ms),
+              transform 1.1s cubic-bezier(.2,.7,.2,1) var(--delay,0ms);
+}
+.reveal-left{transform:translateX(-60px)}
+.reveal-right{transform:translateX(60px)}
 .in{opacity:1; transform:translateX(0)}
 

@@ -3,48 +3,50 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Szőke Épker KFT.</title>
-  <meta name="description" content="Szőke Épker Kft. – generálkivitelezés, térkövezés, homlokzati szigetelés, festés-felújítás. Minőség kompromisszumok nélkül.">
-  <link rel="preload" as="image" href="hatter.png">
-  <link rel="preload" as="image" href="logo.png">
+  <title>Szőke Épker Kft. — Generálkivitelezés, térkövezés, szigetelés</title>
+  <meta name="description" content="Szőke Épker Kft. — minőségi generálkivitelezés, homlokzati szigetelés, térkövezés-burkolás, festés-felújítás. Országos lefedettség, átlátható ajánlat." />
+  <link rel="icon" href="logo.png" />
+  <link rel="preload" href="hatter.png" as="image" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- ===== Sticky Header ===== -->
-  <header class="header">
-    <div class="container nav-wrap">
-      <a href="#hero" class="brand">
-        <img src="logo.png" alt="Szőke Épker logó" class="brand-logo" />
-        <span class="brand-name">Szőke Épker KFT.</span>
-      </a>
+<!-- ===== HEADER ===== -->
+<header class="site-header" id="top">
+  <div class="container nav-wrap">
+    <a href="#top" class="brand">
+      <img src="logo.png" alt="Szőke Épker logó" class="brand-logo" />
+      <span class="brand-name">Szőke Épker Kft.</span>
+    </a>
 
-      <button class="burger" aria-label="Menü váltása">
-        <span></span><span></span><span></span>
-      </button>
+    <button class="nav-toggle" aria-label="Menü" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
 
-      <nav class="nav">
-        <a href="#hero">Főoldal</a>
-        <a href="#services">Szolgáltatások</a>
-        <a href="#about">Rólunk</a>
-        <a href="#intro">Bemutatkozás</a>
-        <a href="#refs">Referenciák</a>
-        <a href="#quote">Ajánlatkérés</a>
-        <a href="#contact">Kapcsolat</a>
-      </nav>
-    </div>
-  </header>
+    <nav class="main-nav" id="mainNav">
+      <a href="#hero">Főoldal</a>
+      <a href="#services">Szolgáltatások</a>
+      <a href="#about">Miért válasszon minket</a>
+      <a href="#intro">Bemutatkozás</a>
+      <a href="#refs">Referenciák</a>
+      <a href="#quote">Ajánlatkérés</a>
+      <a href="#contact">Kapcsolat</a>
+    </nav>
+  </div>
+</header>
 
-  <!-- ===== Hero ===== -->
+<main>
+
+  <!-- ===== HERO (bal: szöveg | közép: kisebb kép | jobb: nagy logó) ===== -->
   <section id="hero" class="section hero">
     <div class="container hero-grid">
+      <!-- Bal: szöveg -->
       <div class="hero-text reveal slide-left">
         <span class="pill">Ország bármely pontján</span>
         <h1>Minőség kompromisszumok nélkül</h1>
         <p>
           Generálkivitelezés, családi házak és társasházak építése, felújítások,
-          homlokzati szigetelés, térkövezés, burkolás és festés – pontos határidők,
-          átlátható ajánlat.
+          homlokzati szigetelés, térkövezés és burkolás — átlátható ajánlat, tartott határidők.
         </p>
         <div class="actions">
           <a href="#quote" class="btn primary">Ingyenes ajánlatkérés</a>
@@ -52,156 +54,172 @@
         </div>
       </div>
 
-      <div class="hero-media reveal slide-right">
-        <img src="kep1.jpg" alt="Építkezés helyszín" class="hero-img" />
-      </div>
-    </div>
+      <!-- Közép: kép (kisebb) -->
+      <figure class="hero-media reveal slide-right">
+        <img src="kep1.jpg" alt="Kivitelezési pillanatkép" />
+      </figure>
 
-    <div class="hero-logo reveal slide-up">
-      <img src="logo.png" alt="Szőke Épker logó nagyban" />
+      <!-- Jobb: nagy logó -->
+      <div class="hero-logo-big reveal slide-right">
+        <img src="logo.png" alt="Szőke Épker nagy logó" />
+      </div>
     </div>
   </section>
 
-  <!-- ===== Services ===== -->
+  <!-- ===== SERVICES (flip kártyák) ===== -->
   <section id="services" class="section">
     <div class="container">
       <h2 class="reveal slide-left">Szolgáltatásaink</h2>
 
-      <div class="cards grid-4">
-        <!-- Térkövezés -->
-        <article class="card reveal slide-left">
-          <div class="icon">
-            <!-- tégla ikon (inline SVG) -->
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="4" rx="1"/><rect x="13" y="5" width="8" height="4" rx="1"/><rect x="3" y="11" width="8" height="4" rx="1"/><rect x="13" y="11" width="8" height="4" rx="1"/><rect x="8" y="17" width="8" height="4" rx="1"/></svg>
+      <div class="service-cards">
+        <!-- 1. Térkövezés és burkolás -->
+        <article class="card reveal slide-left" tabindex="0" aria-label="Térkövezés és burkolás">
+          <div class="card-inner">
+            <div class="card-front">
+              <div class="icon i-brick"></div>
+              <h3>Térkövezés és burkolás</h3>
+            </div>
+            <div class="card-back">
+              <p>Időtálló, esztétikus burkolatok kültérre és beltérre, precíz szintezéssel.</p>
+              <img src="logo.png" alt="" class="mini-logo">
+            </div>
           </div>
-          <h3>Térkövezés és burkolás</h3>
-          <p>Időtálló, esztétikus burkolatok kültérre és beltérre, precíz szintezéssel.</p>
         </article>
 
-        <!-- Generálkivitelezés -->
-        <article class="card reveal slide-right">
-          <div class="icon">
-            <!-- daru/állvány stilizált -->
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v2H3z"/><path d="M8 7v10h2V7zM14 7v10h2V7z"/><circle cx="12" cy="19" r="2"/></svg>
+        <!-- 2. Generálkivitelezés -->
+        <article class="card reveal slide-right" tabindex="0" aria-label="Generálkivitelezés">
+          <div class="card-inner">
+            <div class="card-front">
+              <div class="icon i-crane"></div>
+              <h3>Generálkivitelezés</h3>
+            </div>
+            <div class="card-back">
+              <p>Teljes projektmenedzsment a tervezéstől a kulcsátadásig, dokumentált folyamatokkal.</p>
+              <img src="logo.png" alt="" class="mini-logo">
+            </div>
           </div>
-          <h3>Generálkivitelezés</h3>
-          <p>Teljes projektmenedzsment a tervezéstől a kulcsátadásig, dokumentált folyamatokkal.</p>
         </article>
 
-        <!-- Homlokzati szigetelés -->
-        <article class="card reveal slide-left">
-          <div class="icon">
-            <!-- ház ikon -->
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9z"/></svg>
+        <!-- 3. Homlokzati szigetelés -->
+        <article class="card reveal slide-left" tabindex="0" aria-label="Homlokzati szigetelés">
+          <div class="card-inner">
+            <div class="card-front">
+              <div class="icon i-house"></div>
+              <h3>Homlokzati szigetelés</h3>
+            </div>
+            <div class="card-back">
+              <p>Energiatakarékos, prémium rendszerek a gyártói előírások szerint kivitelezve.</p>
+              <img src="logo.png" alt="" class="mini-logo">
+            </div>
           </div>
-          <h3>Homlokzati szigetelés</h3>
-          <p>Energiatakarékos, prémium rendszerek gyártói előírások szerint kivitelezve.</p>
         </article>
 
-        <!-- Festés / felújítás -->
-        <article class="card reveal slide-right">
-          <div class="icon">
-            <!-- paletta -->
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c3 0 4-2 4-3.5S14.5 15 13 15s-2-1-2-2 1-2 2.5-2S17 8.5 17 7c0-2-2-4-5-4z"/><circle cx="7" cy="10" r="1.3"/><circle cx="9.8" cy="7.8" r="1.3"/><circle cx="14" cy="7.5" r="1.3"/></svg>
+        <!-- 4. Festés, felújítás -->
+        <article class="card reveal slide-right" tabindex="0" aria-label="Festés, felújítás">
+          <div class="card-inner">
+            <div class="card-front">
+              <div class="icon i-roller"></div>
+              <h3>Festés, felújítás</h3>
+            </div>
+            <div class="card-back">
+              <p>Tiszta munkaterület, esztétikus kivitelezés, gyors és igényes átadás.</p>
+              <img src="logo.png" alt="" class="mini-logo">
+            </div>
           </div>
-          <h3>Festés, felújítás</h3>
-          <p>Esztétikus kivitelezés, gyors és igényes átadás, tiszta munkaterület.</p>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- ===== About (Miért válasszon minket?) ===== -->
+  <!-- ===== ABOUT (Miért válasszon minket?) ===== -->
   <section id="about" class="section muted">
     <div class="container two-col">
       <div class="reveal slide-left">
         <h2>Miért válasszon minket?</h2>
         <ul class="ticks">
           <li><strong>Átlátható költségvetés:</strong> tételes ajánlat, rejtett tételek nélkül.</li>
-          <li><strong>Határidő-garancia:</strong> ütemterv, rendszeres státuszjelentés.</li>
+          <li><strong>Határidő-garancia:</strong> ütemterv, rendszeres státusz és fotós dokumentáció.</li>
           <li><strong>Prémium anyagok:</strong> ismert rendszerek, gyártói előírások szerint.</li>
-          <li><strong>Tapasztalt csapat:</strong> bevált, megbízható szakemberek.</li>
-          <li><strong>Ügyfél szemlélet:</strong> költséghatékony megoldások, kompromisszumok nélkül.</li>
+          <li><strong>Tapasztalt csapat:</strong> bevált, megbízható szakemberekkel dolgozunk.</li>
+          <li><strong>Ügyfél-központúság:</strong> költséghatékony megoldások kompromisszumok nélkül.</li>
         </ul>
       </div>
       <div class="about-logo reveal slide-right">
-        <img src="logo.png" alt="Szőke Épker logó" />
+        <img src="logo.png" alt="Szőke Épker logó">
       </div>
     </div>
   </section>
 
-  <!-- ===== Founder Intro (Bemutatkozás) ===== -->
+  <!-- ===== OWNER INTRO (Bemutatkozás) ===== -->
   <section id="intro" class="section">
     <div class="container two-col">
-      <div class="intro-media reveal slide-left">
-        <img src="szoke.jpg" alt="Szőke Gyula – Szőke Épker Kft. alapítója" />
-      </div>
-      <div class="intro-text reveal slide-right">
+      <figure class="intro-photo reveal slide-left">
+        <img src="szoke.jpg" alt="Szőke Gyula – Szőke Épker Kft. alapítója">
+      </figure>
+
+      <div class="intro-copy reveal slide-right">
         <h2>Bemutatkozás</h2>
         <h3>Szőke Épker Kft. alapítója</h3>
-        <p>
-          Szőke Gyula vagyok, a Szőke Épker Kft. tulajdonosa és alapítója.
-          Több éves tapasztalattal vezetjük végig megrendelőinket a teljes
-          kivitelezési folyamaton – a tervezéstől a kulcsátadásig. Számunkra
-          a korrektség, a pontos kommunikáció és a minőség az első. Minden
-          projektünkben tételes, átlátható ajánlatot és dokumentált előrehaladást biztosítunk.
-        </p>
+        <p><strong>Szőke Gyula</strong> vagyok, a Szőke Épker alapítója és ügyvezetője. Több éves tapasztalattal rendelkezem az építőiparban, és célom, hogy ügyfeleinknek mindig a legmagasabb minőségű, időtálló és költséghatékony megoldásokat kínáljuk.</p>
+        <p>Cégünk családi házak, társasházak és kisebb ipari létesítmények kivitelezésével, homlokzati szigeteléssel, térkövezéssel, burkolással és teljes körű felújításokkal foglalkozik.</p>
+        <p>Fontos számunkra a megbízhatóság, a precizitás és a határidők pontos betartása, mert hisszük, hogy a tartós partneri kapcsolatok alapja a bizalom és a minőségi munka. Tekintsék meg referenciáinkat, és keressenek bizalommal, hogy együtt valósíthassuk meg elképzeléseiket!</p>
       </div>
     </div>
   </section>
 
-  <!-- ===== References ===== -->
+  <!-- ===== REFERENCES (egységes kártyák) ===== -->
   <section id="refs" class="section muted">
     <div class="container">
       <h2 class="reveal slide-left">Referenciák</h2>
-
       <div class="ref-grid">
-        <a class="ref-item reveal slide-left" href="kep1.jpg"><img src="kep1.jpg" alt="Referencia 1"></a>
+        <a class="ref-item reveal slide-left"  href="kep1.jpg"><img src="kep1.jpg" alt="Referencia 1"></a>
         <a class="ref-item reveal slide-right" href="kep2.jpg"><img src="kep2.jpg" alt="Referencia 2"></a>
-        <a class="ref-item reveal slide-left" href="kep3.jpg"><img src="kep3.jpg" alt="Referencia 3"></a>
+        <a class="ref-item reveal slide-left"  href="kep3.jpg"><img src="kep3.jpg" alt="Referencia 3"></a>
         <a class="ref-item reveal slide-right" href="kep4.jpg"><img src="kep4.jpg" alt="Referencia 4"></a>
-        <a class="ref-item reveal slide-left" href="kep5.jpg"><img src="kep5.jpg" alt="Referencia 5"></a>
+        <a class="ref-item reveal slide-left"  href="kep5.jpg"><img src="kep5.jpg" alt="Referencia 5"></a>
       </div>
     </div>
 
     <!-- Lightbox -->
     <div id="lightbox" class="lightbox" aria-hidden="true">
       <button class="lightbox-close" aria-label="Bezárás">×</button>
-      <img src="" alt="Nagyított referencia" />
+      <img src="" alt="Nagyított referencia">
     </div>
   </section>
 
-  <!-- ===== Quote Form ===== -->
+  <!-- ===== QUOTE (Ajánlatkérés) ===== -->
   <section id="quote" class="section">
     <div class="container">
       <h2 class="reveal slide-left">Árajánlat kérése</h2>
-      <form class="form card reveal slide-right" name="ajanlat">
+      <form class="quote-form card reveal slide-right" onsubmit="event.preventDefault(); this.classList.add('sent');">
         <div class="grid-2">
-          <label> Név * <input required type="text" placeholder="Ide írd a neved" /></label>
-          <label> Email * <input required type="email" placeholder="Ide írd az email címed" /></label>
+          <label>Név * <input required type="text" placeholder="Ide írd a neved"></label>
+          <label>Email * <input required type="email" placeholder="Ide írd az email címed"></label>
         </div>
-        <label> Telefonszám <input type="tel" placeholder="Ide írd a telefonszámod (nem kötelező)"/></label>
-        <label> Üzenet * <textarea required rows="4" placeholder="Írd le kérlek, pontosan mire szeretnél ajánlatot kérni!"></textarea></label>
+        <label>Telefonszám <input type="tel" placeholder="Nem kötelező"></label>
+        <label>Üzenet * <textarea required rows="4" placeholder="Írd le, pontosan mire kérsz ajánlatot!"></textarea></label>
         <button class="btn primary wide" type="submit">Küldés</button>
       </form>
     </div>
   </section>
 
-  <!-- ===== Contact ===== -->
-  <section id="contact" class="section muted">
+  <!-- ===== CONTACT ===== -->
+  <section id="contact" class="section contact">
     <div class="container two-col">
-      <div class="reveal slide-left">
+      <div class="contact-info reveal slide-left">
         <h2>Kapcsolat</h2>
         <p><strong>Cím:</strong> 4100 Berettyóújfalu, Dózsa György utca 6 1/3</p>
-        <p><strong>Telefon:</strong> +36 70 607 0675</p>
-        <p><strong>Email:</strong> info@szoke-epker.com</p>
+        <p><strong>Telefon:</strong> <a href="tel:+36706070675">+36 70 607 0675</a></p>
+        <p><strong>Email:</strong> <a href="mailto:info@szoke-epker.com">info@szoke-epker.com</a></p>
         <p class="fb-line">
           <strong>Facebook:</strong>
           <a class="fb" href="https://facebook.com/szokeepkerkft" target="_blank" rel="noopener">
-            <span class="fb-ico" aria-hidden="true">f</span> facebook.com/szokeepkerkft
+            <span aria-hidden="true" class="fb-ico">f</span> facebook.com/szokeepkerkft
           </a>
         </p>
+        <img src="logo.png" alt="Szőke Épker logó" class="contact-logo" />
       </div>
+
       <div class="map-wrap reveal slide-right">
         <iframe
           title="Szőke Épker Kft. – Térkép"
@@ -209,68 +227,69 @@
           loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </div>
-
-    <div class="footer-logo reveal slide-up">
-      <img src="logo.png" alt="Szőke Épker logó" />
-    </div>
-
-    <footer class="container footer">
-      <small>© 2025 Szőke Épker KFT. Minden jog fenntartva.</small>
-    </footer>
   </section>
 
-  <!-- ===== Scripts ===== -->
-  <script>
-    // Burger
-    const burger = document.querySelector('.burger');
-    const nav = document.querySelector('.nav');
-    burger.addEventListener('click', () => {
-      burger.classList.toggle('open');
-      nav.classList.toggle('open');
-    });
+</main>
 
-    // Smooth scroll + active link
-    document.querySelectorAll('.nav a').forEach(a=>{
-      a.addEventListener('click', e=>{
-        e.preventDefault();
-        document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});
-        nav.classList.remove('open'); burger.classList.remove('open');
-      });
-    });
+<footer class="site-footer">
+  <div class="container">
+    <small>© 2025 Szőke Épker Kft. Minden jog fenntartva.</small>
+  </div>
+</footer>
 
-    // Reveal on scroll (0.70s in CSS)
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){ entry.target.classList.add('visible'); }
-      });
-    }, {threshold:0.15});
-    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+<!-- ===== SCRIPTS ===== -->
+<script>
+  // Mobil menü
+  const btn = document.querySelector('.nav-toggle');
+  const nav = document.getElementById('mainNav');
+  btn.addEventListener('click', ()=>{
+    const open = nav.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.querySelectorAll('.main-nav a').forEach(a => a.addEventListener('click', ()=>{
+    nav.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+  }));
 
-    // Lightbox
-    const lb = document.getElementById('lightbox');
-    const lbImg = lb.querySelector('img');
-    const closeBtn = lb.querySelector('.lightbox-close');
-    document.querySelectorAll('.ref-item').forEach(a=>{
-      a.addEventListener('click', e=>{
-        e.preventDefault();
-        lbImg.src = a.getAttribute('href');
-        lb.setAttribute('aria-hidden','false');
-        lb.classList.add('open');
-      });
-    });
-    function closeLb(){
-      lb.classList.remove('open');
-      lb.setAttribute('aria-hidden','true');
-      lbImg.src = '';
-    }
-    closeBtn.addEventListener('click', closeLb);
-    lb.addEventListener('click', e=>{ if(e.target===lb) closeLb(); });
+  // Fejléc árnyék görgetésre
+  const header = document.querySelector('.site-header');
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 8);
+  onScroll(); window.addEventListener('scroll', onScroll);
 
-    // Active header shadow on scroll
-    const header = document.querySelector('.header');
-    window.addEventListener('scroll', ()=>{
-      header.classList.toggle('scrolled', window.scrollY > 8);
+  // Beúszások (0.6s) – váltott irányok
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
     });
-  </script>
+  }, {threshold: .15});
+  document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+  // Flip kártyák mobilon is
+  document.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('click', ()=> card.classList.toggle('flipped'));
+    card.addEventListener('keypress', (ev)=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); card.classList.toggle('flipped'); }});
+  });
+
+  // Lightbox
+  const lb = document.getElementById('lightbox');
+  const lbImg = lb.querySelector('img');
+  const lbClose = lb.querySelector('.lightbox-close');
+  document.querySelectorAll('.ref-item').forEach(a=>{
+    a.addEventListener('click', ev=>{
+      ev.preventDefault();
+      lbImg.src = a.getAttribute('href');
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden','false');
+    });
+  });
+  function closeLb(){
+    lb.classList.remove('open'); lb.setAttribute('aria-hidden','true'); lbImg.src='';
+  }
+  lbClose.addEventListener('click', closeLb);
+  lb.addEventListener('click', e=>{ if(e.target===lb) closeLb(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLb(); });
+</script>
 </body>
 </html>

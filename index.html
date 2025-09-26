@@ -12,7 +12,7 @@
 <!-- ===== Header ===== -->
 <header class="site-header">
   <div class="container nav">
-    <a class="brand" href="#top">
+    <a class="brand" href="#top" aria-label="Szőke Épker – Főoldal">
       <img src="logo.png" alt="Szőke Épker KFT. logó">
       <span class="brand-text">Szőke Épker KFT.</span>
     </a>
@@ -123,18 +123,14 @@
   <div class="container">
     <div class="section-card reveal-left">
       <div class="head">
-        <img src="logo.png" alt="Szőke Épker KFT.">
+        <img src="logo.png" alt="Szőke Épker KFT." class="about-logo">
         <h2 class="section-title" style="margin:0">Miért válasszon minket?</h2>
       </div>
 
       <p><strong>Üzleti szemlélet</strong> mellett dolgozunk: tételes, átlátható ajánlatot adunk, a szerződésben rögzített ütemterv szerint haladunk, és minden mérföldkövet dokumentálunk. Így Ön pontosan látja, hogy a befektetett pénz <em>mire</em> és <em>mikor</em> fordítódik.</p>
-
       <p><strong>Generálkivitelezés:</strong> a teljes projektmenedzsmentet átvállaljuk az engedélyeztetéstől a kulcsátadásig. Heti státuszjelentés, fotós előrehaladás és költségkontroll biztosítja a kiszámíthatóságot.</p>
-
       <p><strong>Térkövezés és burkolás:</strong> szakszerű alapozás, vízelvezetés és tartós anyagok. A kivitelezés előtt mintafelületet készítünk, hogy a végső megjelenés pontosan egyezzen az elképzeléssel.</p>
-
       <p><strong>Homlokzati szigetelés:</strong> a gyártói előírások szerint építünk, hőkamerás ellenőrzéssel és részletes átadási jegyzőkönyvvel. Célunk az energiafogyasztás kézzelfogható csökkentése.</p>
-
       <p><strong>Festés/felújítás:</strong> tiszta munkaterület, igényes előkészítés és tartós bevonatrendszerek. A helyiségek használható állapotban, határidőre kerülnek átadásra.</p>
 
       <ul class="bullets">
@@ -147,7 +143,7 @@
   </div>
 </section>
 
-<!-- ===== References (lightbox) ===== -->
+<!-- ===== References ===== -->
 <section id="refs" class="section refs">
   <div class="container">
     <h2 class="section-title reveal-right">Referenciák – a szolgáltatásainkból</h2>
@@ -157,7 +153,6 @@
       <figure class="ref-card reveal-left"><img src="kep3.jpg" alt="Referencia 3 – felújítás"></figure>
       <figure class="ref-card reveal-right"><img src="kep4.jpg" alt="Referencia 4 – homlokzat"></figure>
       <figure class="ref-card reveal-left"><img src="kep5.jpg" alt="Referencia 5 – festés"></figure>
-      <!-- kep6.jpg szándékosan nincs -->
     </div>
   </div>
 </section>
@@ -200,15 +195,15 @@
         </div>
       </div>
 
-      <!-- logó még egyszer alul, kérés szerint -->
+      <!-- logó még egyszer alul -->
       <div style="display:flex;justify-content:center;margin-top:14px">
-        <img src="logo.png" alt="Szőke Épker" style="height:38px;opacity:.9">
+        <img src="logo.png" alt="Szőke Épker" class="contact-logo">
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== Footer (social gomb marad) ===== -->
+<!-- ===== Footer ===== -->
 <footer class="footer">
   <div class="socials">
     <a class="social-btn" href="https://facebook.com/szokeepkerkft" target="_blank" rel="noopener" aria-label="Facebook oldal megnyitása">
@@ -219,7 +214,7 @@
   © <span id="year"></span> Szőke Épker KFT.
 </footer>
 
-<!-- ===== Lightbox overlay ===== -->
+<!-- ===== Lightbox ===== -->
 <div id="lightbox" style="position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:999;visibility:hidden;opacity:0;transition:.3s">
   <button id="lbPrev" aria-label="Előző kép" style="position:absolute;left:24px;color:#fff;font-size:32px;background:none;border:0;cursor:pointer;">‹</button>
   <img id="lbImg" src="" alt="Nagyított referencia" style="max-width:90%;max-height:90%;border-radius:10px">
@@ -228,10 +223,8 @@
 </div>
 
 <script>
-  // év
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  // mobil menü
   const nav = document.querySelector('.nav');
   const toggle = document.querySelector('.nav-toggle');
   toggle?.addEventListener('click', () => {
@@ -239,16 +232,21 @@
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
 
-  // smooth scroll + menü zárás
+  // smooth scroll
   document.querySelectorAll('a[href^="#"]').forEach(a=>{
     a.addEventListener('click', e=>{
       const id=a.getAttribute('href').slice(1);
       const el=document.getElementById(id);
-      if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); nav.classList.remove('open'); toggle?.setAttribute('aria-expanded','false'); }
+      if(el){
+        e.preventDefault();
+        el.scrollIntoView({behavior:'smooth', block:'start'});
+        nav.classList.remove('open');
+        toggle?.setAttribute('aria-expanded','false');
+      }
     });
   });
 
-  // oldalról beúszások
+  // oldalról beúszó animációk
   const io = new IntersectionObserver((entries,obs)=>{
     entries.forEach(e=>{
       if(e.isIntersecting){ e.target.classList.add('in-view'); obs.unobserve(e.target); }
@@ -263,7 +261,7 @@
   }
   document.querySelectorAll('[data-flip]').forEach(card=>{
     card.addEventListener('click',()=>toggleFlip(card));
-    card.addEventListener('keypress',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleFlip(card);}});
+    card.addEventListener('keypress',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleFlip(card);} });
     document.addEventListener('click',e=>{ if(!card.contains(e.target)) card.classList.remove('flipped'); });
   });
 
@@ -291,3 +289,4 @@
 </script>
 </body>
 </html>
+

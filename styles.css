@@ -6,7 +6,8 @@
   --brand:#b88a62;         /* finom barna akcentus */
   --radius:16px;
   --shadow:0 10px 30px rgba(0,0,0,.08);
-  --speed:.95s;            /* beúszás: lassabb, elegánsabb */
+  --speed:1.2s;            /* beúszás: lassabb, elegánsabb */
+  --ease:cubic-bezier(.22,1,.36,1); /* kifinomult ease-out */
 }
 
 *{box-sizing:border-box}
@@ -32,9 +33,17 @@ body{
 .brand-text{font-weight:700}
 .main-nav a{margin-left:18px; text-decoration:none; color:#333}
 .main-nav a:hover{color:var(--brand)}
+
+/* Kapcsolat gomb – barna kiemelés */
 .main-nav .pill{
-  padding:8px 14px; border:1px solid #e7ddd5; border-radius:999px;
-  background:#fff;
+  padding:8px 14px;
+  border-radius:999px;
+  background:var(--brand);
+  color:#fff;
+  border:none;
+}
+.main-nav .pill:hover{
+  background:#a1734e; /* sötétebb barna hover */
 }
 
 /* SECTION BASIC */
@@ -48,6 +57,11 @@ body{
   background:var(--brand); position:absolute; left:0; top:-12px;
 }
 .soft-bg{background:linear-gradient(180deg,#f5efe9, #f8f6f2)}
+
+/* HÁTTÉR utility-k */
+.bg-1{ background:url("hatter1.jpg") no-repeat center/cover; }
+.bg-2{ background:url("hatter2.jpg") no-repeat center/cover; }
+.bg-3{ background:url("hatter3.jpg") no-repeat center/cover; }
 
 /* Typographic helpers */
 .lead{
@@ -73,10 +87,19 @@ body{
   width:140px; opacity:.9; filter:drop-shadow(0 6px 14px rgba(0,0,0,.12));
 }
 
-/* REVEALS */
-.reveal-from-left{opacity:0; transform:translateX(-40px)}
-.reveal-from-right{opacity:0; transform:translateX(40px)}
-.reveal-in{opacity:1; transform:translateX(0); transition:transform var(--speed) ease, opacity var(--speed) ease}
+/* REVEALS – finomabb, lassabb beúszás balról/jobbról */
+.reveal-from-left{
+  opacity:0; transform:translateX(-56px);
+  will-change:transform,opacity;
+}
+.reveal-from-right{
+  opacity:0; transform:translateX(56px);
+  will-change:transform,opacity;
+}
+.reveal-in{
+  opacity:1; transform:translateX(0);
+  transition:transform var(--speed) var(--ease), opacity var(--speed) var(--ease);
+}
 
 /* SERVICES GRID (stabil, nem ugrik) */
 .services{
@@ -92,7 +115,7 @@ body{
 .card-inner{
   position:relative; width:100%; height:100%;
   transform-style:preserve-3d;
-  transition:transform .6s ease;
+  transition:transform .6s var(--ease);
 }
 .service-card:hover .card-inner{ transform:rotateY(180deg) }
 .card-face{
@@ -148,7 +171,7 @@ body{
 .modal{
   position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
   background:rgba(0,0,0,.55); z-index:2000; padding:24px;
-  opacity:0; pointer-events:none; transition:opacity .25s ease;
+  opacity:0; pointer-events:none; transition:opacity .25s var(--ease);
 }
 .modal[aria-hidden="false"]{opacity:1; pointer-events:auto}
 .modal-img{max-width:min(1100px,92%); max-height:85vh; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.5)}
@@ -176,6 +199,12 @@ body{
 
 /* FOOTER */
 .site-footer{padding:30px 0; color:var(--muted); text-align:center}
+
+/* Mozgás-érzékeny felhasználóknak */
+@media (prefers-reduced-motion: reduce){
+  .reveal-from-left, .reveal-from-right{ transform:none !important; opacity:1 !important; }
+  .reveal-in{ transition:none !important; }
+}
 
 /* RESPONSIVE */
 @media (max-width:900px){

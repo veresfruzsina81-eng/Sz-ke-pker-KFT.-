@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Webshop – Szőke Épker KFT.</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- Mini fixek ehhez az oldalhoz -->
+  <!-- Oldalspecifikus apró fixek -->
   <style>
-    .shop-header-logo{height:42px;width:auto}             /* normál logó */
+    .shop-header-logo{height:42px;width:auto}
     .checkbox-row{display:flex;align-items:center;gap:8px;margin:12px 0}
     .checkbox-row input[type="checkbox"]{margin:0}
   </style>
 </head>
 <body>
 
-  <!-- FEJLÉC (hamburgerrel) -->
+  <!-- FEJLÉC -->
   <header class="site-header">
     <div class="container header-inner">
       <a href="index.html#fooldal" class="brand">
@@ -82,28 +82,27 @@
     </div>
   </aside>
 
-  <!-- PÉNZTÁR + NETLIFY FORMS -->
+  <!-- PÉNZTÁR -->
   <div class="shop-checkout" aria-hidden="true" id="shopCheckout">
     <div class="shop-checkout__card">
       <button class="shop-checkout__close" aria-label="Pénztár bezárása">×</button>
       <h3>Rendelés leadása (utánvét)</h3>
 
-      <!-- SIKER NÉZET -->
+      <!-- Siker nézet -->
       <div class="shop-success" id="shopSuccess" hidden>
         <div class="shop-success__icon">✔</div>
         <h4>Köszönjük a rendelést!</h4>
-        <p>Hamarosan visszaigazoló emailt kap. A részleteket elküldtük.</p>
+        <p>Hamarosan visszaigazoló emailt kap.</p>
         <button class="shop-btn shop-btn--primary" id="successClose">Bezárás</button>
       </div>
 
-      <!-- RENDELŐ ŰRLAP -->
+      <!-- Űrlap -->
       <form id="orderForm" name="webshop-order" method="POST" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="webshop-order" />
         <p class="hidden"><label>Ne töltsd ki: <input name="bot-field" /></label></p>
         <textarea name="order_json" id="orderJson" style="display:none;"></textarea>
 
         <div class="shop-grid">
-          <!-- Floating label mezők (.fl) -->
           <label class="fl">
             <input name="name" required placeholder=" " />
             <span>Név *</span>
@@ -118,17 +117,20 @@
             <span>Telefon *</span>
           </label>
 
-          <!-- Szállítási cím teljes sorban (nem folyik össze) -->
+          <!-- Szállítási cím teljes sorban; hint külön, label nem ütközik -->
           <label class="fl shop-grid--full">
-            <input name="address" required placeholder="Irányítószám, város, utca, házszám" />
+            <input name="address" required placeholder=" " />
             <span>Szállítási cím *</span>
+            <small class="hint">Irányítószám, város, utca, házszám</small>
           </label>
 
           <label class="fl">
             <input value="Utánvét" name="payment" readonly placeholder=" " />
             <span>Fizetés módja</span>
           </label>
-          <label class="fl">
+
+          <!-- Selectnél a label mindig fent -->
+          <label class="fl fl-select">
             <select name="shipping" id="shippingSelect">
               <option value="Házhozszállítás">Házhozszállítás</option>
               <option value="Személyes átvétel">Személyes átvétel</option>
@@ -137,7 +139,7 @@
           </label>
 
           <label class="fl shop-grid--full">
-            <textarea name="note" rows="3" placeholder="Egyéb kérés…"></textarea>
+            <textarea name="note" rows="3" placeholder=" "></textarea>
             <span>Megjegyzés</span>
           </label>
 
@@ -150,7 +152,7 @@
             <div class="shop-freeship" id="checkoutFreeShip"></div>
           </div>
 
-          <!-- Checkbox szép sorban -->
+          <!-- Checkbox: szépen egy sorban -->
           <div class="checkbox-row shop-grid--full">
             <input type="checkbox" name="privacy" required id="privacyCb">
             <label for="privacyCb">Elfogadom az Adatkezelési tájékoztatót.</label>
@@ -366,14 +368,12 @@
   const form = qS("#orderForm");
   form?.addEventListener("submit", async (e)=>{
     e.preventDefault();
-    renderSummary(); // biztosítsuk a hidden JSON-t
+    renderSummary(); // töltsük ki a hidden JSON-t
     const fd = new FormData(form);
     try{
       await fetch("/", { method:"POST", body: fd });
-      // siker
       qS("#shopSuccess").hidden = false;
       form.style.display = "none";
-      // kiürítés
       cart = []; saveCart(); renderSummary();
     }catch(err){
       alert("Hoppá, a beküldés nem sikerült. Próbáld újra.");
@@ -390,7 +390,7 @@
     setTimeout(()=> { el.classList.remove('on'); setTimeout(()=> el.remove(), 300); }, 1800);
   }
 
-  // Start
+  // Kezdő render
   renderProducts(); updateCartUI();
   </script>
 </body>

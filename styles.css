@@ -424,3 +424,69 @@ body{
   opacity:0; transition:transform .25s var(--ease), opacity .25s var(--ease); z-index:3000;
 }
 .shop-toast.on{ opacity:1; transform:translateX(-50%) translateY(0) }
+/* === Checkout UI – modernizálás === */
+.shop-checkout{ align-items:center; padding:12px }
+.shop-checkout__card{
+  width:min(720px,96vw);
+  max-height:90vh; overflow:auto;
+  border-radius:20px;
+  border:1px solid #eee3da;
+  background:#fff;
+  box-shadow:0 30px 80px rgba(0,0,0,.25);
+  padding:18px 18px 14px;
+}
+.shop-checkout h3{
+  font-size:1.15rem; letter-spacing:.2px;
+  margin:0 0 .75rem; padding-bottom:.5rem;
+  border-bottom:1px solid #f0e8df;
+}
+.shop-checkout__close{
+  position:sticky; top:6px; left:calc(100% - 28px);
+  width:28px;height:28px; line-height:26px; border-radius:9px;
+  border:1px solid #e8e2db; background:#fff; font-size:18px; cursor:pointer;
+}
+
+/* űrlap elemek – légiesebb, fókusz kiemelés */
+.shop-grid{ gap:14px; margin:12px 0 8px }
+.shop-grid label{ gap:8px; font-weight:600 }
+.shop-grid input,.shop-grid select,.shop-grid textarea{
+  padding:13px 14px; border-radius:12px;
+  border:1px solid #e5ddd6; background:#fff; outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.shop-grid input:focus,.shop-grid select:focus,.shop-grid textarea:focus{
+  border-color:#cdb29a; box-shadow:0 0 0 3px rgba(184,138,98,.15);
+}
+
+/* összegzés doboz – kártyaszerű */
+.shop-summary{
+  background:#faf8f6; border:1px solid #eee3da;
+  border-radius:14px; padding:12px 14px;
+}
+.shop-summary ul{ margin:.25rem 0 .5rem 1rem }
+.shop-summary__total{ font-size:1.12rem; }
+
+/* gombok */
+.shop-btn{ border-radius:12px; padding:.7rem 1rem; }
+.shop-btn--primary{ background:var(--brand); border-color:var(--brand); }
+.shop-btn--primary:hover{ filter:brightness(1.06) }
+
+/* mobil – teljes szélesség, kényelmes érintés */
+@media (max-width:700px){
+  .shop-checkout{ align-items:flex-start }
+  .shop-checkout__card{
+    width:100%; max-height:92vh; padding:14px 12px 10px; border-radius:16px;
+  }
+  .shop-grid{ grid-template-columns:1fr; gap:12px }
+  .shop-checkout h3{ font-size:1.08rem }
+  .shop-btn,.shop-btn.shop-btn--primary{ width:100% }
+  .shop-grid input,.shop-grid select,.shop-grid textarea{ font-size:16px } /* ne zoomoljon iOS */
+}
+/* Webshop fejléc logóval */
+.shop-header{
+  display:flex; align-items:center; gap:12px; margin-bottom:16px;
+}
+.shop-header img{ height:48px; width:auto; }
+
+/* Szállítás ingyenes jelzés */
+.shop-summary strong{ font-weight:700; }

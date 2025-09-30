@@ -429,6 +429,186 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
     });
   })();
   </script>
+<!-- === CHAT PATCH (Netlify AI, quick replies, kedves üdvözlő, humor) === -->
+<script>
+(()=> {
+  const ENDPOINT = "/.netlify/functions/ai";             // Netlify function
+  const LS_CHAT = "szoke_chat_history_v1";
+  const LS_WELCOME = "szoke_chat_welcome_v2";            // új kulcs, hogy az üdvözlő megjelenjen
 
+  // Fogd a meglévő elemeket (nem hozunk létre újat)
+  const fab   = document.getElementById('chat-fab');
+  const panel = document.getElementById('chat-panel');
+  const body  = document.getElementById('chat-body');
+  const form  = document.getElementById('chat-form');
+  const input = document.getElementById('chat-input');
+  const closeBtn = panel?.querySelector('.chat-close');
+
+  if(!fab || !panel || !body || !form || !input){
+    console.warn("[chat patch] hiányzó elemek – ellenőrizd a chat HTML-t"); return;
+  }
+
+  // Modern ikon – HTML módosítás nélkül
+  if(!fab.querySelector('svg')){
+    fab.innerHTML = `
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+        <path d="M4 6.5A3.5 3.5 0 0 1 7.5 3h9A3.5 3.5 0 0 1 20 6.5v5A3.5 3.5 0 0 1 16.5 15H12l-4 4v-4H7.5A3.5 3.5 0 0 1 4 11.5v-5Z"/>
+      </svg>
+      <span class="dot"></span>`;
+  }
+
+  // Gyors gombok konténer – ha nincs, beszúrjuk a form fölé
+  let quick = document.getElementById('chat-quick');
+  if(!quick){
+    quick = document.createElement('div');
+    quick.id = 'chat-quick';
+    quick.className = 'chat-quick';
+    form.parentNode.insertBefore(quick, form);
+  }
+
+  let history = [];
+  try{ history = JSON.parse(localStorage.getItem(LS_CHAT) || "[]"); }catch(_){ history = []; }
+  const save = () => localStorage.setItem(LS_CHAT, JSON.stringify(history));
+  const scrollBottom = () => body.scrollTop = body.scrollHeight;
+
+  function addMsg(role, html){
+    const wrap = document.createElement('div');
+    wrap.className = 'msg ' + (role==='user'?'me':'bot');
+    wrap.innerHTML = `<div class="bubble">${html}</div>`;
+    body.appendChild(wrap); scrollBottom();
+  }
+  function setQuickReplies(arr){
+    quick.innerHTML = (arr && arr.length)
+      ? arr.slice(0,4).map(t=>`<button type="button" class="qr">${t}</button>`).join("")
+      : "";
+  }
+
+  // Blokkoljuk a korábbi event handlereket (capturing-ben)
+  function stopAll(e){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); }
+  form.addEventListener('submit', stopAll, true);
+  fab.addEventListener('click',  e=>e.stopImmediatePropagation(), true);
+  closeBtn?.addEventListener('click', e=>e.stopImmediatePropagation(), true);
+
+  // Új nyit/zár
+  function openChat(){
+    panel.setAttribute('aria-hidden','false');
+    panel.classList.add('on');
+    fab.classList.add('off');
+    input.focus();
+  }
+  function closeChat(){
+    panel.setAttribute('aria-hidden','true');
+    panel.classList.remove('on');
+    fab.classList.remove('off');
+  }
+  fab.addEventListener('click', openChat);
+  closeBtn?.addEventListener('click', closeChat);
+
+  // Előzmények visszatöltése (ha volt)
+  if(history.length){ history.forEach(m => addMsg(m.role, m.content)); }
+
+  // Kedves üdvözlő első alkalommal
+  window.addEventListener('load', ()=>{
+    if(!localStorage.getItem(LS_WELCOME)){
+      openChat();
+      addMsg('bot','Szia, üdvözöllek a <strong>Szőke Épker</strong> saját chat ablakában! 😊<br>Üzleti kérdésekben segítek: szolgáltatások, webshop, szállítás/fizetés. Árajánlathoz kattints: <a href="index.html#ajanlatkeres">Ajánlatkérés</a>.');
+      setQuickReplies(['Szolgáltatások','Szállítás','Fizetés','Kapcsolat']);
+      localStorage.setItem(LS_WELCOME, '1');
+    }
+  });
+
+  // Fallback (ha a function nem él)
+  function fallbackReply(q){
+    const s=q.toLowerCase(), offer=`<a href="index.html#ajanlatkeres">Ajánlatkérés</a>`;
+    if(/szia|hello|helló|jó napot/.test(s)) return {reply:"Szia! Miben segíthetek: szolgáltatások, webshop, szállítás/fizetés vagy árajánlat?", quick_replies:['Szolgáltatások','Szállítás','Fizetés','Kapcsolat']};
+    if(/ár|áraj|költs|mennyibe|árlista/.test(s)) return {reply:`Az ár több tényezőtől függ. Kérlek, küldd el az igényt itt: ${offer}.`, quick_replies:['Ajánlatkérés','Kapcsolat']};
+    if(/szállít|futár|ingyenes/.test(s)) return {reply:"Szállítás: 1490 Ft, 30 000 Ft felett ingyenes.", quick_replies:['Fizetés','Kapcsolat']};
+    if(/fizet|utánvét|online|kártya/.test(s)) return {reply:"Online fizetés jelenleg nem elérhető, csak utánvét.", quick_replies:['Szállítás','Ajánlatkérés']};
+    if(/kapcsolat|telefon|email|elérhet/.test(s)) return {reply:"+36 70 607 0675 · info@szoke-epker.com · 4100 Berettyóújfalu, Dózsa György utca 6 1/3.", quick_replies:['Telefonhívás','E-mail küldése','Ajánlatkérés']};
+    return {reply:"Értem a kérdésed, de sajnos csak üzleti témákban válaszolhatok 😚", quick_replies:['Ajánlatkérés','Kapcsolat']};
+  }
+
+  async function askServer(prompt){
+    try{
+      const res = await fetch(ENDPOINT, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ prompt, history: history.slice(-6) })
+      });
+      if(!res.ok) throw 0;
+      const data = await res.json(); // { intent, reply, needed_fields, quick_replies, summary }
+      return { reply: data.reply || "Rendben.", quick_replies: data.quick_replies || [] };
+    }catch(_){
+      return fallbackReply(prompt);
+    }
+  }
+
+  // Quick reply kattintás
+  quick.addEventListener('click', (e)=>{
+    const b = e.target.closest('.qr'); if(!b) return;
+    input.value = b.textContent.trim();
+    form.dispatchEvent(new Event('submit', {cancelable:true, bubbles:true}));
+  });
+
+  // Új submit (capturing után)
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    const q = (input.value || "").trim(); if(!q) return;
+    input.value = "";
+    addMsg('user', q);
+    history.push({role:'user', content:q}); save();
+
+    addMsg('bot','Írok…'); const typing = body.lastElementChild;
+    const { reply, quick_replies } = await askServer(q);
+    typing.remove();
+
+    addMsg('bot', reply);
+    setQuickReplies(quick_replies);
+    history.push({role:'assistant', content:reply}); save();
+  }, {capture:false});
+
+})();
+</script> 
+<script>
+/* === Chat viewport clamp – mobil méretezés JS-biztosítással === */
+(function(){
+  const panel = document.getElementById('chat-panel');
+  const fab   = document.getElementById('chat-fab');
+  const body  = document.getElementById('chat-body');
+
+  if(!panel || !fab) return;
+
+  // oldalirányú görgetés tiltása biztonságból
+  document.documentElement.style.overflowX = 'hidden';
+  document.body.style.overflowX = 'hidden';
+
+  function fitChat(){
+    try{
+      const vw = Math.max(320, Math.min(window.innerWidth || 360, 1024));
+      // max szélesség mobilon: teljes képernyő - 16px margó (safe-area-t a CSS kezeli)
+      if (vw <= 700) {
+        panel.style.width = 'auto';
+        panel.style.maxWidth = 'none';
+      } else {
+        panel.style.maxWidth = '360px';
+        panel.style.width = '360px';
+      }
+    }catch(_){}
+  }
+
+  // ha a panel megnyílik, igazítsuk (Mutation + kattintás)
+  const open = () => requestAnimationFrame(fitChat);
+  fab.addEventListener('click', open);
+  window.addEventListener('resize', fitChat, {passive:true});
+  window.addEventListener('orientationchange', fitChat);
+  document.addEventListener('DOMContentLoaded', fitChat);
+  window.addEventListener('load', fitChat);
+
+  // ha üres volt a body és automatikusan köszöntöttél, szintén igazíts
+  if (body && body.childElementCount === 0) {
+    requestAnimationFrame(fitChat);
+  }
+})();
+</script>
 </body>
 </html>

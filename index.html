@@ -429,6 +429,65 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
     });
   })();
   </script>
+<script>
+/* === PATCH: nincs tartós mentés + Netlify endpoint átírás + kedves köszöntő === */
+(function(){
+  const LS_CHAT = "szoke_chat_history_v1";
+  const LS_WELCOME = "szoke_chat_welcome_v2";
 
+  // 1) Töröljük azonnal az előzményeket (ha voltak)
+  try {
+    localStorage.removeItem(LS_CHAT);
+    localStorage.removeItem(LS_WELCOME);
+  } catch (_) {}
+
+  // 2) Minden oldalelhagyás/frissítés előtt is töröljük (így SOSEM marad meg)
+  window.addEventListener('beforeunload', () => {
+    try {
+      localStorage.removeItem(LS_CHAT);
+      localStorage.removeItem(LS_WELCOME);
+    } catch (_) {}
+  });
+
+  // 3) /api/chat -> /.netlify/functions/ai átírás (proxy a fetch-re)
+  (function hijackFetch(){
+    const origFetch = window.fetch;
+    window.fetch = function(url, opts){
+      try{
+        if (typeof url === "string" && url === "/api/chat") {
+          url = "/.netlify/functions/ai";
+        }
+      }catch(_){}
+      return origFetch.call(this, url, opts);
+    };
+  })();
+
+  // 4) Kedves köszöntő MINDEN betöltéskor (nem kell LS_welcome)
+  window.addEventListener('load', () => {
+    const panel = document.getElementById('chat-panel');
+    const fab   = document.getElementById('chat-fab');
+    const body  = document.getElementById('chat-body');
+
+    if (!panel || !body) return;
+
+    // Nyissuk meg a chatet, ha még üres
+    if (body.childElementCount === 0) {
+      panel.setAttribute('aria-hidden','false');
+      panel.classList.add('on');
+      if (fab) fab.classList.add('off');
+
+      // Üdvözlő buborék
+      const wrap = document.createElement('div');
+      wrap.className = 'msg bot';
+      wrap.innerHTML =
+        '<div class="bubble">Szia, üdvözöllek a <strong>Szőke Épker</strong> saját chat ablakában! 😊<br>'+
+        'Üzleti kérdésekben segítek: szolgáltatások, webshop, szállítás/fizetés. '+
+        'Árajánlathoz kattints: <a href="index.html#ajanlatkeres">Ajánlatkérés</a>.</div>';
+      body.appendChild(wrap);
+      body.scrollTop = body.scrollHeight;
+    }
+  });
+})();
+</script>
 </body>
 </html>

@@ -280,5 +280,149 @@
     },{threshold:0.15});
     document.querySelectorAll('.reveal-from-left, .reveal-from-right').forEach(el=>io.observe(el));
   </script>
+<!-- ===== Floating Chat (üzleti Q&A) ===== -->
+<div id="chat-fab" aria-label="Chat megnyitása">💬</div>
+<div id="chat-panel" aria-hidden="true">
+  <div class="chat-head">
+    <div class="chat-brand">
+      <img src="logo.png" alt="" />
+      <div>
+        <strong>Szőke Épker – Chat</strong>
+        <small>Üzleti kérdésekre válaszolok</small>
+      </div>
+    </div>
+    <button class="chat-close" aria-label="Chat bezárása">×</button>
+  </div>
+  <div class="chat-body" id="chat-body" role="log" aria-live="polite"></div>
+  <form class="chat-form" id="chat-form">
+    <input id="chat-input" type="text" placeholder="Írd ide a kérdésed…" autocomplete="off" />
+    <button class="chat-send" type="submit">Küldés</button>
+  </form>
+</div>
+
+<script>
+(()=> {
+  const ENDPOINT = "/api/chat"; // <- ha más a végpontod, itt átírod
+  const SYS_PROMPT = `
+Te egy ügyfélbarát, udvarias asszisztens vagy a "Szőke Épker KFT." számára.
+Csak üzleti témákra válaszolj: szolgáltatások, folyamat, referenciák, elérhetőség, webshop, szállítás és fizetés.
+Webshop szabályok: szállítás 1490 Ft, 30 000 Ft felett ingyenes; fizetés csak utánvéttel; rendelést emailben kapjuk.
+ÁRAJÁNLAT esetén írd le, hogy több tényezőtől függ és irányítsd az oldal "Árajánlat kérése" szakaszába (#ajanlatkeres).
+Ha a kérdés nem üzleti témájú, udvariasan jelezd, hogy erre a chat nem válaszol.
+Válaszolj magyarul, röviden, egyértelműen, felsorolást csak ha indokolt.`;
+
+  const fab   = document.getElementById('chat-fab');
+  const panel = document.getElementById('chat-panel');
+  const body  = document.getElementById('chat-body');
+  const form  = document.getElementById('chat-form');
+  const input = document.getElementById('chat-input');
+  const closeBtn = panel.querySelector('.chat-close');
+
+  const LS_KEY = "szoke_chat_history_v1";
+  let history = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+
+  function save(){ localStorage.setItem(LS_KEY, JSON.stringify(history)); }
+  function scrollBottom(){ body.scrollTop = body.scrollHeight; }
+
+  function msgEl(role, text){
+    const wrap = document.createElement('div');
+    wrap.className = 'msg ' + (role==='user'?'me':'bot');
+    wrap.innerHTML = `<div class="bubble">${text}</div>`;
+    body.appendChild(wrap);
+    scrollBottom();
+  }
+
+  function openChat(){
+    panel.setAttribute('aria-hidden','false');
+    panel.classList.add('on');
+    fab.classList.add('off');
+    if(body.childElementCount===0){
+      msgEl('bot','Szia! Üzleti kérdésekben segítek: szolgáltatásaink, webshop, szállítás/fizetés. Árajánlathoz kattints ide: <a href="index.html#ajanlatkeres">Ajánlatkérés</a>.');
+    }
+    input.focus();
+  }
+  function closeChat(){
+    panel.setAttribute('aria-hidden','true');
+    panel.classList.remove('on');
+    fab.classList.remove('off');
+  }
+
+  fab.addEventListener('click', openChat);
+  closeBtn.addEventListener('click', closeChat);
+
+  // betöltjük a korábbi üzeneteket (ha voltak)
+  if(history.length){
+    history.forEach(m => msgEl(m.role, m.content));
+  }
+
+  // egyszerű üzleti intent-detektálás fallbackként
+  function fallbackAnswer(q){
+    const s = q.toLowerCase();
+    const linkOffer = `<a href="index.html#ajanlatkeres">Ajánlatkérés</a>`;
+    if(/ár|áraj|költs|mennyibe|árlista/.test(s)){
+      return `Az ár több tényezőtől függ (méret, anyag, helyszín, határidő). Küldd el röviden az igényeidet itt: ${linkOffer} – gyorsan válaszolunk.`;
+    }
+    if(/szállít|futár|posta|ingyenes/.test(s)){
+      return `Szállítás: 1490 Ft, **30 000 Ft felett ingyenes**. Fizetés utánvéttel.`;
+    }
+    if(/fizet|utánvét|online|kártya/.test(s)){
+      return `Online fizetés jelenleg nem elérhető, **csak utánvét**.`;
+    }
+    if(/webshop|rendel|kosár|termék/.test(s)){
+      return `A webshopban a kosár tartalma megmarad frissítés után is. Rendelés után visszaigazoló emailt küldünk.`;
+    }
+    if(/kapcsolat|telefon|email|elérhet/.test(s)){
+      return `Elérhetőség: +36 70 607 0675 · info@szoke-epker.com · Cím: 4100 Berettyóújfalu, Dózsa György utca 6 1/3.`;
+    }
+    if(/szolgáltat|térkö|burkol|generál|szigetel|festés/.test(s)){
+      return `Főbb szolgáltatásaink: generálkivitelezés, családi ház/társasház építés, felújítás, homlokzati szigetelés, térkövezés, burkolás, festés.`;
+    }
+    // ha teljesen off-topic
+    if(!/(ár|áraj|költs|webshop|rendel|szállít|fizet|szolgáltat|kapcsolat|elérhet)/.test(s)){
+      return "Ezt a chatet üzleti kérdésekre tartjuk fenn (szolgáltatások, webshop, szállítás, fizetés, ajánlat). Ebben szívesen segítek!";
+    }
+    // általános
+    return "Miben segíthetek pontosabban? Szolgáltatások, webshop, szállítás, fizetés – vagy árajánlat?";
+  }
+
+  async function askBackend(question){
+    const messages = [
+      { role:"system", content: SYS_PROMPT.trim() },
+      ...history.map(m => ({role:m.role, content:m.content})),
+      { role:"user", content: question }
+    ];
+    try{
+      const res = await fetch(ENDPOINT, {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ messages })
+      });
+      if(!res.ok) throw new Error("bad status");
+      const data = await res.json();
+      if(!data || !data.reply) throw new Error("no reply");
+      return data.reply;
+    }catch(e){
+      // fallback lokális FAQ
+      return fallbackAnswer(question);
+    }
+  }
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const q = (input.value || "").trim();
+    if(!q) return;
+    input.value = "";
+    msgEl('user', q);
+    history.push({role:'user', content:q}); save();
+
+    msgEl('bot', 'Írok…');
+    const typing = body.lastElementChild; // legutóbbi "Írok…"
+    const a = await askBackend(q);
+    typing.remove();
+    msgEl('bot', a);
+    history.push({role:'assistant', content:a}); save();
+  });
+})();
+</script>
 </body>
 </html>

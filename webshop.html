@@ -16,7 +16,6 @@
         <span class="brand-text">Szőke Épker KFT.</span>
       </a>
 
-      <!-- Hamburger -->
       <button class="nav-toggle" aria-expanded="false" aria-label="Menü megnyitása">
         <span></span><span></span><span></span>
       </button>
@@ -32,38 +31,31 @@
         <a href="webshop.html" class="pill">Webshop</a>
       </nav>
 
-      <!-- Kosár gomb csak a webshopon -->
       <button class="shop-cart-toggle" aria-label="Kosár megnyitása">🛒 <span id="shopCartCount">0</span></button>
     </div>
   </header>
 
   <main>
+    <!-- Shop hero/fejléc -->
     <section class="section soft-bg">
       <div class="container">
-        <h2 class="section-title">Webshop (minta)</h2>
-        <p class="lead">A tényleges termékek érkezéséig minta tételekkel tesztelhető a kosár és a rendelés (utánvét, email értesítés).</p>
+        <h2 class="section-title">Webshop</h2>
+        <p class="lead">Minta termékekkel tesztelhető a kosár és a rendelés (utánvét + email értesítés). A kosár tartalma böngészőben megmarad frissítés után is.</p>
 
-        <div class="shop-products">
-          <div class="shop-product-card">
-            <img src="https://via.placeholder.com/320x200" alt="Minta termék 1">
-            <h3>Minta termék 1</h3>
-            <p>Rövid leírás…</p>
-            <div class="shop-product-row">
-              <strong>0 Ft</strong>
-              <button class="shop-btn" data-add-to-cart data-id="sku-1">Kosárba</button>
-            </div>
-          </div>
-
-          <div class="shop-product-card">
-            <img src="https://via.placeholder.com/320x200" alt="Minta termék 2">
-            <h3>Minta termék 2</h3>
-            <p>Rövid leírás…</p>
-            <div class="shop-product-row">
-              <strong>0 Ft</strong>
-              <button class="shop-btn" data-add-to-cart data-id="sku-2">Kosárba</button>
-            </div>
-          </div>
+        <!-- Eszköztár: kereső + rendezés -->
+        <div class="shop-toolbar">
+          <input id="shopSearch" type="search" placeholder="Keresés a termékek között…" />
+          <select id="shopSort">
+            <option value="relevance">Rendezés: Alapértelmezett</option>
+            <option value="price-asc">Ár szerint (növ.)</option>
+            <option value="price-desc">Ár szerint (csökk.)</option>
+            <option value="name-asc">Név szerint (A–Z)</option>
+            <option value="name-desc">Név szerint (Z–A)</option>
+          </select>
         </div>
+
+        <!-- Termékrács; JS tölti be -->
+        <div id="shopGrid" class="shop-products"></div>
       </div>
     </section>
   </main>
@@ -126,34 +118,103 @@
 
   <!-- NAV + SHOP JS -->
   <script>
-  // Hamburger menü
+  /* ======= Hamburger menü ======= */
   const navToggle = document.querySelector('.nav-toggle');
   const mainNav   = document.querySelector('.main-nav');
   navToggle?.addEventListener('click', ()=>{
     const open = mainNav.classList.toggle('is-open');
     navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
+  mainNav?.addEventListener('click', (e)=>{
+    if(e.target.tagName==='A' && mainNav.classList.contains('is-open')){
+      mainNav.classList.remove('is-open'); navToggle.setAttribute('aria-expanded','false');
+    }
+  });
 
-  // Webshop logika
+  /* ======= Termékek (minta) =======
+     - price: eredeti ár
+     - salePrice: akciós ár (opcionális)
+     - stock: készlet (0 = elfogyott)
+  */
   const PRODUCTS = [
-    { id: "sku-1", name: "Minta termék 1", price: 0, img: "https://via.placeholder.com/128" },
-    { id: "sku-2", name: "Minta termék 2", price: 0, img: "https://via.placeholder.com/128" }
+    { id:"sku-1", name:"Minta termék 1", price:4990, salePrice:3990, stock:8, img:"https://via.placeholder.com/640x400?text=Termek+1" },
+    { id:"sku-2", name:"Minta termék 2", price:0, stock:25, img:"https://via.placeholder.com/640x400?text=Termek+2" },
+    { id:"sku-3", name:"Minta termék 3", price:12990, stock:0, img:"https://via.placeholder.com/640x400?text=Termek+3" },           // elfogyott
+    { id:"sku-4", name:"Minta termék 4", price:8990, salePrice:7490, stock:3, img:"https://via.placeholder.com/640x400?text=Termek+4" },
+    { id:"sku-5", name:"Minta termék 5", price:25990, stock:11, img:"https://via.placeholder.com/640x400?text=Termek+5" },
+    { id:"sku-6", name:"Minta termék 6", price:1590, salePrice:990, stock:0, img:"https://via.placeholder.com/640x400?text=Termek+6" } // elfogyott + akciós
   ];
+
+  /* ======= Kosár (persistens) ======= */
   const LS_KEY = "shop_cart_v1";
   let cart = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+
   const fmt = n => new Intl.NumberFormat("hu-HU").format(n) + " Ft";
   const qS = s => document.querySelector(s);
 
+  function bestPrice(p){ return typeof p.salePrice === "number" ? p.salePrice : p.price; }
+  function discountPct(p){
+    if(typeof p.salePrice !== "number" || p.price <= 0) return 0;
+    return Math.round( (1 - p.salePrice/p.price) * 100 );
+  }
+
+  /* ======= Terméklista render ======= */
+  const grid = qS("#shopGrid");
+  const searchEl = qS("#shopSearch");
+  const sortEl = qS("#shopSort");
+
+  function renderProducts(){
+    const q = (searchEl?.value || "").toLowerCase().trim();
+    let list = [...PRODUCTS].filter(p => !q || p.name.toLowerCase().includes(q));
+
+    switch(sortEl?.value){
+      case "price-asc":  list.sort((a,b)=>bestPrice(a)-bestPrice(b)); break;
+      case "price-desc": list.sort((a,b)=>bestPrice(b)-bestPrice(a)); break;
+      case "name-asc":   list.sort((a,b)=>a.name.localeCompare(b.name,'hu')); break;
+      case "name-desc":  list.sort((a,b)=>b.name.localeCompare(a.name,'hu')); break;
+      default: break;
+    }
+
+    grid.innerHTML = list.map(p=>{
+      const out = p.stock<=0;
+      const hasSale = typeof p.salePrice === "number";
+      const pct = discountPct(p);
+      return `
+        <div class="shop-product-card ${out?'is-out':''}">
+          <div class="shop-product-media">
+            <img src="${p.img}" alt="${p.name}">
+            ${out ? '<span class="shop-badge out">Elfogyott</span>' : ''}
+            ${hasSale ? `<span class="shop-badge sale">-${pct}%</span>` : ''}
+          </div>
+          <h3>${p.name}</h3>
+          <div class="shop-price">
+            ${hasSale ? `<span class="old">${fmt(p.price)}</span>` : ""}
+            <strong>${fmt(bestPrice(p))}</strong>
+          </div>
+          <div class="shop-product-row">
+            <button class="shop-btn" data-add-to-cart data-id="${p.id}" ${out ? 'disabled' : ''}>${out?'Nem elérhető':'Kosárba'}</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  searchEl?.addEventListener('input', renderProducts);
+  sortEl?.addEventListener('change', renderProducts);
+
+  /* ======= Kosár műveletek ======= */
   function saveCart(){ localStorage.setItem(LS_KEY, JSON.stringify(cart)); updateCartUI(); }
   function addToCart(id, qty=1){
+    const prod = PRODUCTS.find(p=>p.id===id);
+    if(!prod || prod.stock<=0) return;
     const it = cart.find(x=>x.id===id);
-    if(it){ it.qty += qty; }
-    else { const p = PRODUCTS.find(x=>x.id===id); if(!p) return; cart.push({ id:p.id, name:p.name, price:p.price, img:p.img, qty }); }
+    if(it){ it.qty += qty; } else { cart.push({ id:prod.id, name:prod.name, price:bestPrice(prod), img:prod.img, qty }); }
     saveCart();
+    toast(`${prod.name} hozzáadva a kosárhoz`);
   }
   function removeFromCart(id){ cart = cart.filter(x=>x.id!==id); saveCart(); }
   function changeQty(id, d){ const it = cart.find(x=>x.id===id); if(!it) return; it.qty=Math.max(1,it.qty+d); saveCart(); }
-  function subtotal(){ return cart.reduce((s,x)=>s+x.price*x.qty,0); }
+  const subtotal = () => cart.reduce((s,x)=>s + x.price*x.qty, 0);
 
   function updateCartUI(){
     const count = cart.reduce((s,x)=>s+x.qty,0);
@@ -182,14 +243,14 @@
 
   function openCart(){ qS(".shop-cart")?.classList.add("shop-cart--open"); }
   function closeCart(){ qS(".shop-cart")?.classList.remove("shop-cart--open"); }
-  function openCheckout(){ qS("#shopCheckout")?.classList.add("shop-checkout--open"); }
+  function openCheckout(){ qS("#shopCheckout")?.classList.add("shop-checkout--open"); renderSummary(); }
   function closeCheckout(){ qS("#shopCheckout")?.classList.remove("shop-checkout--open"); }
 
   document.addEventListener("click", (e)=>{
     const t = e.target;
     if(t.matches(".shop-cart-toggle")) openCart();
     if(t.matches(".shop-cart__close")) closeCart();
-    if(t.matches("#shopGoCheckout")){ closeCart(); renderSummary(); openCheckout(); }
+    if(t.matches("#shopGoCheckout")){ closeCart(); openCheckout(); }
     if(t.matches(".shop-checkout__close")) closeCheckout();
 
     if(t.dataset?.inc) changeQty(t.dataset.inc, +1);
@@ -217,7 +278,17 @@
   }
   document.addEventListener("change", (e)=>{ if(e.target.id==="shippingSelect") renderSummary(); });
 
-  updateCartUI();
+  /* ======= Mini toast ======= */
+  function toast(msg){
+    let el = document.createElement('div');
+    el.className = 'shop-toast'; el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(()=> el.classList.add('on'), 10);
+    setTimeout(()=> { el.classList.remove('on'); setTimeout(()=> el.remove(), 300); }, 1800);
+  }
+
+  // Kezdő render
+  renderProducts(); updateCartUI();
   </script>
 </body>
 </html>

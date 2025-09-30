@@ -530,5 +530,59 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
   }
 })();
 </script>
+<script>
+/* === Chat auto-open OFF + finom „tipp” buborék === */
+(function(){
+  const panel = document.getElementById('chat-panel');
+  const fab   = document.getElementById('chat-fab');
+  const body  = document.getElementById('chat-body');
+
+  if(!panel || !fab) return;
+
+  // 1) MINDIG zárjuk be oldalbetöltéskor (akkor is, ha korábbi script megnyitná)
+  function forceClose(){
+    panel.setAttribute('aria-hidden','true');
+    panel.classList.remove('on');
+    fab.classList.remove('off');
+  }
+  // azonnal és kis késleltetéssel is (ha más script később nyitná ki)
+  forceClose();
+  window.addEventListener('load', ()=>{ forceClose(); setTimeout(forceClose, 50); setTimeout(forceClose, 400); });
+
+  // 2) Tiltsuk le a „köszöntő azonnal megnyit” logikát (ha volt)
+  try {
+    // töröljük az esetleges „welcome” jelzőket, hogy ne triggereljen
+    localStorage.removeItem('szoke_chat_welcome_v1');
+    localStorage.removeItem('szoke_chat_welcome_v2');
+  } catch(_) {}
+
+  // 3) Diszkrét „tipp” buborék a FAB fölött (nem nyitja ki a chatet)
+  const tip = document.createElement('div');
+  tip.id = 'chat-tip';
+  tip.innerHTML = 'Szia! Kérdésed van a szolgáltatásról vagy webshopról? <b>Kattints ide!</b>';
+  document.body.appendChild(tip);
+
+  function showTip(){
+    tip.classList.add('on');
+    // automatikus elhalványítás pár másodperc múlva
+    setTimeout(()=>tip.classList.remove('on'), 4500);
+  }
+
+  // Mutassuk meg 3s után, csak egyszer (minden betöltéskor, de nem tolakodó)
+  setTimeout(showTip, 3000);
+
+  // Kattintás a FAB-ra: zárjuk a tippet
+  fab.addEventListener('click', ()=>tip.classList.remove('on'), {passive:true});
+
+  // Biztos ami biztos: oldalirányú elcsúszás letiltása
+  document.documentElement.style.overflowX = 'hidden';
+  document.body.style.overflowX = 'hidden';
+
+  // 4) Ha valamelyik script mégis üdvözlő üzenetet szúr be automatikusan,
+  // hagyjuk a szöveget, de NE nyissa ki a panelt.
+  const mo = new MutationObserver(()=>forceClose());
+  mo.observe(panel, {attributes:true, attributeFilter:['class','aria-hidden']});
+})();
+</script>
 </body>
 </html>

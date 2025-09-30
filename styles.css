@@ -382,3 +382,45 @@ body{
   .main-nav a{ margin:6px 0 0 0 } /* ne legyen bal margó mobilon */
   .header-inner{ position:relative } /* hogy a lenyíló panel a headerhez igazodjon */
 }
+/* Eszköztár (kereső + rendezés) */
+.shop-toolbar{
+  display:flex; gap:12px; align-items:center; margin:12px 0 18px;
+}
+.shop-toolbar input[type="search"],
+.shop-toolbar select{
+  padding:10px 12px; border:1px solid #e5ddd6; border-radius:12px; background:#fff; flex:1;
+}
+.shop-toolbar select{ flex:0 0 240px; }
+@media (max-width:700px){
+  .shop-toolbar{ flex-direction:column; align-items:stretch }
+  .shop-toolbar select{ flex:1 }
+}
+
+/* Termékkép + badge-ek */
+.shop-product-card{ position:relative }
+.shop-product-media{ position:relative }
+.shop-product-media img{ width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,.06) }
+.shop-badge{
+  position:absolute; top:10px; left:10px; padding:.25rem .5rem; border-radius:999px; font-size:.8rem; font-weight:700;
+  background:#222; color:#fff; box-shadow:0 6px 14px rgba(0,0,0,.15);
+}
+.shop-badge.sale{ background:#d9232e }      /* piros -% */
+.shop-badge.out{ background:#777 }          /* szürke elfogyott */
+
+/* Elfogyott állapot */
+.shop-product-card.is-out .shop-product-media::after{
+  content:""; position:absolute; inset:0; background:rgba(0,0,0,.35); border-radius:12px;
+}
+.shop-product-card.is-out button[disabled]{ opacity:.7; cursor:not-allowed }
+
+/* Ár megjelenítés */
+.shop-price{ display:flex; align-items:center; gap:.5rem; margin:.2rem 0 .6rem }
+.shop-price .old{ text-decoration:line-through; color:#8c7c6c }
+
+/* Mini toast */
+.shop-toast{
+  position:fixed; left:50%; bottom:20px; transform:translateX(-50%) translateY(20px);
+  background:#222; color:#fff; padding:.6rem .9rem; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.25);
+  opacity:0; transition:transform .25s var(--ease), opacity .25s var(--ease); z-index:3000;
+}
+.shop-toast.on{ opacity:1; transform:translateX(-50%) translateY(0) }

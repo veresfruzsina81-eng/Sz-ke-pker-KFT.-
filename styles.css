@@ -436,3 +436,19 @@ body{
   .shop-grid input,.shop-grid select,.shop-grid textarea{ font-size:16px } /* iOS ne zoomoljon */
   .shop-cart{ width:min(92vw,400px) }
 }
+/* === Floating label kiegészítések és select fix === */
+.fl > input::placeholder, .fl > textarea::placeholder { color: transparent; }
+.fl-select > span{
+  top:-8px; font-size:.78rem; color:#7a583c;
+  background:#fff; padding:0 6px; border-radius:6px;
+}
+.fl-select > select{ padding-top:18px; }
+.fl .hint{ margin-top:6px; color:#8c7c6c; font-size:.85rem; font-weight:500; }
+
+/* Eszköztár (kereső + rendezés) – ha még nem lenne */
+.shop-toolbar{ display:flex; gap:12px; align-items:center; margin:12px 0 18px }
+.shop-toolbar input[type="search"], .shop-toolbar select{
+  padding:10px 12px; border:1px solid #e5ddd6; border-radius:12px; background:#fff; flex:1;
+}
+.shop-toolbar select{ flex:0 0 240px }
+@media (max-width:700px){ .shop-toolbar{ flex-direction:column } .shop-toolbar select{ flex:1 } }

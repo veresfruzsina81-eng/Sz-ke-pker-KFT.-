@@ -583,3 +583,29 @@ html, body { overflow-x: hidden; }             /* tiltsd az oldalirányú csúsz
 
 /* Extra: érintésnél ne “csússzon” oldalra belekattintva */
 #chat-panel, #chat-fab { touch-action: manipulation; }
+/* Chat-tip – diszkrét buborék a lebegő gomb fölött */
+#chat-tip {
+  position: fixed;
+  right: 18px;
+  bottom: 92px; /* FAB fölött */
+  z-index: 2510;
+  background: #2a2a2a;
+  color: #fff;
+  padding: 8px 10px;
+  font-size: .9rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+#chat-tip.on { opacity: 1; transform: translateY(0); }
+#chat-tip::after{
+  content:"";
+  position:absolute; right:14px; bottom:-6px;
+  width:0;height:0;border:6px solid transparent;border-top-color:#2a2a2a;
+}
+@media (max-width:700px){
+  #chat-tip{ right: max(14px, env(safe-area-inset-right)); bottom: calc(92px + env(safe-area-inset-bottom)); left: auto; max-width: 80vw; }
+}

@@ -452,3 +452,60 @@ body{
 }
 .shop-toolbar select{ flex:0 0 240px }
 @media (max-width:700px){ .shop-toolbar{ flex-direction:column } .shop-toolbar select{ flex:1 } }
+/* === Lebegő chat === */
+#chat-fab{
+  position:fixed; right:18px; bottom:18px; z-index:2500;
+  width:56px; height:56px; border-radius:50%;
+  display:grid; place-items:center;
+  background:var(--brand); color:#fff; font-size:22px; cursor:pointer;
+  box-shadow:0 12px 28px rgba(0,0,0,.18);
+  transition:transform .15s ease, opacity .15s ease;
+}
+#chat-fab.off{ transform:scale(.9); opacity:0; pointer-events:none }
+
+#chat-panel{
+  position:fixed; right:18px; bottom:86px; z-index:2500;
+  width:min(360px, 92vw); max-height:70vh; display:flex; flex-direction:column;
+  background:#fff; border:1px solid #eee3da; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.25);
+  overflow:hidden; opacity:0; transform:translateY(12px); pointer-events:none;
+  transition:opacity .2s var(--ease), transform .2s var(--ease);
+}
+#chat-panel.on{ opacity:1; transform:translateY(0); pointer-events:auto }
+
+#chat-panel .chat-head{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:10px 12px; border-bottom:1px solid #eee3da; background:#faf8f6;
+}
+.chat-brand{ display:flex; align-items:center; gap:8px }
+.chat-brand img{ width:28px; height:28px; border-radius:6px }
+.chat-head .chat-close{ border:none; background:#fff; width:28px; height:28px; border-radius:8px; cursor:pointer }
+
+.chat-body{
+  padding:12px; overflow:auto; flex:1; background:#fff;
+}
+.msg{ display:flex; margin-bottom:8px }
+.msg .bubble{
+  max-width:86%; padding:10px 12px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,.06);
+  line-height:1.45; word-wrap:break-word;
+}
+.msg.me{ justify-content:flex-end }
+.msg.me .bubble{ background:#2a2a2a; color:#fff; border-bottom-right-radius:4px }
+.msg.bot .bubble{ background:#f5efe9; border-bottom-left-radius:4px }
+.msg a{ color:#7a583c; font-weight:600; text-decoration:underline }
+
+.chat-form{
+  display:flex; gap:8px; padding:10px; border-top:1px solid #eee3da; background:#fff;
+}
+#chat-input{
+  flex:1; border:1px solid #e5ddd6; border-radius:12px; padding:10px 12px; outline:none;
+}
+#chat-input:focus{ border-color:#cdb29a; box-shadow:0 0 0 3px rgba(184,138,98,.15) }
+.chat-send{
+  border:1px solid var(--brand); background:var(--brand); color:#fff; padding:10px 14px; border-radius:12px; cursor:pointer;
+}
+
+/* Mobil: lebegő chat nagyobb érintési területtel */
+@media (max-width:700px){
+  #chat-fab{ right:14px; bottom:14px }
+  #chat-panel{ right:8px; left:8px; width:auto; bottom:78px; max-height:70vh }
+}

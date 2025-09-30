@@ -555,3 +555,31 @@ body{
   #chat-fab{ right:14px; bottom:14px }
   #chat-panel{ right:8px; left:8px; width:auto; bottom:78px; max-height:70vh }
 }
+/* === Chat mobil fixek (ne lógjon ki, safe-area támogatás) === */
+html, body { overflow-x: hidden; }             /* tiltsd az oldalirányú csúszkát */
+#chat-panel, #chat-fab { box-sizing: border-box; }
+
+/* Alap: desktop marad a régi beállításod, csak kicsit szűkítjük az árnyék miatt */
+@media (min-width:701px){
+  #chat-panel{ right:18px; bottom:86px; max-width:360px; width:360px; }
+}
+
+/* Mobil: szépen beférjen a képernyőre, safe-area figyelembevétele (iOS) */
+@media (max-width:700px){
+  #chat-fab{
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+  }
+  #chat-panel{
+    left:   max(8px, env(safe-area-inset-left));
+    right:  max(8px, env(safe-area-inset-right));
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    width: auto;                 /* engedje kitölteni a rendelkezésre álló szélt */
+    max-width: none;             /* ne darabolja le */
+    max-height: 72vh;            /* hogy a billentyűzet mellett is elférjen */
+  }
+  .chat-body{ max-height: 56vh; } /* belső görgetés */
+}
+
+/* Extra: érintésnél ne “csússzon” oldalra belekattintva */
+#chat-panel, #chat-fab { touch-action: manipulation; }

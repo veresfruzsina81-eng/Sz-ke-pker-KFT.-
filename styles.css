@@ -219,3 +219,117 @@ body{
   .hero-watermark{position:static; margin:12px auto 0; display:block}
   .about-biglogo img{width:200px}
 }
+
+/* =========================================================
+   ==============  WEBSHOP (shop- prefix)  =================
+   ========================================================= */
+
+/* Kis segéd: rejtett elemekhez (Netlify honeypot stb.) */
+.hidden{display:none !important}
+
+/* Kosár gomb a fejlécnél – fix, lebegő */
+.shop-cart-toggle{
+  position:fixed; right:1rem; top:1rem; z-index:1600;
+  background:#fff; border:1px solid #e8e2db; border-radius:999px;
+  padding:.5rem .8rem; box-shadow:var(--shadow); cursor:pointer;
+  display:inline-flex; gap:.5rem; align-items:center; font-weight:600;
+}
+.shop-cart-toggle:hover{ background:#fdfbf9 }
+
+/* Terméklista rács */
+.shop-products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+}
+.shop-product-card{
+  background:#fff; border:1px solid #eee3da; border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:14px; display:flex; flex-direction:column; gap:10px;
+}
+.shop-product-card img{
+  width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:12px;
+  box-shadow:0 6px 16px rgba(0,0,0,.06)
+}
+.shop-product-card h3{margin:4px 0 0; font-size:1.05rem}
+.shop-product-card p{margin:0; color:#5a4a3a}
+.shop-product-row{display:flex; justify-content:space-between; align-items:center; gap:10px}
+
+/* Gombok (külön a meglévő .btn-től) */
+.shop-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+  border:1px solid #2a2a2a; background:#2a2a2a; color:#fff;
+  padding:.55rem .85rem; border-radius:12px; cursor:pointer; font-weight:600;
+}
+.shop-btn:hover{ filter:brightness(1.05) }
+.shop-btn--ghost{ background:#fff; color:#2a2a2a }
+.shop-btn--primary{ background:var(--brand); border-color:var(--brand) }
+
+/* Oldalsávos kosár */
+.shop-cart{
+  position:fixed; right:0; top:0; bottom:0; width:min(380px,92vw);
+  background:#fff; transform:translateX(100%); transition:transform .3s var(--ease);
+  box-shadow:-12px 0 30px rgba(0,0,0,.15); z-index:1700; display:flex; flex-direction:column;
+  border-left:1px solid #eee3da;
+}
+.shop-cart--open{ transform:translateX(0) }
+.shop-cart__head{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:1rem; border-bottom:1px solid #eee3da;
+}
+.shop-cart__close{ background:none; border:none; font-size:1.5rem; cursor:pointer }
+.shop-cart__items{ padding:1rem; overflow:auto; flex:1 }
+.shop-cart__item{
+  display:grid; grid-template-columns:64px 1fr auto; gap:.75rem; align-items:center; margin-bottom:1rem;
+}
+.shop-cart__item img{
+  width:64px; height:64px; object-fit:cover; border-radius:10px; border:1px solid #eee;
+}
+.shop-cart__item-title{ font-weight:600 }
+.shop-cart__item-qty{ display:flex; align-items:center; gap:.35rem; margin-top:.35rem }
+.shop-cart__footer{ border-top:1px solid #eee3da; padding:1rem }
+.shop-cart__row{ display:flex; justify-content:space-between; margin-bottom:.75rem }
+
+/* Pénztár (modál) */
+.shop-checkout{
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background:rgba(0,0,0,.55); z-index:2100; padding:24px;
+}
+.shop-checkout--open{ display:flex }
+.shop-checkout__card{
+  width:min(720px,92vw); background:#fff; border-radius:20px; box-shadow:0 30px 80px rgba(0,0,0,.25);
+  padding:18px; position:relative; border:1px solid #eee3da;
+}
+.shop-checkout__close{
+  position:absolute; right:.6rem; top:.4rem; border:none; background:#0000; font-size:1.5rem; cursor:pointer;
+}
+
+/* Pénztár űrlap rács */
+.shop-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:1rem 0;
+}
+.shop-grid--full{ grid-column:1/-1 }
+.shop-grid label{ display:flex; flex-direction:column; gap:6px; font-weight:600 }
+.shop-grid input,
+.shop-grid select,
+.shop-grid textarea{
+  width:100%; padding:12px 14px; border-radius:12px; border:1px solid #e5ddd6; background:#fff; font-weight:400;
+}
+
+/* Összegzés doboz */
+.shop-summary{
+  background:#faf8f6; border:1px solid #eee3da; border-radius:14px; padding:12px;
+}
+.shop-summary h4{ margin:.2rem 0 .4rem }
+.shop-summary__total{ display:flex; justify-content:space-between; margin-top:.4rem; font-size:1.1rem }
+
+/* Apró finomságok */
+.shop-checkout h3{ margin:0 0 .5rem }
+.shop-cart__items p{ margin:.4rem 0; color:#6b5b4b }
+
+/* Responsive kiegészítések a shophoz */
+@media (max-width:700px){
+  .shop-grid{ grid-template-columns:1fr }
+  .shop-cart-toggle{ right:.75rem; top:.75rem }
+  .shop-product-card{ padding:12px }
+  .shop-cart{ width:min(92vw,400px) }
+}

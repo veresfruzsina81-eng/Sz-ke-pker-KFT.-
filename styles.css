@@ -333,3 +333,29 @@ body{
   .shop-product-card{ padding:12px }
   .shop-cart{ width:min(92vw,400px) }
 }
+/* === Checkout méretezés + görgetés javítás === */
+.shop-checkout{ align-items: center; padding: 12px; }
+.shop-checkout__card{
+  max-height: 90vh;         /* ne nőjön a képernyő fölé */
+  overflow: auto;           /* belső görgetés, ha kell */
+  width: min(720px, 96vw);  /* szűkebb, hogy biztosan beférjen */
+  padding: 14px;
+}
+
+/* Mobil finomhangolás */
+@media (max-width: 700px){
+  .shop-checkout{ align-items: flex-start; }   /* felülről induljon, ne középről */
+  .shop-checkout__card{
+    max-height: 92vh;
+    width: 100%;
+    border-radius: 14px;
+    padding: 12px;
+  }
+  .shop-grid{ grid-template-columns: 1fr; }   /* 1 oszlopos űrlap */
+  .shop-btn, .shop-btn.shop-btn--primary{ width: 100%; }  /* széles gomb */
+}
+
+/* Nagyobb betű az inputoknál mobilon, hogy kényelmesebb legyen, és ne zoomoljon iOS */
+.shop-grid input,
+.shop-grid select,
+.shop-grid textarea{ font-size:16px; }

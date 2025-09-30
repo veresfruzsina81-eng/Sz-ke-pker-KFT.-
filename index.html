@@ -489,5 +489,46 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
   });
 })();
 </script>
+<script>
+/* === Chat viewport clamp – mobil méretezés JS-biztosítással === */
+(function(){
+  const panel = document.getElementById('chat-panel');
+  const fab   = document.getElementById('chat-fab');
+  const body  = document.getElementById('chat-body');
+
+  if(!panel || !fab) return;
+
+  // oldalirányú görgetés tiltása biztonságból
+  document.documentElement.style.overflowX = 'hidden';
+  document.body.style.overflowX = 'hidden';
+
+  function fitChat(){
+    try{
+      const vw = Math.max(320, Math.min(window.innerWidth || 360, 1024));
+      // max szélesség mobilon: teljes képernyő - 16px margó (safe-area-t a CSS kezeli)
+      if (vw <= 700) {
+        panel.style.width = 'auto';
+        panel.style.maxWidth = 'none';
+      } else {
+        panel.style.maxWidth = '360px';
+        panel.style.width = '360px';
+      }
+    }catch(_){}
+  }
+
+  // ha a panel megnyílik, igazítsuk (Mutation + kattintás)
+  const open = () => requestAnimationFrame(fitChat);
+  fab.addEventListener('click', open);
+  window.addEventListener('resize', fitChat, {passive:true});
+  window.addEventListener('orientationchange', fitChat);
+  document.addEventListener('DOMContentLoaded', fitChat);
+  window.addEventListener('load', fitChat);
+
+  // ha üres volt a body és automatikusan köszöntöttél, szintén igazíts
+  if (body && body.childElementCount === 0) {
+    requestAnimationFrame(fitChat);
+  }
+})();
+</script>
 </body>
 </html>

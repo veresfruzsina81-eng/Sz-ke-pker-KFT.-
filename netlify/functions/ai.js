@@ -17,6 +17,7 @@ const SERVICES = [
   "Festés, lakásfelújítás"
 ];
 
+// Maradunk a korábbi intent-készletnél
 const ALLOWED_INTENTS = ["offer","pricing","timeline","contact","reference","general","non_business","why_us"];
 
 const cors = {
@@ -42,7 +43,7 @@ Webshop fix szabályok:
 - Rendelésről e-mail visszaigazolás.
 
 Cégadatok (használd, ha releváns):
-- Telefon: +36 70 607 0675
+- Telefon: +36 70 607 067 5
 - E-mail: info@szoke-epker.com
 - Web: https://szoke-epker.com
 - Cím: 4100 Berettyóújfalu, Dózsa György utca 6 1/3
@@ -57,7 +58,6 @@ Gyakori válasz-irányelvek:
 - Kezdés/ütem: "A pontos kezdés és ütemezés felmérés és kapacitás egyeztetése után adható."
 - Szállítási idő (webshop): "A feladást gyorsan intézzük; kiszállítás jellemzően 1–3 munkanap." (ha rákérdeznek)
 - Visszaküldés/csere: "Egyedi egyeztetés alapján, a vonatkozó jogszabályok szerint." (ha rákérdeznek)
-- "Miért minket?": lásd részletes szerkezet lent.
 
 Kimenet MINDIG kizárólag JSON legyen, magyarázat nélkül, pontosan ebben a sémában:
 {
@@ -76,24 +76,11 @@ Kimenet MINDIG kizárólag JSON legyen, magyarázat nélkül, pontosan ebben a s
 Kapcsolat: adj tömör kontaktot; quick_replies: ["Telefonhívás","E-mail küldése","Ajánlatkérés"].
 Határidő: jelezd, hogy pontos ütem felmérés után adható; kérd be a kívánt időablakot.
 Referencia: javasold a galériát; kérdezd meg, melyik szolgáltatás érdekli.
-Szállítás/fizetés (webshop): említsd meg a gyors és gondmentes kiszállítást, 1490 Ft díj; 30 000 Ft felett ingyenes; fizetés utánvéttel.
-
+Szállítás/fizetés (webshop): pontosan fogalmazz – **különítsd el** a *fizetés* kérdéseit az *árkéréstől*.
 Nem üzleti kérdések (intent=non_business):
-- Válasz szövege legyen PONTOSAN ez:
+- FIX szöveg:
   "Bocsánat, de a chat csak üzleti kérdésekre válaszol. Kérem, tegyen fel üzleti kérdést (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat). Megértését köszönjük."
-- Adj quick_replies-t: ["Ajánlatkérés","Kapcsolat"].
-
-"Miért minket?" (intent=why_us):
-- Alapértelmezetten ADJ **hosszabb** választ, strukturáltan, a 4 szolgáltatásra külön alfejezettel.
-- Szerkezet:
-  1) Nyitó 2–3 mondatos bekezdés (átlátható költségvetés, határidő-követés, minőség-ellenőrzés, rendezett átadás).
-  2) "Térkövezés és burkolás – miért jó választásunk?" → 3–5 pont: rétegrend és fagyálló alap, vízelvezetés, ipari fugázás, precíz szintezés/vágáskép, tartós anyagválasztás, tiszta átadás.
-  3) "Homlokzati hőszigetelés – mitől prémium?" → 3–5 pont: gyártói rendszer, hőhídmentes csomópontok, dűbelezési terv, páratechnika, rendszergarancia, dokumentált kivitelezés.
-  4) "Festés, lakásfelújítás – különbséget jelentő részletek" → 3–5 pont: pormentes takarás, precíz előkészítés, prémium festékek, moshatóság, tiszta munkaterület, ütemezett kivitelezés.
-  5) "Generálkivitelezés – biztos kézben a projekt" → 3–5 pont: tételes költségvetés, határidő-követés, felelős műszaki irányítás, ellenőrzött alvállalkozók, jogszabályi/gyártói előírások.
-  6) Záró cselekvésre ösztönzés + **KÖTELEZŐ** kontakt sor:
-     "Kérjük, vegye fel a kapcsolatot velünk: Telefon: +36 70 607 0675 • E-mail: info@szoke-epker.com".
-- Ha a felhasználó egyetlen szolgáltatásról kérdezi a "miért minket"-et, akkor csak az adott alfejezetet írd meg 4–6 erős ponttal, majd a kötelező kontakt sorral zárd.
+- quick_replies: ["Ajánlatkérés","Kapcsolat"].
 `;
 
 export async function handler(event) {
@@ -109,85 +96,56 @@ export async function handler(event) {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) return json({ error: "OPENAI_API_KEY hiányzik" }, 500);
 
-    // Few-shot példák – köszönés/köszönet + webshop + szakmai kérdések
+    // --- Kulcsszó-csoportok a heurisztikához ---
+    const KW = {
+      payment: /(fizet|fizetés|bankkártya|kártya|kártyával|online fizetés|utalás|utánvét|után vét|cod|cash on delivery)/i,
+      shipping: /(szállít|kiszállít|futár|posta|ingyenes szállítás|szállítás)/i,
+      price: /(ár|áraj|árlista|költs|mennyi|mibe kerül|mennyibe kerül)/i,
+      greet: /(szia|hello|helló|jó napot|üdv)/i,
+      thanks: /(köszi|köszönöm|thx|kösz)/i,
+      timeline: /(határidő|mikorra|ütem|mennyi idő|kezdés|kezdő idő)/i,
+      contact: /(kapcsolat|telefon|email|elérhet)/i,
+      reference: /(referencia|galéria|munkáink)/i,
+      whyus: /(miért minket|miért ti|miért a szőke)/i,
+      nonbiz: /(foci|vicc|időjárás|politika)/i
+    };
+
+    // --- Few-shot példák: külön fizetés vs ár ---
     const FEW = [
-      // Köszönés
-      { role:"user", content:"szia" },
+      // Fizetés (online?)
+      { role:"user", content:"tudok online fizetni bankkártyával?" },
       { role:"assistant", content: JSON.stringify({
-        intent:"general",
-        reply:"Szia! Örülök, hogy írt. Miben segíthetek? Szolgáltatások, webshop, szállítás/fizetés vagy árajánlat?",
-        needed_fields:[],
-        quick_replies:["Szolgáltatások","Szállítás","Fizetés","Ajánlatkérés"],
-        summary:"köszönés"
+        intent:"pricing",
+        reply:"Jelenleg online fizetés nem elérhető, a webshopban utánvéttel tud fizetni. A rendelésről emailt küldünk.",
+        needed_fields:[], quick_replies:["Szállítás","Ajánlatkérés"], summary:"fizetési mód"
       }) },
-      // Köszönet
-      { role:"user", content:"köszi" },
+      // Ár érdeklődés
+      { role:"user", content:"mennyibe kerülne?" },
       { role:"assistant", content: JSON.stringify({
-        intent:"general",
-        reply:"Szívesen! Ha bármi másban segíthetek, írjon nyugodtan.",
-        needed_fields:[], quick_replies:["Szolgáltatások","Kapcsolat"], summary:"köszönet" }) },
-      // Webshop szállítás
+        intent:"pricing",
+        reply:"Az ár több tényezőtől függ (terület, anyag, határidő). Melyik szolgáltatás áráról szeretne érdeklődni a Szőke Épker KFT.-nél? (térkövezés, szigetelés, festés, generálkivitelezés)",
+        needed_fields:["szolgáltatás"], quick_replies:["Térkövezés","Szigetelés","Festés","Generálkivitelezés"], summary:"árérdeklődés"
+      }) },
+      // Szállítás
       { role:"user", content:"mennyi a szállítás?" },
       { role:"assistant", content: JSON.stringify({
         intent:"pricing",
         reply:"A szállítás 1490 Ft, 30 000 Ft felett ingyenes. Gyors és gondmentes kiszállítással dolgozunk.",
         needed_fields:[], quick_replies:["Fizetés","Ajánlatkérés","Kapcsolat"], summary:"szállítási díj"
       }) },
-      // Webshop fizetés
-      { role:"user", content:"tudok online fizetni?" },
-      { role:"assistant", content: JSON.stringify({
-        intent:"pricing",
-        reply:"Jelenleg online fizetés nem elérhető, a webshopban utánvéttel tud fizetni. A rendelésről emailt küldünk.",
-        needed_fields:[], quick_replies:["Szállítás","Ajánlatkérés"], summary:"fizetési mód"
-      }) },
-      // Mióta vagytok a szakmában?
-      { role:"user", content:"mióta vagytok a szakmában?" },
+      // Köszönés
+      { role:"user", content:"szia" },
       { role:"assistant", content: JSON.stringify({
         intent:"general",
-        reply:"Évek óta a szakmában vagyunk, stabil, összeszokott csapattal és sok elégedett visszajelzéssel. A minőséget dokumentált folyamatokkal biztosítjuk.",
-        needed_fields:[], quick_replies:["Szolgáltatások","Referencia","Ajánlatkérés"], summary:"szakmai múlt"
+        reply:"Szia! Örülök, hogy írt. Miben segíthetek? Szolgáltatások, webshop, szállítás/fizetés vagy árajánlat?",
+        needed_fields:[], quick_replies:["Szolgáltatások","Szállítás","Fizetés","Ajánlatkérés"], summary:"köszönés"
       }) },
-      // Garancia?
-      { role:"user", content:"vállaltok garanciát?" },
+      // Köszönet
+      { role:"user", content:"köszi" },
       { role:"assistant", content: JSON.stringify({
         intent:"general",
-        reply:"Igen. Gyártói előírások szerint, rendszergaranciával dolgozunk, a kivitelezésre vállalati jótállást adunk. Részleteket ajánlatadáskor pontosítunk.",
-        needed_fields:[], quick_replies:["Ajánlatkérés","Kapcsolat"], summary:"garancia"
-      }) },
-      // Mivel dolgoztok? (anyagok)
-      { role:"user", content:"milyen anyagokkal dolgoztok?" },
-      { role:"assistant", content: JSON.stringify({
-        intent:"general",
-        reply:"Bevált, prémium rendszerekkel és minőségi anyagokkal dolgozunk, a gyártói technológiai előírásokat tartva.",
-        needed_fields:[], quick_replies:["Miért minket?","Ajánlatkérés"], summary:"anyagminőség"
-      }) },
-      // Hol vállaltok munkát?
-      { role:"user", content:"melyik megyében dolgoztok?" },
-      { role:"assistant", content: JSON.stringify({
-        intent:"general",
-        reply:"Országosan vállalunk munkát egyeztetés alapján. Írja meg a helyszínt, és egyeztetjük a részleteket.",
-        needed_fields:["helyszín"], quick_replies:["Ajánlatkérés","Kapcsolat"], summary:"szolgáltatási terület"
-      }) },
-      // Számla/ÁFA
-      { role:"user", content:"áfás számlát adtok?" },
-      { role:"assistant", content: JSON.stringify({
-        intent:"pricing",
-        reply:"Igen, tételes, átlátható költségvetést és ÁFÁ-s számlát adunk.",
-        needed_fields:[], quick_replies:["Ajánlatkérés","Kapcsolat"], summary:"számlázás"
-      }) },
-      // Kezdés/ütem
-      { role:"user", content:"mikor tudtok kezdeni?" },
-      { role:"assistant", content: JSON.stringify({
-        intent:"timeline",
-        reply:"A pontos kezdés felmérés és kapacitás egyeztetése után adható. Kérném a munka típusát, helyszínt és a kívánt időablakot.",
-        needed_fields:["szolgáltatás","helyszín","időablak"], quick_replies:["Ajánlatkérés","Kapcsolat"], summary:"kezdési idő"
-      }) },
-      // Visszaküldés/csere (ha felmerül webshopnál)
-      { role:"user", content:"ha nem jó, vissza tudom küldeni?" },
-      { role:"assistant", content: JSON.stringify({
-        intent:"general",
-        reply:"Egyedi egyeztetés alapján, a vonatkozó jogszabályok szerint kezeljük a visszaküldést/cserét. Írja meg a rendelési számot és a problémát.",
-        needed_fields:["rendelési szám","probléma rövid leírása"], quick_replies:["Kapcsolat","Ajánlatkérés"], summary:"visszaküldés/csere"
+        reply:"Szívesen! Ha bármi másban segíthetek, írjon nyugodtan.",
+        needed_fields:[], quick_replies:["Szolgáltatások","Kapcsolat"], summary:"köszönet"
       }) }
     ];
 
@@ -221,19 +179,14 @@ export async function handler(event) {
     const data = await resp.json();
     const text = data?.choices?.[0]?.message?.content || "";
 
-    // Biztonságos JSON parse – ha nem JSON, kézi fallback
     let out;
-    try {
-      out = JSON.parse(text);
-    } catch {
-      out = fallbackFromPrompt(prompt);
-    }
+    try { out = JSON.parse(text); }
+    catch { out = fallbackFromPrompt(prompt, KW); }
 
-    // intent normalizálás
     if (!out || typeof out !== "object") out = {};
-    if (!ALLOWED_INTENTS.includes(out.intent)) out.intent = heuristicIntent(prompt) || "general";
+    if (!ALLOWED_INTENTS.includes(out.intent)) out.intent = heuristicIntent(prompt, KW) || "general";
 
-    // non_business – fix, pontos szöveg + ajánlott gombok
+    // Nem üzleti kérdés – fix szöveg
     if (out.intent === "non_business") {
       out.reply = "Bocsánat, de a chat csak üzleti kérdésekre válaszol. Kérem, tegyen fel üzleti kérdést (ajánlat, ár, határidő, szolgáltatás, referencia, kapcsolat). Megértését köszönjük.";
       out.quick_replies = ["Ajánlatkérés","Kapcsolat"];
@@ -241,15 +194,13 @@ export async function handler(event) {
       out.summary = out.summary || "off-topic";
     }
 
-    // why_us – ha kimaradna a kontakt sor, pótlás
+    // "Miért minket?" – biztos kontakt sor
     if (out.intent === "why_us" && typeof out.reply === "string" && !/info@szoke-epker\.com/i.test(out.reply)) {
       out.reply = out.reply.trim() + "\n\nKérjük, vegye fel a kapcsolatot velünk: Telefon: +36 70 607 0675 • E-mail: info@szoke-epker.com";
     }
 
-    // quick replies tisztítás
     out.quick_replies = normalizeQuickReplies(out.quick_replies);
 
-    // log (segít debugolni)
     try { console.log("Q:", prompt, "→", out.intent, "|", out.summary || ""); } catch {}
 
     return json(out, 200);
@@ -267,7 +218,7 @@ function json(obj, code = 200) {
   };
 }
 
-/* ---------- Heurisztikus fallbackok ---------- */
+/* ---------------- Segédfüggvények ---------------- */
 
 function normalizeQuickReplies(arr){
   if (!Array.isArray(arr)) return [];
@@ -276,58 +227,52 @@ function normalizeQuickReplies(arr){
   for (const x of arr) {
     const t = String(x || "").trim();
     if (!t) continue;
-    if (seen.has(t.toLowerCase())) continue;
-    seen.add(t.toLowerCase());
+    const k = t.toLowerCase();
+    if (seen.has(k)) continue;
+    seen.add(k);
     clean.push(t);
     if (clean.length >= 4) break;
   }
   return clean;
 }
 
-function heuristicIntent(q=""){
+function heuristicIntent(q="", KW){
   const s = q.toLowerCase();
-  if (/(szia|hello|helló|jó napot|üdv)/.test(s)) return "general";
-  if (/(köszi|köszönöm|thx|kösz)/.test(s)) return "general";
-  if (/(ár|áraj|költs|mennyibe|árlista|áfás)/.test(s)) return "pricing";
-  if (/(határidő|mikorra|ütem|mennyi idő|kezdés)/.test(s)) return "timeline";
-  if (/(kapcsolat|telefon|email|elérhet)/.test(s)) return "contact";
-  if (/(referencia|galéria|munkáink)/.test(s)) return "reference";
-  if (/(miért minket|miért ti|miért a szőke)/.test(s)) return "why_us";
-  if (/(foci|vicc|időjárás|politika)/.test(s)) return "non_business";
-  // webshop spéci
-  if (/(szállít|futár|ingyenes|kiszállítás)/.test(s)) return "pricing";
-  if (/(fizet|utánvét|online|kártya|utalás)/.test(s)) return "pricing";
+  if (KW.nonbiz.test(s)) return "non_business";
+  if (KW.contact.test(s)) return "contact";
+  if (KW.reference.test(s)) return "reference";
+  if (KW.whyus.test(s)) return "why_us";
+  if (KW.timeline.test(s)) return "timeline";
+  // pricing ágon belül különböztetjük a payment / shipping / ár érdeklődést
+  if (KW.payment.test(s) || KW.shipping.test(s) || KW.price.test(s)) return "pricing";
+  if (KW.greet.test(s) || KW.thanks.test(s)) return "general";
   return "general";
 }
 
-function fallbackFromPrompt(q=""){
-  const intent = heuristicIntent(q);
-  const base = {
-    intent,
-    reply: "",
-    needed_fields: [],
-    quick_replies: [],
-    summary: ""
-  };
+function fallbackFromPrompt(q="", KW){
+  const s = q.toLowerCase();
+  const intent = heuristicIntent(s, KW);
+  const base = { intent, reply:"", needed_fields:[], quick_replies:[], summary:"" };
+
   if (intent === "pricing") {
-    if (/(szállít|kiszállítás|ingyenes)/.test(q.toLowerCase())) {
-      base.reply = "A szállítás 1490 Ft, 30 000 Ft felett ingyenes. Gyors és gondmentes kiszállítással dolgozunk.";
-      base.quick_replies = ["Fizetés","Ajánlatkérés","Kapcsolat"];
-      base.summary = "szállítási díj";
-    } else if (/(fizet|utánvét|kártya|online|utalás)/.test(q.toLowerCase())) {
+    if (KW.payment.test(s)) {
       base.reply = "Jelenleg online fizetés nem elérhető, a webshopban utánvéttel tud fizetni. A rendelésről emailt küldünk.";
       base.quick_replies = ["Szállítás","Ajánlatkérés"];
       base.summary = "fizetési mód";
+    } else if (KW.shipping.test(s)) {
+      base.reply = "A szállítás 1490 Ft, 30 000 Ft felett ingyenes. Gyors és gondmentes kiszállítással dolgozunk.";
+      base.quick_replies = ["Fizetés","Ajánlatkérés","Kapcsolat"];
+      base.summary = "szállítási díj";
     } else {
-      base.reply = "Az ár több tényezőtől függ (terület, anyag, állványozás, határidő). Kérjük, vegye fel a kapcsolatot velünk: Telefon: +36 70 607 0675 • E-mail: info@szoke-epker.com";
-      base.quick_replies = ["Ajánlatkérés","Kapcsolat","Szolgáltatások"];
+      base.reply = "Az ár több tényezőtől függ (terület, anyag, határidő). Melyik szolgáltatás áráról szeretne érdeklődni a Szőke Épker KFT.-nél? (térkövezés, szigetelés, festés, generálkivitelezés)";
       base.needed_fields = ["szolgáltatás"];
+      base.quick_replies = ["Térkövezés","Szigetelés","Festés","Generálkivitelezés"];
       base.summary = "árérdeklődés";
     }
   } else if (intent === "timeline") {
-    base.reply = "A pontos kezdés felmérés és kapacitás egyeztetése után adható. Kérem, írja meg a munka típusát, a helyszínt és a kívánt időablakot.";
-    base.quick_replies = ["Ajánlatkérés","Kapcsolat"];
+    base.reply = "A pontos kezdés felmérés és kapacitás egyeztetése után adható. Kérném a munka típusát, helyszínt és a kívánt időablakot.";
     base.needed_fields = ["szolgáltatás","helyszín","időablak"];
+    base.quick_replies = ["Ajánlatkérés","Kapcsolat"];
     base.summary = "kezdési idő";
   } else if (intent === "contact") {
     base.reply = `${CONTACT.phone} • ${CONTACT.email} • ${CONTACT.address}`;
@@ -335,8 +280,8 @@ function fallbackFromPrompt(q=""){
     base.summary = "kapcsolat kérés";
   } else if (intent === "reference") {
     base.reply = "Javasoljuk a referencia galériát. Melyik szolgáltatás érdekelné (térkövezés, szigetelés, festés, generálkivitelezés)?";
-    base.quick_replies = ["Térkövezés","Szigetelés","Festés","Generálkivitelezés"];
     base.needed_fields = ["szolgáltatás"];
+    base.quick_replies = ["Térkövezés","Szigetelés","Festés","Generálkivitelezés"];
     base.summary = "referencia érdeklődés";
   } else if (intent === "why_us") {
     base.reply = "A Szőke Épker KFT. átlátható költségvetéssel, határidő-követéssel és dokumentált minőség-ellenőrzéssel dolgozik. Kérjük, vegye fel a kapcsolatot velünk: Telefon: +36 70 607 0675 • E-mail: info@szoke-epker.com";
@@ -347,32 +292,14 @@ function fallbackFromPrompt(q=""){
     base.quick_replies = ["Ajánlatkérés","Kapcsolat"];
     base.summary = "off-topic";
   } else {
-    const s = q.toLowerCase();
-    if (/(szia|hello|helló|jó napot|üdv)/.test(s)) {
+    if (KW.greet.test(s)) {
       base.reply = "Szia! Örülök, hogy írt. Miben segíthetek? Szolgáltatások, webshop, szállítás/fizetés vagy árajánlat?";
       base.quick_replies = ["Szolgáltatások","Szállítás","Fizetés","Ajánlatkérés"];
       base.summary = "köszönés";
-    } else if (/(köszi|köszönöm|thx|kösz)/.test(s)) {
+    } else if (KW.thanks.test(s)) {
       base.reply = "Szívesen! Ha bármi másban segíthetek, írjon nyugodtan.";
       base.quick_replies = ["Szolgáltatások","Kapcsolat"];
       base.summary = "köszönet";
-    } else if (/(mióta|mennyi ideje|régóta|tapasztalat)/.test(s)) {
-      base.reply = "Évek óta a szakmában vagyunk, stabil, összeszokott csapattal és sok elégedett visszajelzéssel.";
-      base.quick_replies = ["Szolgáltatások","Referencia","Ajánlatkérés"];
-      base.summary = "szakmai múlt";
-    } else if (/(garancia|jótállás)/.test(s)) {
-      base.reply = "Gyártói előírások szerint, rendszergaranciával dolgozunk, a kivitelezésre vállalati jótállást adunk.";
-      base.quick_replies = ["Ajánlatkérés","Kapcsolat"];
-      base.summary = "garancia";
-    } else if (/(anyag|márka|rendszer)/.test(s)) {
-      base.reply = "Bevált, prémium rendszerekkel és minőségi anyagokkal dolgozunk, a gyártói technológiai előírásokat tartva.";
-      base.quick_replies = ["Miért minket?","Ajánlatkérés"];
-      base.summary = "anyagminőség";
-    } else if (/(melyik megye|hol dolgoztok|vállaltok-e)/.test(s)) {
-      base.reply = "Országosan vállalunk munkát egyeztetés alapján. Kérem, írja meg a helyszínt.";
-      base.needed_fields = ["helyszín"];
-      base.quick_replies = ["Ajánlatkérés","Kapcsolat"];
-      base.summary = "szolgáltatási terület";
     } else {
       base.reply = "Szívesen segítek! Megírná röviden, miben tudunk segíteni: szolgáltatás, ár, határidő, referencia vagy kapcsolat?";
       base.quick_replies = ["Ajánlatkérés","Szolgáltatások","Szállítás","Kapcsolat"];

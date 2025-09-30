@@ -8,13 +8,19 @@
 </head>
 <body>
 
-  <!-- FEJLÉC -->
+  <!-- FEJLÉC (hamburgerrel mobilra) -->
   <header class="site-header">
     <div class="container header-inner">
       <a href="#fooldal" class="brand">
         <img src="logo.png" alt="Szőke Épker KFT. logó" />
         <span class="brand-text">Szőke Épker KFT.</span>
       </a>
+
+      <!-- Hamburger gomb mobilra -->
+      <button class="nav-toggle" aria-expanded="false" aria-label="Menü megnyitása">
+        <span></span><span></span><span></span>
+      </button>
+
       <nav class="main-nav">
         <a href="#fooldal">Főoldal</a>
         <a href="#szolgaltatasok">Szolgáltatások</a>
@@ -31,7 +37,7 @@
 
   <main>
 
-    <!-- HERO -->
+    <!-- HERO (markolós háttér) -->
     <section id="fooldal" class="section hero bg-2">
       <div class="container hero-grid reveal-from-left">
         <div class="hero-copy">
@@ -51,12 +57,13 @@
       </div>
     </section>
 
-    <!-- SZOLGÁLTATÁSOK -->
+    <!-- SZOLGÁLTATÁSAINK -->
     <section id="szolgaltatasok" class="section">
       <div class="container">
         <h2 class="section-title">Szolgáltatásaink</h2>
 
         <div class="services">
+          <!-- KÁRTYA 1 -->
           <div class="service-card reveal-from-right">
             <div class="card-inner">
               <div class="card-face card-front">
@@ -70,6 +77,7 @@
             </div>
           </div>
 
+          <!-- KÁRTYA 2 -->
           <div class="service-card reveal-from-left">
             <div class="card-inner">
               <div class="card-face card-front">
@@ -83,6 +91,7 @@
             </div>
           </div>
 
+          <!-- KÁRTYA 3 -->
           <div class="service-card reveal-from-right">
             <div class="card-inner">
               <div class="card-face card-front">
@@ -96,6 +105,7 @@
             </div>
           </div>
 
+          <!-- KÁRTYA 4 -->
           <div class="service-card reveal-from-left">
             <div class="card-inner">
               <div class="card-face card-front">
@@ -172,6 +182,7 @@
         </div>
       </div>
 
+      <!-- MODÁL -->
       <div class="modal" id="imgModal" aria-hidden="true">
         <button class="modal-close" aria-label="Bezárás">×</button>
         <img src="" alt="Nagyított kép" class="modal-img" />
@@ -230,7 +241,22 @@
   </footer>
 
   <script>
-    // Kép modál
+    // Hamburger menü (mobil)
+    const navToggle = document.querySelector('.nav-toggle');
+    const mainNav   = document.querySelector('.main-nav');
+    navToggle?.addEventListener('click', ()=>{
+      const open = mainNav.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // Menü zárása kattintásra mobilon
+    mainNav?.addEventListener('click', (e)=>{
+      if(e.target.tagName === 'A' && mainNav.classList.contains('is-open')){
+        mainNav.classList.remove('is-open');
+        navToggle.setAttribute('aria-expanded','false');
+      }
+    });
+
+    // KÉP MODÁL
     const modal = document.getElementById('imgModal');
     const modalImg = modal.querySelector('.modal-img');
     const closeBtn = modal.querySelector('.modal-close');
@@ -248,7 +274,7 @@
     });
     modal.addEventListener('click', (e)=>{ if(e.target === modal){ closeBtn.click(); } });
 
-    // Beúszás
+    // Beúszás figyelő
     const io = new IntersectionObserver((entries)=>{
       entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('reveal-in'); } });
     },{threshold:0.15});

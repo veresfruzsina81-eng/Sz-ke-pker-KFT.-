@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Webshop – Szőke Épker KFT.</title>
   <link rel="stylesheet" href="styles.css" />
+  <!-- Mini fixek ehhez az oldalhoz -->
+  <style>
+    .shop-header-logo{height:42px;width:auto}             /* normál logó */
+    .checkbox-row{display:flex;align-items:center;gap:8px;margin:12px 0}
+    .checkbox-row input[type="checkbox"]{margin:0}
+  </style>
 </head>
 <body>
 
@@ -39,7 +45,7 @@
     <section class="section soft-bg">
       <div class="container">
         <div class="shop-header">
-          <img src="logo.png" alt="Szőke Épker KFT. logó">
+          <img src="logo.png" alt="Szőke Épker KFT. logó" class="shop-header-logo">
           <h2 class="section-title">Webshop</h2>
         </div>
         <p class="lead">Minta termékekkel tesztelhető a kosár és a rendelés (utánvét + email). A kosár tartalma frissítés után is megmarad.</p>
@@ -82,7 +88,7 @@
       <button class="shop-checkout__close" aria-label="Pénztár bezárása">×</button>
       <h3>Rendelés leadása (utánvét)</h3>
 
-      <!-- SIKER NÉZET (beküldés után) -->
+      <!-- SIKER NÉZET -->
       <div class="shop-success" id="shopSuccess" hidden>
         <div class="shop-success__icon">✔</div>
         <h4>Köszönjük a rendelést!</h4>
@@ -99,35 +105,40 @@
         <div class="shop-grid">
           <!-- Floating label mezők (.fl) -->
           <label class="fl">
-            <span>Név *</span>
             <input name="name" required placeholder=" " />
+            <span>Név *</span>
           </label>
           <label class="fl">
-            <span>E-mail *</span>
             <input type="email" name="email" required placeholder=" " />
+            <span>E-mail *</span>
           </label>
+
           <label class="fl">
-            <span>Telefon *</span>
             <input type="tel" name="phone" required placeholder=" " />
+            <span>Telefon *</span>
           </label>
+
+          <!-- Szállítási cím teljes sorban (nem folyik össze) -->
           <label class="fl shop-grid--full">
-            <span>Szállítási cím *</span>
             <input name="address" required placeholder="Irányítószám, város, utca, házszám" />
+            <span>Szállítási cím *</span>
           </label>
+
           <label class="fl">
-            <span>Fizetés módja</span>
             <input value="Utánvét" name="payment" readonly placeholder=" " />
+            <span>Fizetés módja</span>
           </label>
           <label class="fl">
-            <span>Szállítás</span>
             <select name="shipping" id="shippingSelect">
               <option value="Házhozszállítás">Házhozszállítás</option>
               <option value="Személyes átvétel">Személyes átvétel</option>
             </select>
+            <span>Szállítás</span>
           </label>
+
           <label class="fl shop-grid--full">
-            <span>Megjegyzés</span>
             <textarea name="note" rows="3" placeholder="Egyéb kérés…"></textarea>
+            <span>Megjegyzés</span>
           </label>
 
           <div class="shop-summary shop-grid--full">
@@ -139,10 +150,11 @@
             <div class="shop-freeship" id="checkoutFreeShip"></div>
           </div>
 
-          <label class="shop-grid--full">
-            <input type="checkbox" name="privacy" required />
-            Elfogadom az Adatkezelési tájékoztatót.
-          </label>
+          <!-- Checkbox szép sorban -->
+          <div class="checkbox-row shop-grid--full">
+            <input type="checkbox" name="privacy" required id="privacyCb">
+            <label for="privacyCb">Elfogadom az Adatkezelési tájékoztatót.</label>
+          </div>
         </div>
 
         <!-- Sticky alsó sáv -->
@@ -326,10 +338,7 @@
   });
 
   /* ===== Összegzés + ingyenes szállítás a checkoutban ===== */
-  function computeShipping(sub){
-    // 30 000 Ft felett ingyenes
-    return sub >= FREE_SHIP_LIMIT ? 0 : 1490;
-  }
+  function computeShipping(sub){ return sub >= FREE_SHIP_LIMIT ? 0 : 1490; }
 
   function renderSummary(){
     const wrap = qS("#orderSummary"), totalEl = qS("#orderTotal"), stickyTotal = qS("#stickyTotal");

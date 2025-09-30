@@ -8,13 +8,19 @@
 </head>
 <body>
 
-  <!-- FEJLÉC ugyanaz a navigációval -->
+  <!-- FEJLÉC (hamburgerrel) -->
   <header class="site-header">
     <div class="container header-inner">
       <a href="index.html#fooldal" class="brand">
         <img src="logo.png" alt="Szőke Épker KFT. logó" />
         <span class="brand-text">Szőke Épker KFT.</span>
       </a>
+
+      <!-- Hamburger -->
+      <button class="nav-toggle" aria-expanded="false" aria-label="Menü megnyitása">
+        <span></span><span></span><span></span>
+      </button>
+
       <nav class="main-nav">
         <a href="index.html#fooldal">Főoldal</a>
         <a href="index.html#szolgaltatasok">Szolgáltatások</a>
@@ -26,14 +32,14 @@
         <a href="webshop.html" class="pill">Webshop</a>
       </nav>
 
-      <!-- Kosár gomb (csak ezen az oldalon kell) -->
+      <!-- Kosár gomb csak a webshopon -->
       <button class="shop-cart-toggle" aria-label="Kosár megnyitása">🛒 <span id="shopCartCount">0</span></button>
     </div>
   </header>
 
   <main>
     <section class="section soft-bg">
-      <div class="container reveal-from-left">
+      <div class="container">
         <h2 class="section-title">Webshop (minta)</h2>
         <p class="lead">A tényleges termékek érkezéséig minta tételekkel tesztelhető a kosár és a rendelés (utánvét, email értesítés).</p>
 
@@ -77,7 +83,7 @@
     </div>
   </aside>
 
-  <!-- PÉNZTÁR MODÁL + NETLIFY FORMS -->
+  <!-- PÉNZTÁR + NETLIFY FORMS -->
   <div class="shop-checkout" aria-hidden="true" id="shopCheckout">
     <div class="shop-checkout__card">
       <button class="shop-checkout__close" aria-label="Pénztár bezárása">×</button>
@@ -85,9 +91,7 @@
 
       <form name="webshop-order" method="POST" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="webshop-order" />
-        <p class="hidden">
-          <label>Ne töltsd ki: <input name="bot-field" /></label>
-        </p>
+        <p class="hidden"><label>Ne töltsd ki: <input name="bot-field" /></label></p>
 
         <textarea name="order_json" id="orderJson" style="display:none;"></textarea>
 
@@ -120,8 +124,17 @@
     </div>
   </div>
 
-  <!-- SHOP JS -->
+  <!-- NAV + SHOP JS -->
   <script>
+  // Hamburger menü
+  const navToggle = document.querySelector('.nav-toggle');
+  const mainNav   = document.querySelector('.main-nav');
+  navToggle?.addEventListener('click', ()=>{
+    const open = mainNav.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // Webshop logika
   const PRODUCTS = [
     { id: "sku-1", name: "Minta termék 1", price: 0, img: "https://via.placeholder.com/128" },
     { id: "sku-2", name: "Minta termék 2", price: 0, img: "https://via.placeholder.com/128" }
@@ -133,24 +146,21 @@
 
   function saveCart(){ localStorage.setItem(LS_KEY, JSON.stringify(cart)); updateCartUI(); }
   function addToCart(id, qty=1){
-    const item = cart.find(x=>x.id===id);
-    if(item){ item.qty += qty; }
-    else {
-      const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
-      cart.push({ id:p.id, name:p.name, price:p.price, img:p.img, qty });
-    }
+    const it = cart.find(x=>x.id===id);
+    if(it){ it.qty += qty; }
+    else { const p = PRODUCTS.find(x=>x.id===id); if(!p) return; cart.push({ id:p.id, name:p.name, price:p.price, img:p.img, qty }); }
     saveCart();
   }
   function removeFromCart(id){ cart = cart.filter(x=>x.id!==id); saveCart(); }
   function changeQty(id, d){ const it = cart.find(x=>x.id===id); if(!it) return; it.qty=Math.max(1,it.qty+d); saveCart(); }
-  function cartSubtotal(){ return cart.reduce((s,x)=> s + x.price * x.qty, 0); }
+  function subtotal(){ return cart.reduce((s,x)=>s+x.price*x.qty,0); }
 
   function updateCartUI(){
     const count = cart.reduce((s,x)=>s+x.qty,0);
     const cntEl = qS("#shopCartCount"); if(cntEl) cntEl.textContent = count;
-    const itemsWrap = qS("#shopCartItems");
-    if(itemsWrap){
-      itemsWrap.innerHTML = cart.length ? cart.map(x=>`
+    const list  = qS("#shopCartItems");
+    if(list){
+      list.innerHTML = cart.length ? cart.map(x=>`
         <div class="shop-cart__item">
           <img src="${x.img}" alt="">
           <div>
@@ -167,7 +177,7 @@
         </div>
       `).join("") : `<p>Üres a kosár.</p>`;
     }
-    const subtotalEl = qS("#shopSubtotal"); if(subtotalEl) subtotalEl.textContent = fmt(cartSubtotal());
+    const subEl = qS("#shopSubtotal"); if(subEl) subEl.textContent = fmt(subtotal());
   }
 
   function openCart(){ qS(".shop-cart")?.classList.add("shop-cart--open"); }
@@ -179,33 +189,34 @@
     const t = e.target;
     if(t.matches(".shop-cart-toggle")) openCart();
     if(t.matches(".shop-cart__close")) closeCart();
-    if(t.matches("#shopGoCheckout")){ closeCart(); renderOrderSummary(); openCheckout(); }
+    if(t.matches("#shopGoCheckout")){ closeCart(); renderSummary(); openCheckout(); }
     if(t.matches(".shop-checkout__close")) closeCheckout();
 
-    if(t.dataset?.inc){ changeQty(t.dataset.inc, +1); }
-    if(t.dataset?.dec){ changeQty(t.dataset.dec, -1); }
-    if(t.dataset?.del){ removeFromCart(t.dataset.del); }
+    if(t.dataset?.inc) changeQty(t.dataset.inc, +1);
+    if(t.dataset?.dec) changeQty(t.dataset.dec, -1);
+    if(t.dataset?.del) removeFromCart(t.dataset.del);
 
     const addBtn = t.closest?.("[data-add-to-cart]");
-    if(addBtn){ addToCart(addBtn.getAttribute("data-id"), 1); }
+    if(addBtn) addToCart(addBtn.getAttribute("data-id"), 1);
   });
 
-  function renderOrderSummary(){
+  function renderSummary(){
     const wrap = qS("#orderSummary"), totalEl = qS("#orderTotal");
     if(!wrap || !totalEl) return;
     const shipping = (qS("#shippingSelect")?.value || "Házhozszállítás");
-    const shippingCost = shipping === "Házhozszállítás" ? 1490 : 0;
-    const subtotal = cartSubtotal(); const total = subtotal + shippingCost;
+    const shipCost = shipping === "Házhozszállítás" ? 1490 : 0;
+    const sub = subtotal(); const tot = sub + shipCost;
     wrap.innerHTML = `
-      <ul>${cart.map(x=>`<li>${x.name} × ${x.qty} — ${fmt(x.price * x.qty)}</li>`).join("")}</ul>
+      <ul>${cart.map(x=>`<li>${x.name} × ${x.qty} — ${fmt(x.price*x.qty)}</li>`).join("")}</ul>
       <div style="margin-top:.5rem;display:flex;justify-content:space-between">
-        <span>Szállítás (${shipping}):</span><strong>${fmt(shippingCost)}</strong>
+        <span>Szállítás (${shipping}):</span><strong>${fmt(shipCost)}</strong>
       </div>`;
-    totalEl.textContent = fmt(total);
+    totalEl.textContent = fmt(tot);
     const hidden = qS("#orderJson");
-    if(hidden){ hidden.value = JSON.stringify({ items: cart, subtotal, shipping_method: shipping, shipping_cost: shippingCost, total }, null, 2); }
+    if(hidden) hidden.value = JSON.stringify({ items: cart, subtotal: sub, shipping_method: shipping, shipping_cost: shipCost, total: tot }, null, 2);
   }
-  document.addEventListener("change", (e)=>{ if(e.target.id==="shippingSelect") renderOrderSummary(); });
+  document.addEventListener("change", (e)=>{ if(e.target.id==="shippingSelect") renderSummary(); });
+
   updateCartUI();
   </script>
 </body>

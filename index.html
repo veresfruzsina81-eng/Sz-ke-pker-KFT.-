@@ -149,7 +149,7 @@
           <ul>
             <li>tételes, átlátható költségvetés;</li>
             <li>ütemterv, mérföldkövek, státuszjelentések;</li>
-            <li>prémium, bevált rendszerek gyártói előírások szerint.</li>
+            <li>prémium, bevált rendszerek gyártói előírás szerint.</li>
           </ul>
         </div>
       </div>
@@ -309,17 +309,20 @@
 
   <script>
   (()=> {
-    const ENDPOINT = "/api/chat"; // ha más az endpointod, írd át
+    const ENDPOINT = "/api/chat";
     const LS_CHAT = "szoke_chat_history_v1";
     const LS_WELCOME = "szoke_chat_welcome_v1";
 
-    // Kedves, üzleti fókuszú rendszerprompt + humoros off-topic
+    // NO PERSIST: régi előzmény törlés, ne használjunk localStorage-t a history-ra
+    try { localStorage.removeItem(LS_CHAT); } catch(_){}  // CLEAR OLD HISTORY
+    let history = [];                          // memória-alapú csak a futás idejére
+    const save = () => {};                     // NO PERSIST: mentés kikapcsolva
+
     const SYS = `Te a "Szőke Épker KFT." rövid, kedves és segítőkész üzleti asszisztense vagy.
 Válaszolj magyarul, tömören. Csak üzleti témák: szolgáltatások, folyamat, kapcsolat, webshop, szállítás (1490 Ft, 30 000 Ft felett ingyenes), fizetés (csak utánvét), rendelés email visszaigazolás.
 Áraknál mondd el, hogy több tényezőtől függ és irányíts a #ajanlatkeres részhez.
 Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti témákban válaszolhatok 😚".`;
 
-    // „Betanítás” – pár mintaválasz
     const FEW = [
       { role:"user", content:"szia" },
       { role:"assistant", content:"Szia! Örülök, hogy írtál. Miben segíthetek? Szolgáltatások, webshop, szállítás/fizetés vagy árajánlat?" },
@@ -338,8 +341,6 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
     const input = document.getElementById('chat-input');
     const closeBtn = panel.querySelector('.chat-close');
 
-    let history = JSON.parse(localStorage.getItem(LS_CHAT) || "[]");
-    const save = () => localStorage.setItem(LS_CHAT, JSON.stringify(history));
     const scrollBottom = () => body.scrollTop = body.scrollHeight;
 
     function addMsg(role, html){
@@ -365,10 +366,7 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
     fab.addEventListener('click', openChat);
     closeBtn.addEventListener('click', closeChat);
 
-    // előzmények visszatöltése
-    if(history.length){ history.forEach(m => addMsg(m.role, m.content)); }
-
-    // első látogatás: kedves köszöntő
+    // első látogatás: kedves köszöntő (LS_WELCOME maradhat)
     window.addEventListener('load', ()=>{
       if(!localStorage.getItem(LS_WELCOME)){
         openChat();
@@ -377,7 +375,6 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
       }
     });
 
-    // fallback – ha az endpoint nem él
     function fallback(q){
       const s = q.toLowerCase();
       const offer = `<a href="index.html#ajanlatkeres">Ajánlatkérés</a>`;
@@ -418,25 +415,25 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
       if(!q) return;
       input.value = "";
       addMsg('user', q);
-      history.push({role:'user', content:q}); save();
+      history.push({role:'user', content:q}); save();   // NO PERSIST
 
       addMsg('bot', 'Írok…');
       const typing = body.lastElementChild;
       const reply = await askLLM(q);
       typing.remove();
       addMsg('bot', reply);
-      history.push({role:'assistant', content:reply}); save();
+      history.push({role:'assistant', content:reply}); save(); // NO PERSIST
     });
   })();
   </script>
+
 <!-- === CHAT PATCH (Netlify AI, quick replies, kedves üdvözlő, humor) === -->
 <script>
 (()=> {
-  const ENDPOINT = "/.netlify/functions/ai";             // Netlify function
+  const ENDPOINT = "/.netlify/functions/ai";
   const LS_CHAT = "szoke_chat_history_v1";
-  const LS_WELCOME = "szoke_chat_welcome_v2";            // új kulcs, hogy az üdvözlő megjelenjen
+  const LS_WELCOME = "szoke_chat_welcome_v2";
 
-  // Fogd a meglévő elemeket (nem hozunk létre újat)
   const fab   = document.getElementById('chat-fab');
   const panel = document.getElementById('chat-panel');
   const body  = document.getElementById('chat-body');
@@ -448,16 +445,7 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
     console.warn("[chat patch] hiányzó elemek – ellenőrizd a chat HTML-t"); return;
   }
 
-  // Modern ikon – HTML módosítás nélkül
-  if(!fab.querySelector('svg')){
-    fab.innerHTML = `
-      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
-        <path d="M4 6.5A3.5 3.5 0 0 1 7.5 3h9A3.5 3.5 0 0 1 20 6.5v5A3.5 3.5 0 0 1 16.5 15H12l-4 4v-4H7.5A3.5 3.5 0 0 1 4 11.5v-5Z"/>
-      </svg>
-      <span class="dot"></span>`;
-  }
-
-  // Gyors gombok konténer – ha nincs, beszúrjuk a form fölé
+  // Gyors gomb konténer
   let quick = document.getElementById('chat-quick');
   if(!quick){
     quick = document.createElement('div');
@@ -466,9 +454,11 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
     form.parentNode.insertBefore(quick, form);
   }
 
-  let history = [];
-  try{ history = JSON.parse(localStorage.getItem(LS_CHAT) || "[]"); }catch(_){ history = []; }
-  const save = () => localStorage.setItem(LS_CHAT, JSON.stringify(history));
+  // NO PERSIST: régi előzmény törlése és nincs localStorage használat
+  try { localStorage.removeItem(LS_CHAT); } catch(_){}  // CLEAR OLD HISTORY
+  let history = [];                         // csak memóriában
+  const save = () => {};                    // NO PERSIST
+
   const scrollBottom = () => body.scrollTop = body.scrollHeight;
 
   function addMsg(role, html){
@@ -483,18 +473,10 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
       : "";
   }
 
-  // Blokkoljuk a korábbi event handlereket (capturing-ben)
-  function stopAll(e){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); }
-  form.addEventListener('submit', stopAll, true);
+  // NE blokkoljuk a submitot/fab-ot capturing-ben
+  // (szándékosan nincs stopImmediatePropagation)
 
-  /* FIX: NE BLOKKOLD a FAB és a CLOSE kattintásokat capturing-ben,
-     mert akkor az openChat/closeChat handlerek nem futnak le.
-     Az alábbi két sort ELTÁVOLÍTOTTAM:
-       fab.addEventListener('click',  e=>e.stopImmediatePropagation(), true);
-       closeBtn?.addEventListener('click', e=>e.stopImmediatePropagation(), true);
-  */
-
-  // Új nyit/zár
+  // Nyit/zár
   function openChat(){
     panel.setAttribute('aria-hidden','false');
     panel.classList.add('on');
@@ -509,10 +491,7 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
   fab.addEventListener('click', openChat);
   closeBtn?.addEventListener('click', closeChat);
 
-  // Előzmények visszatöltése (ha volt)
-  if(history.length){ history.forEach(m => addMsg(m.role, m.content)); }
-
-  // Kedves üdvözlő első alkalommal
+  // Üdvözlő csak egyszer (ez maradhat)
   window.addEventListener('load', ()=>{
     if(!localStorage.getItem(LS_WELCOME)){
       openChat();
@@ -522,7 +501,6 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
     }
   });
 
-  // Fallback (ha a function nem él)
   function fallbackReply(q){
     const s=q.toLowerCase(), offer=`<a href="index.html#ajanlatkeres">Ajánlatkérés</a>`;
     if(/szia|hello|helló|jó napot/.test(s)) return {reply:"Szia! Miben segíthetek: szolgáltatások, webshop, szállítás/fizetés vagy árajánlat?", quick_replies:['Szolgáltatások','Szállítás','Fizetés','Kapcsolat']};
@@ -541,27 +519,27 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
         body: JSON.stringify({ prompt, history: history.slice(-6) })
       });
       if(!res.ok) throw 0;
-      const data = await res.json(); // { intent, reply, needed_fields, quick_replies, summary }
+      const data = await res.json();
       return { reply: data.reply || "Rendben.", quick_replies: data.quick_replies || [] };
     }catch(_){
       return fallbackReply(prompt);
     }
   }
 
-  // Quick reply kattintás
+  // Quick reply → írja be és submitolja a meglévő formot
   quick.addEventListener('click', (e)=>{
     const b = e.target.closest('.qr'); if(!b) return;
     input.value = b.textContent.trim();
-    form.dispatchEvent(new Event('submit', {cancelable:true, bubbles:true}));
+    form.requestSubmit();
   });
 
-  // Új submit (capturing után)
+  // Submit kezelés (NINCS mentés localStorage-ba)
   form.addEventListener('submit', async (e)=>{
-    e.preventDefault(); e.stopPropagation();
+    e.preventDefault();
     const q = (input.value || "").trim(); if(!q) return;
     input.value = "";
     addMsg('user', q);
-    history.push({role:'user', content:q}); save();
+    history.push({role:'user', content:q}); save(); // NO PERSIST
 
     addMsg('bot','Írok…'); const typing = body.lastElementChild;
     const { reply, quick_replies } = await askServer(q);
@@ -569,11 +547,12 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
 
     addMsg('bot', reply);
     setQuickReplies(quick_replies);
-    history.push({role:'assistant', content:reply}); save();
-  }, {capture:false});
+    history.push({role:'assistant', content:reply}); save(); // NO PERSIST
+  });
 
 })();
-</script> 
+</script>
+
 <script>
 /* === Chat viewport clamp – mobil méretezés JS-biztosítással === */
 (function(){
@@ -583,14 +562,12 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
 
   if(!panel || !fab) return;
 
-  // oldalirányú görgetés tiltása biztonságból
   document.documentElement.style.overflowX = 'hidden';
   document.body.style.overflowX = 'hidden';
 
   function fitChat(){
     try{
       const vw = Math.max(320, Math.min(window.innerWidth || 360, 1024));
-      // max szélesség mobilon: teljes képernyő - 16px margó (safe-area-t a CSS kezeli)
       if (vw <= 700) {
         panel.style.width = 'auto';
         panel.style.maxWidth = 'none';
@@ -601,7 +578,6 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
     }catch(_){}
   }
 
-  // ha a panel megnyílik, igazítsuk (Mutation + kattintás)
   const open = () => requestAnimationFrame(fitChat);
   fab.addEventListener('click', open);
   window.addEventListener('resize', fitChat, {passive:true});
@@ -609,7 +585,6 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
   document.addEventListener('DOMContentLoaded', fitChat);
   window.addEventListener('load', fitChat);
 
-  // ha üres volt a body és automatikusan köszöntöttél, szintén igazíts
   if (body && body.childElementCount === 0) {
     requestAnimationFrame(fitChat);
   }

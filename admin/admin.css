@@ -1,0 +1,162 @@
+/* ==== Alapbeállítások ==== */
+body {
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  background: #f7f7f7;
+  color: #333;
+}
+h1, h2, h3 {
+  margin: 0 0 1rem;
+  font-weight: 600;
+}
+.hidden { display: none; }
+
+/* ==== Login oldal ==== */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f0f0, #d9e4f5);
+}
+.login-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  width: 320px;
+  text-align: center;
+}
+.login-logo {
+  width: 80px;
+  margin-bottom: 1rem;
+}
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.login-card input {
+  padding: .6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.login-card button {
+  padding: .6rem;
+  background: #0066cc;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.login-card button:hover {
+  background: #0051a3;
+}
+
+/* ==== Admin dashboard ==== */
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: #0066cc;
+  color: white;
+}
+.admin-header h1 {
+  font-size: 1.4rem;
+}
+.admin-logo {
+  height: 40px;
+  margin-right: 1rem;
+}
+#logoutBtn {
+  background: #ff4d4d;
+  border: none;
+  padding: .5rem 1rem;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+#logoutBtn:hover {
+  background: #e63b3b;
+}
+
+/* ==== Navigáció ==== */
+.admin-nav {
+  display: flex;
+  gap: 1rem;
+  background: #f0f0f0;
+  padding: .8rem 1.5rem;
+}
+.admin-nav button {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: .5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.admin-nav button:hover {
+  background: #0066cc;
+  color: #fff;
+}
+
+/* ==== Tartalom ==== */
+main {
+  padding: 1.5rem;
+}
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem;
+  margin-bottom: 1.5rem;
+}
+form input, form textarea {
+  flex: 1 1 200px;
+  padding: .5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+form button {
+  background: #28a745;
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: .6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+form button:hover {
+  background: #218838;
+}
+
+/* ==== Kártyák ==== */
+.card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.card img {
+  max-width: 100px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.card button {
+  margin-top: .5rem;
+  background: #ff4d4d;
+  border: none;
+  padding: .4rem .8rem;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.card button:hover {
+  background: #e63b3b;
+}

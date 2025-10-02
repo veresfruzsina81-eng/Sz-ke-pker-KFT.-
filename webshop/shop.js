@@ -86,4 +86,31 @@ document.addEventListener("DOMContentLoaded", () => {
   if (document.getElementById("product-list")) loadProducts();
   if (document.getElementById("product-details")) loadProductDetails();
 });
+// --- Vélemény mentése ---
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
+  if (id && document.getElementById("review-form")) {
+    loadReviews(id);
+
+    document.getElementById("review-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = e.target.querySelector("textarea").value;
+
+      const { error } = await supabaseClient
+        .from("reviews")
+        .insert([
+          { product_id: id, user: "Vendég", text }
+        ]);
+
+      if (error) {
+        alert("Hiba a vélemény mentésekor!");
+      } else {
+        e.target.reset();
+        loadReviews(id);
+      }
+    });
+  }
+});
 

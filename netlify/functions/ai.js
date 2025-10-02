@@ -1,7 +1,7 @@
 // netlify/functions/ai.js
-import fetch from "node-fetch";
+// NINCS import 'node-fetch' — a globális fetch-et használjuk
 
-export async function handler(event) {
+exports.handler = async (event) => {
   try {
     if (event.httpMethod !== "POST") {
       return { statusCode: 405, body: "Method Not Allowed" };
@@ -9,12 +9,10 @@ export async function handler(event) {
 
     const { prompt = "", history = [] } = JSON.parse(event.body || "{}");
 
-    // ---- VÉDELEM ----
     if (!process.env.OPENAI_API_KEY) {
       return { statusCode: 500, body: JSON.stringify({ reply: "Szerver beállítási hiba." }) };
     }
 
-    // ---- ÜZLETI SZABÁLYOK / VÁLLALATI ADATOK ----
     const BIZ = {
       shipping: "Szállítás: 1490 Ft, 30 000 Ft felett ingyenes.",
       payment: "Fizetés: jelenleg csak utánvét.",
@@ -26,35 +24,27 @@ export async function handler(event) {
 Te a "Szőke Épker KFT." rövid, kedves és segítőkész ÜZLETI asszisztense vagy.
 - Nyelv: magyar, tömör és udvarias.
 - Témák: szolgáltatások, folyamat, kapcsolat, webshop, szállítás, fizetés, árajánlat.
-- Ha árra kérdeznek: magyarázd el, hogy több tényezőtől függ, és irányíts az #ajanlatkeres részhez.
-- Off-topic esetén: "Értem a kérdésed, de sajnos csak üzleti témákban válaszolhatok 😚".
-- Ne találj ki adatot; a szállítás/fizetés/kapcsolat az alábbi BIZ adatokból jöjjön.
-- Adj rövid, jól olvasható választ. Lehetőleg javasolj következő lépést (CTA).
+- Ha árra kérdeznek: mondd, hogy több tényezőtől függ, és irányíts az #ajanlatkeres részhez.
+- Off-topic: "Értem a kérdésed, de sajnos csak üzleti témákban válaszolhatok 😚".
+- Fix adatok a BIZ-ből jöjjenek.
 `;
 
-    // A kliens rövid HISTORY-t küld – itt limitáljuk is:
-    const shortHistory = history.slice(-6);
+    const shortHistory = Array.isArray(history) ? history.slice(-6) : [];
 
-    // ---- PROMPT ÖSSZEÁLLÍTÁS ----
     const userMsg = `
 Felhasználói kérdés: "${prompt}"
 
-Cégadatok (BIZ):
+Cégadatok:
 - ${BIZ.shipping}
 - ${BIZ.payment}
 - Kapcsolat: ${BIZ.contact}
 - Árajánlat: ${BIZ.quoteRedirect}
 
 Válaszformátum (JSON):
-{
-  "reply": "rövid magyar válasz",
-  "quick_replies": ["opcionális", "max 4 rövid gombszöveg"]
-}
-
-Ha off-topic: válaszold a guardrail mondatot és adj quick reply-t: ["Szolgáltatások","Ajánlatkérés","Kapcsolat"].
+{ "reply": "rövid magyar válasz",
+  "quick_replies": ["max 4 rövid gomb"] }
 `;
 
-    // ---- OPENAI HÍVÁS (Chat Completions) ----
     const resp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -86,30 +76,22 @@ Ha off-topic: válaszold a guardrail mondatot és adj quick reply-t: ["Szolgált
     }
 
     const data = await resp.json();
-    let parsed;
-    try {
-      parsed = JSON.parse(data.choices?.[0]?.message?.content || "{}");
-    } catch {
-      parsed = {};
-    }
+    let parsed = {};
+    try { parsed = JSON.parse(data.choices?.[0]?.message?.content || "{}"); } catch {}
 
-    // Biztonsági alapértelmezés
     const reply = parsed.reply || "Rendben. Miben segíthetek?";
     const quick = Array.isArray(parsed.quick_replies) ? parsed.quick_replies.slice(0,4) : [];
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ reply, quick_replies: quick })
-    };
+    return { statusCode: 200, body: JSON.stringify({ reply, quick_replies: quick }) };
   } catch (e) {
     console.error(e);
     return {
       statusCode: 200,
       body: JSON.stringify({
-        reply: "Váratlan hiba történt. Írj nyugodtan az elérhetőségeinkre: " +
+        reply: "Váratlan hiba történt. Elérhetőségeink: " + 
                "+36 70 607 0675 · info@szoke-epker.com",
         quick_replies: ["Szolgáltatások","Szállítás","Fizetés","Ajánlatkérés"]
       })
     };
   }
-}
+};

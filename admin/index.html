@@ -3,17 +3,68 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Webshop Admin (teszt)</title>
+  <title>Webshop Admin – bejelentkezés</title>
   <meta name="robots" content="noindex,nofollow">
   <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;display:grid;place-items:center;height:100vh;margin:0}
-    .card{padding:24px;border:1px solid #eee;border-radius:12px;background:#fafafa}
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;max-width:480px;margin:40px auto;padding:0 16px}
+    form{display:grid;gap:12px;margin-top:16px}
+    input,button{font:inherit;padding:10px;border:1px solid #ddd;border-radius:8px}
+    button{cursor:pointer;background:#333;color:#fff}
+    .card{padding:16px;border:1px solid #eee;border-radius:12px;background:#fafafa}
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>✅ Admin útvonal működik</h1>
-    <p>Ha ezt látod a saját domaineden <code>/admin</code> alatt, készen állunk a következő lépésre.</p>
+  <h1>Webshop Admin</h1>
+
+  <div id="auth" class="card">
+    <p><strong>Belépés e-maillel</strong> (magic link):</p>
+    <form id="login-form">
+      <input id="email" type="email" placeholder="email@pelda.hu" required>
+      <button type="submit">Belépő link küldése</button>
+    </form>
+    <p id="auth-msg"></p>
   </div>
+
+  <div id="app" class="card" style="display:none">
+    <p>✅ Sikeres belépés!</p>
+    <p><button id="logout">Kijelentkezés</button></p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Saját Supabase adatok (a jegyzetből)
+    const SUPABASE_URL = "https://scfxywnvjxmovvhypmxk.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjZnh5d252anhtb3Z2aHlw bXhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU4NzI5ODksImV4cCI6MjA1MTQ0ODk4OX0.9PzB5ErMwpYCTsjpoSTfS7BGt6X8K0d6Q8S1mAI_tZw";
+
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const authBox = document.getElementById('auth');
+    const appBox  = document.getElementById('app');
+    const msg     = document.getElementById('auth-msg');
+
+    async function refreshAuth(){
+      const { data: { user } } = await sb.auth.getUser();
+      authBox.style.display = user ? 'none' : 'block';
+      appBox.style.display   = user ? 'block' : 'none';
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      msg.textContent = 'Küldöm a belépő linket...';
+      const email = document.getElementById('email').value.trim();
+      const { error } = await sb.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: window.location.href }
+      });
+      msg.textContent = error ? ('Hiba: ' + error.message)
+                              : 'Elküldve! Nyisd meg az e-mailed és kattints a belépő linkre.';
+    });
+
+    document.getElementById('logout').addEventListener('click', async ()=>{
+      await sb.auth.signOut(); refreshAuth();
+    });
+
+    refreshAuth();
+    sb.auth.onAuthStateChange(refreshAuth);
+  </script>
 </body>
 </html>

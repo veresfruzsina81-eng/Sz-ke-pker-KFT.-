@@ -5,429 +5,129 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Webshop – Szőke Épker KFT.</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- Oldalspecifikus apró fixek -->
   <style>
-    .shop-header-logo{height:42px;width:auto}
-    .checkbox-row{display:flex;align-items:center;gap:8px;margin:12px 0}
-    .checkbox-row input[type="checkbox"]{margin:0}
-    .shop-empty{padding:24px;border:1px dashed #ddd;border-radius:12px;background:#fafafa;text-align:center}
+    .shop-wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+    .shop-toolbar{display:flex;gap:10px;margin:10px 0}
+    .shop-toolbar input, .shop-toolbar select{flex:1;min-height:40px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+    .card{border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff}
+    .pic{aspect-ratio:16/10;background:#f6f7f9;display:grid;place-items:center}
+    .pic img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
+    .meta{padding:10px 12px}
+    .price{font-weight:700}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid #111827;background:#111827;color:#fff;cursor:pointer}
+    .muted{color:#6b7280}
+    /* Lightbox */
+    .lb{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:50}
+    .lb img{max-width:92vw;max-height:92vh;border-radius:12px}
   </style>
+  <script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
 <body>
 
-  <!-- FEJLÉC -->
-  <header class="site-header">
-    <div class="container header-inner">
-      <a href="index.html#fooldal" class="brand">
-        <img src="logo.png" alt="Szőke Épker KFT. logó" />
-        <span class="brand-text">Szőke Épker KFT.</span>
-      </a>
-
-      <button class="nav-toggle" aria-expanded="false" aria-label="Menü megnyitása">
-        <span></span><span></span><span></span>
-      </button>
-
-      <nav class="main-nav">
-        <a href="index.html#fooldal">Főoldal</a>
-        <a href="index.html#szolgaltatasok">Szolgáltatások</a>
-        <a href="index.html#rolunk">Rólunk</a>
-        <a href="index.html#bemutatkozas">Bemutatkozás</a>
-        <a href="index.html#referenciak">Referenciák</a>
-        <a href="index.html#ajanlatkeres">Ajánlatkérés</a>
-        <a href="index.html#kapcsolat" class="pill">Kapcsolat</a>
-        <a href="webshop.html" class="pill">Webshop</a>
-      </nav>
-
-      <button class="shop-cart-toggle" aria-label="Kosár megnyitása">🛒 <span id="shopCartCount">0</span></button>
-    </div>
-  </header>
-
-  <main>
-    <section class="section soft-bg">
-      <div class="container">
-        <div class="shop-header">
-          <img src="logo.png" alt="Szőke Épker KFT. logó" class="shop-header-logo">
-          <h2 class="section-title">Webshop</h2>
-        </div>
-        <p class="lead">Hamarosan.</p>
-
-        <!-- Eszköztár -->
-        <div class="shop-toolbar">
-          <input id="shopSearch" type="search" placeholder="Keresés a termékek között…"/>
-          <select id="shopSort">
-            <option value="relevance">Rendezés: Alapértelmezett</option>
-            <option value="price-asc">Ár szerint (növ.)</option>
-            <option value="price-desc">Ár szerint (csökk.)</option>
-            <option value="name-asc">Név szerint (A–Z)</option>
-            <option value="name-desc">Név szerint (Z–A)</option>
-          </select>
-        </div>
-
-        <!-- Terméklista -->
-        <div id="shopGrid" class="shop-products"></div>
-      </div>
-    </section>
-  </main>
-
-  <!-- KOSÁR OLDALSÁV -->
-  <aside class="shop-cart" aria-hidden="true">
-    <div class="shop-cart__head">
-      <h3>Kosár</h3>
-      <button type="button" class="shop-cart__close" aria-label="Kosár bezárása">×</button>
-    </div>
-    <div class="shop-cart__items" id="shopCartItems"></div>
-    <div class="shop-cart__footer">
-      <div class="shop-cart__row"><span>Részösszeg:</span><strong id="shopSubtotal">0 Ft</strong></div>
-      <div class="shop-cart__row" id="freeShipHint"></div>
-      <button class="shop-btn" id="shopGoCheckout">Tovább a pénztárhoz</button>
-    </div>
-  </aside>
-
-  <!-- PÉNZTÁR -->
-  <div class="shop-checkout" aria-hidden="true" id="shopCheckout">
-    <div class="shop-checkout__card">
-      <button class="shop-checkout__close" aria-label="Pénztár bezárása">×</button>
-      <h3>Rendelés leadása (utánvét)</h3>
-
-      <!-- Siker nézet -->
-      <div class="shop-success" id="shopSuccess" hidden>
-        <div class="shop-success__icon">✔</div>
-        <h4>Köszönjük a rendelést!</h4>
-        <p>Hamarosan visszaigazoló emailt kap.</p>
-        <button class="shop-btn shop-btn--primary" id="successClose">Bezárás</button>
-      </div>
-
-      <!-- Űrlap -->
-      <form id="orderForm" name="webshop-order" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-        <input type="hidden" name="form-name" value="webshop-order" />
-        <p class="hidden"><label>Ne töltsd ki: <input name="bot-field" /></label></p>
-        <textarea name="order_json" id="orderJson" style="display:none;"></textarea>
-
-        <div class="shop-grid">
-          <label class="fl">
-            <input name="name" required placeholder=" " />
-            <span>Név *</span>
-          </label>
-          <label class="fl">
-            <input type="email" name="email" required placeholder=" " />
-            <span>E-mail *</span>
-          </label>
-
-          <label class="fl">
-            <input type="tel" name="phone" required placeholder=" " />
-            <span>Telefon *</span>
-          </label>
-
-          <label class="fl shop-grid--full">
-            <input name="address" required placeholder=" " />
-            <span>Szállítási cím *</span>
-            <small class="hint">Irányítószám, város, utca, házszám</small>
-          </label>
-
-          <label class="fl">
-            <input value="Utánvét" name="payment" readonly placeholder=" " />
-            <span>Fizetés módja</span>
-          </label>
-
-          <label class="fl fl-select">
-            <select name="shipping" id="shippingSelect">
-              <option value="Házhozszállítás">Házhozszállítás</option>
-              <option value="Személyes átvétel">Személyes átvétel</option>
-            </select>
-            <span>Szállítás</span>
-          </label>
-
-          <label class="fl shop-grid--full">
-            <textarea name="note" rows="3" placeholder=" "></textarea>
-            <span>Megjegyzés</span>
-          </label>
-
-          <div class="shop-summary shop-grid--full">
-            <h4>Rendelési összegzés</h4>
-            <div id="orderSummary"></div>
-            <div class="shop-summary__total">
-              <span>Végösszeg:</span> <strong id="orderTotal">0 Ft</strong>
-            </div>
-            <div class="shop-freeship" id="checkoutFreeShip"></div>
-          </div>
-
-          <div class="checkbox-row shop-grid--full">
-            <input type="checkbox" name="privacy" required id="privacyCb">
-            <label for="privacyCb">Elfogadom az Adatkezelési tájékoztatót.</label>
-          </div>
-        </div>
-
-        <div class="shop-checkout__sticky">
-          <div class="shop-checkout__sticky-sum">
-            <span>Fizetendő:</span> <strong id="stickyTotal">0 Ft</strong>
-          </div>
-          <button class="shop-btn shop-btn--primary" type="submit">Rendelés leadása</button>
-        </div>
-      </form>
-    </div>
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html#fooldal" class="brand">
+      <img src="logo.png" alt="Szőke Épker KFT. logó" />
+      <span class="brand-text">Szőke Épker KFT.</span>
+    </a>
+    <nav class="main-nav">
+      <a href="index.html#fooldal">Főoldal</a>
+      <a href="index.html#szolgaltatasok">Szolgáltatások</a>
+      <a href="index.html#rolunk">Rólunk</a>
+      <a href="index.html#bemutatkozas">Bemutatkozás</a>
+      <a href="index.html#referenciak">Referenciák</a>
+      <a href="index.html#ajanlatkeres">Ajánlatkérés</a>
+      <a href="index.html#kapcsolat" class="pill">Kapcsolat</a>
+      <a href="webshop.html" class="pill">Webshop</a>
+    </nav>
   </div>
+</header>
 
-  <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<main>
+  <section class="section soft-bg">
+    <div class="shop-wrap">
+      <h2 class="section-title">Webshop</h2>
+      <p class="lead">Hamarosan.</p>
 
-  <!-- NAV + SHOP JS -->
-  <script>
-  /* ===== Hamburger menü ===== */
-  const navToggle = document.querySelector('.nav-toggle');
-  const mainNav   = document.querySelector('.main-nav');
-  navToggle?.addEventListener('click', ()=>{
-    const open = mainNav.classList.toggle('is-open');
-    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-  mainNav?.addEventListener('click', (e)=>{
-    if(e.target.tagName==='A' && mainNav.classList.contains('is-open')){
-      mainNav.classList.remove('is-open'); navToggle.setAttribute('aria-expanded','false');
-    }
-  });
+      <div class="shop-toolbar">
+        <input id="q" type="search" placeholder="Keresés a termékek között…">
+        <select id="sort">
+          <option value="created">Rendezés: Legújabb</option>
+          <option value="price-asc">Ár szerint (növ.)</option>
+          <option value="price-desc">Ár szerint (csökk.)</option>
+          <option value="name-asc">Név szerint (A–Z)</option>
+          <option value="name-desc">Név szerint (Z–A)</option>
+        </select>
+      </div>
 
-  /* ===== Supabase beállítás ===== */
-  const SUPABASE_URL = "https://gckynywmoxylwyppmkck.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      <div id="list" class="grid">
+        <div class="muted">Betöltés…</div>
+      </div>
+    </div>
+  </section>
+</main>
 
-  /* ===== Állapot ===== */
-  let LOADED_PRODUCTS = []; // Supabase-ből jön
-  const LS_KEY = "shop_cart_v1";
-  let cart = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+<div class="lb" id="lb"><img alt=""><!-- lightbox --></div>
 
-  /* ===== Segédek ===== */
-  const fmt = n => new Intl.NumberFormat("hu-HU").format(n) + " Ft";
-  const qS = s => document.querySelector(s);
-  const FREE_SHIP_LIMIT = 30000;
+<script>
+/* ==== SUPABASE INIT – a TE adataiddal ==== */
+const SUPABASE_URL = "https://gckynywmoxylwyppmkck.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const bestPrice = p => p.price || 0;            // nincs akció mező az adatbázisban
-  const inStock   = p => (p.in_stock !== false);  // default: készleten
+const $ = s => document.querySelector(s);
+const qEl = $("#q"), sortEl = $("#sort"), list = $("#list");
 
-  /* ===== DOM ref-ek ===== */
-  const grid    = qS("#shopGrid");
-  const searchEl= qS("#shopSearch");
-  const sortEl  = qS("#shopSort");
+function fmt(n){ return new Intl.NumberFormat("hu-HU").format(n)+" Ft"; }
 
-  /* ===== Termékek lekérése Supabase-ből ===== */
-  async function loadProducts(){
-    grid.innerHTML = '<p>Betöltés…</p>';
-    const { data, error } = await sb.from('products')
-      .select('id,title,price,description,image_url,in_stock,created_at')
-      .order('created_at', { ascending:false });
+async function load(){
+  list.innerHTML = '<div class="muted">Betöltés…</div>';
+  let { data, error } = await _sb.from("products").select("*").eq("in_stock", true);
+  if(error){ list.innerHTML = '<div class="muted">Hiba: '+error.message+'</div>'; return; }
 
-    if(error){
-      grid.innerHTML = `<p class="shop-empty">Hiba a termékek betöltésekor: ${error.message}</p>`;
-      LOADED_PRODUCTS = [];
-      return;
-    }
-    LOADED_PRODUCTS = data || [];
-    renderProducts();
+  // keresés
+  const q = (qEl.value||"").toLowerCase().trim();
+  if(q) data = data.filter(p => (p.title||"").toLowerCase().includes(q) || (p.description||"").toLowerCase().includes(q));
+
+  // rendezés
+  switch(sortEl.value){
+    case "price-asc":  data.sort((a,b)=>a.price-b.price); break;
+    case "price-desc": data.sort((a,b)=>b.price-a.price); break;
+    case "name-asc":   data.sort((a,b)=>(a.title||"").localeCompare(b.title||"","hu")); break;
+    case "name-desc":  data.sort((a,b)=>(b.title||"").localeCompare(a.title||"","hu")); break;
+    default:           data.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
   }
 
-  /* ===== Terméklista render ===== */
-  function renderProducts(){
-    const q = (searchEl?.value || "").toLowerCase().trim();
+  if(!data.length){ list.innerHTML = '<div class="muted">Jelenleg nincs elérhető termék.</div>'; return; }
 
-    let list = LOADED_PRODUCTS.filter(p =>
-      !q || (p.title ?? '').toLowerCase().includes(q)
-    );
-
-    switch(sortEl?.value){
-      case "price-asc":  list.sort((a,b)=>bestPrice(a)-bestPrice(b)); break;
-      case "price-desc": list.sort((a,b)=>bestPrice(b)-bestPrice(a)); break;
-      case "name-asc":   list.sort((a,b)=>(a.title||'').localeCompare(b.title||'', 'hu')); break;
-      case "name-desc":  list.sort((a,b)=>(b.title||'').localeCompare(a.title||'', 'hu')); break;
-      default: /* created_at desc already */ break;
-    }
-
-    if(!list.length){
-      grid.innerHTML = `<div class="shop-empty">Nincs még elérhető termék.</div>`;
-      return;
-    }
-
-    grid.innerHTML = list.map(p=>{
-      const out = !inStock(p);
-      return `
-        <div class="shop-product-card ${out?'is-out':''}">
-          <div class="shop-product-media">
-            <img src="${p.image_url}" alt="${p.title ?? ''}">
-            ${out ? '<span class="shop-badge out">Elfogyott</span>' : ''}
-          </div>
-          <h3>${p.title ?? ''}</h3>
-          <div class="shop-price">
-            <strong>${fmt(bestPrice(p))}</strong>
-          </div>
-          <div class="shop-product-row">
-            <div class="qty">
-              <button class="qty__btn" data-qty-dec aria-label="Mennyiség csökkentése">−</button>
-              <input class="qty__input" type="number" min="1" value="1" inputmode="numeric" />
-              <button class="qty__btn" data-qty-inc aria-label="Mennyiség növelése">+</button>
-            </div>
-            <button class="shop-btn" data-add-to-cart data-id="${p.id}" ${out ? 'disabled' : ''}>${out?'Nem elérhető':'Kosárba'}</button>
-          </div>
+  list.innerHTML = data.map(p=>`
+    <div class="card">
+      <div class="pic">${p.image_url ? `<img src="${p.image_url}" alt="${p.title}" data-zoom>` : `<span class="muted">nincs kép</span>`}</div>
+      <div class="meta">
+        <strong>${p.title||""}</strong>
+        ${p.description ? `<div class="muted">${p.description.replace(/</g,"&lt;")}</div>` : ""}
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+          <span class="price">${fmt(p.price||0)}</span>
+          <button class="btn" disabled>Kosárba</button>
         </div>
-      `;
-    }).join("");
-  }
+      </div>
+    </div>
+  `).join("");
 
-  searchEl?.addEventListener('input', renderProducts);
-  sortEl?.addEventListener('change', renderProducts);
-
-  /* ===== Kosár műveletek + ingyenes szállítás jelzés ===== */
-  const subtotal = () => cart.reduce((s,x)=>s + x.price*x.qty, 0);
-  function saveCart(){ localStorage.setItem(LS_KEY, JSON.stringify(cart)); updateCartUI(); }
-
-  function findProduct(id){
-    return LOADED_PRODUCTS.find(p => String(p.id) === String(id));
-  }
-
-  function addToCart(id, qty=1){
-    const prod = findProduct(id);
-    if(!prod || !inStock(prod)) return;
-    qty = Math.max(1, parseInt(qty,10) || 1);
-    const it = cart.find(x=>String(x.id)===String(id));
-    if(it){ it.qty += qty; }
-    else {
-      cart.push({
-        id: prod.id,
-        name: prod.title,
-        price: bestPrice(prod),
-        img: prod.image_url,
-        qty
-      });
-    }
-    saveCart(); toast(`${prod.title} × ${qty} a kosárban`);
-  }
-  function removeFromCart(id){ cart = cart.filter(x=>String(x.id)!==String(id)); saveCart(); }
-  function changeQty(id, d){ const it = cart.find(x=>String(x.id)===String(id)); if(!it) return; it.qty=Math.max(1,it.qty+d); saveCart(); }
-
-  function updateFreeShipHints(){
-    const sub = subtotal();
-    const remain = Math.max(0, FREE_SHIP_LIMIT - sub);
-    const hintEl = qS("#freeShipHint");
-    const chkEl  = qS("#checkoutFreeShip");
-    const msg = remain>0
-      ? `Még ${fmt(remain)} az ingyenes szállításhoz.`
-      : `🎉 Ingyenes szállítás!`;
-    if(hintEl){ hintEl.innerHTML = `<em>${msg}</em>`; }
-    if(chkEl){ chkEl.textContent = msg; }
-  }
-
-  function updateCartUI(){
-    const count = cart.reduce((s,x)=>s+x.qty,0);
-    qS("#shopCartCount").textContent = String(count);
-    const list  = qS("#shopCartItems");
-    if(list){
-      list.innerHTML = cart.length ? cart.map(x=>`
-        <div class="shop-cart__item">
-          <img src="${x.img}" alt="">
-          <div>
-            <div class="shop-cart__item-title">${x.name}</div>
-            <div>${fmt(x.price)}</div>
-            <div class="shop-cart__item-qty">
-              <button class="shop-btn shop-btn--ghost" data-dec="${x.id}">−</button>
-              <span>${x.qty}</span>
-              <button class="shop-btn shop-btn--ghost" data-inc="${x.id}">+</button>
-              <button class="shop-btn shop-btn--ghost" data-del="${x.id}" style="margin-left:.5rem">Törlés</button>
-            </div>
-          </div>
-          <div><strong>${fmt(x.price * x.qty)}</strong></div>
-        </div>
-      `).join("") : `<p>Üres a kosár.</p>`;
-    }
-    qS("#shopSubtotal").textContent = fmt(subtotal());
-    updateFreeShipHints();
-  }
-
-  function openCart(){ qS(".shop-cart")?.classList.add("shop-cart--open"); }
-  function closeCart(){ qS(".shop-cart")?.classList.remove("shop-cart--open"); }
-  function openCheckout(){ qS("#shopCheckout")?.classList.add("shop-checkout--open"); renderSummary(); }
-  function closeCheckout(){ qS("#shopCheckout")?.classList.remove("shop-checkout--open"); }
-
-  document.addEventListener("click", (e)=>{
-    const t = e.target;
-
-    // qty a kártyán
-    if(t.matches(".qty__btn")){
-      const wrap = t.closest(".qty");
-      const input = wrap.querySelector(".qty__input");
-      let v = parseInt(input.value||"1",10);
-      if(t.hasAttribute("data-qty-inc")) v++;
-      if(t.hasAttribute("data-qty-dec")) v = Math.max(1, v-1);
-      input.value = String(v);
-    }
-
-    if(t.matches(".shop-cart-toggle")) openCart();
-    if(t.matches(".shop-cart__close")) closeCart();
-    if(t.matches("#shopGoCheckout")){ closeCart(); openCheckout(); }
-    if(t.matches(".shop-checkout__close")) closeCheckout();
-
-    if(t.dataset?.inc) changeQty(t.dataset.inc, +1);
-    if(t.dataset?.dec) changeQty(t.dataset.dec, -1);
-    if(t.dataset?.del) removeFromCart(t.dataset.del);
-
-    const addBtn = t.closest?.("[data-add-to-cart]");
-    if(addBtn){
-      const card = addBtn.closest(".shop-product-card");
-      const qtyInput = card.querySelector(".qty__input");
-      const qty = parseInt(qtyInput?.value||"1",10);
-      addToCart(addBtn.getAttribute("data-id"), qty);
-    }
+  // lightbox
+  list.querySelectorAll("[data-zoom]").forEach(img=>{
+    img.addEventListener("click", ()=>{
+      const lb=$("#lb"); lb.style.display="flex"; lb.querySelector("img").src = img.src;
+    });
   });
+}
 
-  /* ===== Összegzés + ingyenes szállítás a checkoutban ===== */
-  function computeShipping(sub){ return sub >= FREE_SHIP_LIMIT ? 0 : 1490; }
+$("#lb").addEventListener("click", e=>{ if(e.target.id==="lb") e.currentTarget.style.display="none"; });
+qEl.addEventListener("input", load);
+sortEl.addEventListener("change", load);
 
-  function renderSummary(){
-    const wrap = qS("#orderSummary"), totalEl = qS("#orderTotal"), stickyTotal = qS("#stickyTotal");
-    if(!wrap || !totalEl) return;
-    const shipping = (qS("#shippingSelect")?.value || "Házhozszállítás");
-    const sub = subtotal(); const shipCost = computeShipping(sub); const tot = sub + shipCost;
-
-    wrap.innerHTML = `
-      <ul>${cart.map(x=>`<li>${x.name} × ${x.qty} — ${fmt(x.price*x.qty)}</li>`).join("")}</ul>
-      <div style="margin-top:.5rem;display:flex;justify-content:space-between">
-        <span>Szállítás (${shipping}${sub>=FREE_SHIP_LIMIT?' – ingyenes 30 000 Ft felett':''}):</span>
-        <strong>${fmt(shipCost)}</strong>
-      </div>`;
-    totalEl.textContent = fmt(tot);
-    if(stickyTotal) stickyTotal.textContent = fmt(tot);
-
-    const hidden = qS("#orderJson");
-    if(hidden) hidden.value = JSON.stringify({ items: cart, subtotal: sub, shipping_method: shipping, shipping_cost: shipCost, total: tot }, null, 2);
-
-    updateFreeShipHints();
-  }
-  document.addEventListener("change", (e)=>{ if(e.target.id==="shippingSelect"){ renderSummary(); } });
-
-  /* ===== Beküldés Netlifyra – oldal nélkül, köszönjük nézet ===== */
-  const form = qS("#orderForm");
-  form?.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    renderSummary(); // töltsük ki a hidden JSON-t
-    const fd = new FormData(form);
-    try{
-      await fetch("/", { method:"POST", body: fd });
-      qS("#shopSuccess").hidden = false;
-      form.style.display = "none";
-      cart = []; saveCart(); renderSummary();
-    }catch(err){
-      alert("Hoppá, a beküldés nem sikerült. Próbáld újra.");
-    }
-  });
-  qS("#successClose")?.addEventListener("click", ()=> closeCheckout());
-
-  /* ===== Mini toast ===== */
-  function toast(msg){
-    let el = document.createElement('div');
-    el.className = 'shop-toast'; el.textContent = msg;
-    document.body.appendChild(el);
-    setTimeout(()=> el.classList.add('on'), 10);
-    setTimeout(()=> { el.classList.remove('on'); setTimeout(()=> el.remove(), 300); }, 1800);
-  }
-
-  // Kezdő lekérés és render
-  loadProducts().then(updateCartUI);
-  </script>
+load();
+</script>
 </body>
 </html>

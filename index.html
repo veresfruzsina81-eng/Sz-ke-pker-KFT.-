@@ -486,8 +486,13 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
   // Blokkoljuk a korábbi event handlereket (capturing-ben)
   function stopAll(e){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); }
   form.addEventListener('submit', stopAll, true);
-  fab.addEventListener('click',  e=>e.stopImmediatePropagation(), true);
-  closeBtn?.addEventListener('click', e=>e.stopImmediatePropagation(), true);
+
+  /* FIX: NE BLOKKOLD a FAB és a CLOSE kattintásokat capturing-ben,
+     mert akkor az openChat/closeChat handlerek nem futnak le.
+     Az alábbi két sort ELTÁVOLÍTOTTAM:
+       fab.addEventListener('click',  e=>e.stopImmediatePropagation(), true);
+       closeBtn?.addEventListener('click', e=>e.stopImmediatePropagation(), true);
+  */
 
   // Új nyit/zár
   function openChat(){

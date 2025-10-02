@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Termék | Szőke Épker KFT.</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .container{max-width:1100px;margin:0 auto;padding:20px}
+    .product-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:24px}
+    .product-media{background:#fff;border:1px solid #eee;border-radius:12px;padding:12px}
+    .product-media img{width:100%;height:auto;border-radius:10px;display:block}
+    .product-title{margin:0 0 8px 0}
+    .price{font-weight:700;font-size:20px;margin:4px 0 12px}
+    .desc{color:#444;line-height:1.6}
+    .meta{color:#666;font-size:14px;margin-top:6px}
+    .back{display:inline-block;margin:0 0 16px 0}
+    .reviews{margin-top:32px}
+    .review-item{border-top:1px solid #eee;padding:12px 0}
+    .review-item:first-child{border-top:0}
+    .stars{font-size:14px;color:#d4a70b}
+    .review-form{margin-top:18px;border:1px solid #eee;border-radius:12px;padding:12px;background:#fafafa}
+    .review-form label{display:block;margin:10px 0}
+    .review-form input, .review-form textarea, .review-form select{
+      width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff
+    }
+    .btn{background:#222;color:#fff;border:0;border-radius:10px;padding:10px 14px;cursor:pointer}
+    .card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/webshop" class="back">← vissza a webshopba</a>
+    <div id="view">Betöltés…</div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL = 'https://gckynywmoxylwyppmkck.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI';
+
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const params = new URLSearchParams(location.search);
+    const slug = params.get('slug');
+
+    const view = document.getElementById('view');
+
+    function stars(n){
+      const s = Math.max(1, Math.min(5, n|0));
+      return '★'.repeat(s)+'☆'.repeat(5-s);
+    }
+
+    async function loadProduct(){
+      if(!slug){ view.textContent = 'Hiányzó termék azonosító.'; return; }
+
+      // termék betöltése slug alapján
+      const { data: prod, error } = await db
+        .from('products')
+        .select('*')
+        .eq('slug', slug)
+        .maybeSingle();
+
+      if(error || !prod){ view.textContent = 'A termék nem található.'; return; }
+
+      // vélemények betöltése
+      const { data: revs } = await db
+        .from('product_reviews')
+        .select('*')
+        .eq('product_id', prod.id)
+        .order('created_at', { ascending: false });
+
+      // nézet render
+      view.innerHTML = `
+        <div class="product-wrap">
+          <div class="product-media">
+            <img src="${prod.image_url || 'https://placehold.co/800x600?text=Nincs+k%C3%A9p'}" alt="${prod.title}">
+          </div>
+          <div class="card">
+            <h1 class="product-title">${prod.title}</h1>
+            <div class="price">${new Intl.NumberFormat('hu-HU').format(prod.price)} Ft</div>
+            ${prod.description ? `<p class="meta">${prod.description}</p>` : ''}
+            ${prod.long_description ? `<div class="desc">${prod.long_description.replace(/\n/g,'<br>')}</div>` : '<div class="desc">Nincs részletes leírás.</div>'}
+          </div>
+        </div>
+
+        <div class="reviews">
+          <h2>Vélemények</h2>
+          <div id="revList">
+            ${
+              (revs && revs.length)
+              ? revs.map(r=>`
+                  <div class="review-item">
+                    <div class="stars">${stars(r.rating)}</div>
+                    <div><strong>${r.name}</strong> • ${new Date(r.created_at).toLocaleDateString('hu-HU')}</div>
+                    <div>${r.comment.replace(/\n/g,'<br>')}</div>
+                  </div>
+                `).join('')
+              : '<p>Még nincsenek vélemények.</p>'
+            }
+          </div>
+
+          <div class="review-form">
+            <h3>Írj véleményt</h3>
+            <form id="revForm">
+              <label>
+                Név*
+                <input name="name" required>
+              </label>
+              <label>
+                Értékelés*
+                <select name="rating" required>
+                  <option value="5">★★★★★ – kiváló</option>
+                  <option value="4">★★★★☆ – jó</option>
+                  <option value="3">★★★☆☆ – közepes</option>
+                  <option value="2">★★☆☆☆ – gyenge</option>
+                  <option value="1">★☆☆☆☆ – rossz</option>
+                </select>
+              </label>
+              <label>
+                Vélemény*
+                <textarea name="comment" rows="4" required></textarea>
+              </label>
+              <button class="btn" type="submit">Küldés</button>
+            </form>
+            <div id="revMsg" style="margin-top:10px;"></div>
+          </div>
+        </div>
+      `;
+
+      // űrlap bekötése
+      const form = document.getElementById('revForm');
+      const msg  = document.getElementById('revMsg');
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        msg.textContent = 'Mentés…';
+        const fd = new FormData(form);
+        const payload = {
+          product_id: prod.id,
+          name: (fd.get('name')||'').toString().trim().slice(0,100),
+          rating: parseInt(fd.get('rating'),10),
+          comment: (fd.get('comment')||'').toString().trim().slice(0,4000)
+        };
+        const { error: insErr } = await db.from('product_reviews').insert(payload);
+        if(insErr){ msg.textContent = 'Hiba mentés közben. Próbáld újra.'; return; }
+        msg.textContent = 'Köszönjük! A véleményed megjelent.';
+        form.reset();
+
+        // lista frissítése
+        const { data: updated } = await db
+          .from('product_reviews')
+          .select('*')
+          .eq('product_id', prod.id)
+          .order('created_at', { ascending: false });
+
+        document.getElementById('revList').innerHTML =
+          updated.map(r=>`
+            <div class="review-item">
+              <div class="stars">${stars(r.rating)}</div>
+              <div><strong>${r.name}</strong> • ${new Date(r.created_at).toLocaleDateString('hu-HU')}</div>
+              <div>${r.comment.replace(/\n/g,'<br>')}</div>
+            </div>
+          `).join('');
+      });
+    }
+
+    loadProduct();
+  </script>
+</body>
+</html>

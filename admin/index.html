@@ -3,64 +3,122 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Webshop Admin – bejelentkezés</title>
+  <title>Webshop Admin</title>
   <meta name="robots" content="noindex,nofollow">
   <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;max-width:480px;margin:40px auto;padding:0 16px}
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;max-width:720px;margin:40px auto;padding:0 16px}
     form{display:grid;gap:12px;margin-top:16px}
-    input,button{font:inherit;padding:10px;border:1px solid #ddd;border-radius:8px}
+    input,textarea,button{font:inherit;padding:10px;border:1px solid #ddd;border-radius:8px}
     button{cursor:pointer;background:#333;color:#fff}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .card{padding:16px;border:1px solid #eee;border-radius:12px;background:#fafafa}
+    .muted{opacity:.75}
+    .ok{color:#0a7a0a}.err{color:#b00020}
   </style>
 </head>
 <body>
   <h1>Webshop Admin</h1>
 
+  <!-- BELÉPÉS -->
   <div id="auth" class="card">
     <p><strong>Belépés e-maillel</strong> (magic link):</p>
     <form id="login-form">
       <input id="email" type="email" placeholder="email@pelda.hu" required>
       <button type="submit">Belépő link küldése</button>
     </form>
-    <p id="auth-msg"></p>
+    <p id="auth-msg" class="muted"></p>
   </div>
 
+  <!-- ALKALMAZÁS (csak belépve látszik) -->
   <div id="app" class="card" style="display:none">
-    <p>✅ Sikeres belépés!</p>
-    <p><button id="logout">Kijelentkezés</button></p>
+    <p class="muted">Be vagy jelentkezve. <button id="logout">Kijelentkezés</button></p>
+
+    <h2>Új termék</h2>
+    <form id="product-form">
+      <div class="row">
+        <input id="title" placeholder="Termék neve" required>
+        <input id="price" type="number" min="0" step="1" placeholder="Ár (Ft)" required>
+      </div>
+      <textarea id="desc" rows="4" placeholder="Rövid leírás (opcionális)"></textarea>
+      <input id="image" type="file" accept="image/*" required>
+      <label><input id="stock" type="checkbox" checked> Készleten</label>
+      <button type="submit">Mentés</button>
+    </form>
+    <p id="msg"></p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Saját Supabase adatok (a jegyzetből)
-    const SUPABASE_URL = "https://scfxywnvjxmovvhypmxk.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjZnh5d252anhtb3Z2aHlw bXhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU4NzI5ODksImV4cCI6MjA1MTQ0ODk4OX0.9PzB5ErMwpYCTsjpoSTfS7BGt6X8K0d6Q8S1mAI_tZw";
+    // SAJÁT SUPABASE ADATAID (egy sorban hagyd!):
+    const SUPABASE_URL = "https://gckynywmoxylwyppmkck.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
 
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const authBox = document.getElementById('auth');
     const appBox  = document.getElementById('app');
-    const msg     = document.getElementById('auth-msg');
+    const msgAuth = document.getElementById('auth-msg');
 
+    // auth UI
     async function refreshAuth(){
       const { data: { user } } = await sb.auth.getUser();
-      authBox.style.display = user ? 'none' : 'block';
-      appBox.style.display   = user ? 'block' : 'none';
+      const on = !!user;
+      authBox.style.display = on ? 'none' : 'block';
+      appBox.style.display   = on ? 'block' : 'none';
     }
 
     document.getElementById('login-form').addEventListener('submit', async (e)=>{
       e.preventDefault();
-      msg.textContent = 'Küldöm a belépő linket...';
+      msgAuth.textContent = 'Küldöm a belépő linket…';
       const email = document.getElementById('email').value.trim();
-      const { error } = await sb.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: window.location.href }
-      });
-      msg.textContent = error ? ('Hiba: ' + error.message)
-                              : 'Elküldve! Nyisd meg az e-mailed és kattints a belépő linkre.';
+      try{
+        const { error } = await sb.auth.signInWithOtp({
+          email,
+          options: { emailRedirectTo: window.location.href }
+        });
+        msgAuth.textContent = error ? ('Hiba: ' + error.message)
+                                    : 'Elküldve! Nézd meg az e-mailed és kattints a linkre.';
+      }catch(err){
+        msgAuth.textContent = 'Hiba: ' + (err?.message || 'Failed to fetch');
+      }
     });
 
     document.getElementById('logout').addEventListener('click', async ()=>{
-      await sb.auth.signOut(); refreshAuth();
+      await sb.auth.signOut();
+      refreshAuth();
+    });
+
+    // TERMÉK MENTÉS
+    document.getElementById('product-form').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const S = document.getElementById('msg');
+      S.className=''; S.textContent = 'Feltöltés…';
+
+      const title = document.getElementById('title').value.trim();
+      const price = parseInt(document.getElementById('price').value,10) || 0;
+      const description = document.getElementById('desc').value.trim();
+      const in_stock = document.getElementById('stock').checked;
+      const file = document.getElementById('image').files[0];
+      if (!file) { S.className='err'; S.textContent='Válassz képet!'; return; }
+
+      try{
+        // 1) kép a "products" bucketbe
+        const ext  = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        const slug = title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+        const path = `${Date.now()}_${slug}.${ext}`;
+        const up = await sb.storage.from('products').upload(path, file, { upsert: false });
+        if (up.error) throw new Error('Képfeltöltési hiba: ' + up.error.message);
+        const pub = sb.storage.from('products').getPublicUrl(path);
+        const image_url = pub.data.publicUrl;
+
+        // 2) rekord a "products" táblába
+        const ins = await sb.from('products').insert([{ title, price, description, image_url, in_stock }]);
+        if (ins.error) throw new Error('Mentési hiba: ' + ins.error.message);
+
+        S.className='ok'; S.textContent = '✔ Mentve! A termék megjelent a webshopban.';
+        e.target.reset();
+      }catch(err){
+        S.className='err'; S.textContent = String(err.message || err);
+      }
     });
 
     refreshAuth();

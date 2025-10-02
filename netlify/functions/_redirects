@@ -1,6 +1,0 @@
-/webshop.html     /webshop/shop.html      200
-/webshop          /webshop/shop.html      200
-
-/admin.html       /admin/login.html       200
-/admin            /admin/login.html       200
-/admin/           /admin/login.html       200

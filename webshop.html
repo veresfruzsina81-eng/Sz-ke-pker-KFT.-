@@ -53,7 +53,7 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
   border-bottom:1px solid #eef2f8;
   display:block;
   padding:8px;
-  cursor:zoom-in; /* nagyítás jelzése */
+  cursor:zoom-in;
 }
 .px{padding:10px 12px}
 .title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -108,7 +108,7 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .cart-foot{border-top:1px solid #eee;padding:12px}
 .cart-foot .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 
-/* === Szerencsekerék modal (eredeti stílus + marad) === */
+/* === Szerencsekerék modal === */
 .wheel-scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200}
 .wheel-scrim[hidden]{display:none}
 .wheel-modal{position:fixed;inset:0;display:grid;place-items:center;z-index:1201;padding:16px}
@@ -123,8 +123,10 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .pin{position:absolute;top:-8px;font-size:20px;color:#1a73e8}
 .wheel-result{margin-top:10px;padding:10px;border-radius:10px;background:#f5faff;font-weight:600}
 
-/* +++ ÚJ: konfetti animáció (kerékhez) +++ */
-@keyframes fall {to { transform: translateY(100vh) rotate(360deg); opacity:0; }}
+/* === Canvas konfetti (nyeréskor 2 mp) === */
+#confettiCanvas{
+  position:fixed; inset:0; z-index:1300; pointer-events:none; display:none;
+}
 </style>
 </head>
 <body>
@@ -210,6 +212,10 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
     <div id="wheelResult" class="wheel-result" hidden></div>
   </div>
 </div>
+
+<!-- Canvas konfetti réteg -->
+<canvas id="confettiCanvas"></canvas>
+
 <script>
 /* --- Supabase beállítások: változatlanul hagyva --- */
 const SB_URL="https://gckynywmoxylwyppmkck.supabase.co";
@@ -453,6 +459,7 @@ load();
 
 /* segédfüggvény (eredeti) */
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
 /* === Szerencsekerék logika (JAVÍTOTT + MODERN) === */
 (function wheelInit(){
   const scrim = document.getElementById('wheelScrim');
@@ -462,7 +469,7 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':
   const wheel = document.getElementById('wheel');
   const resultBox = document.getElementById('wheelResult');
 
-  // csak egyszer jelenjen meg
+  // Munkamenetenként egyszer
   if(!sessionStorage.getItem('wheelShown')){
     scrim.hidden=false; modal.hidden=false; document.body.style.overflow='hidden';
     sessionStorage.setItem('wheelShown','1');
@@ -475,21 +482,26 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':
   scrim.addEventListener('click', closeWheel);
   document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !modal.hidden) closeWheel(); });
 
-  const prizes = [0,3,5,7,0,5]; // max 7%
+  // A szeletek sorrendje a DOM-ban: [0,3,5,7,0,5]
+  // 6 szelet -> 60°/szelet, a mutató a tetején van (0°), a szelet közepe: i*60+30°
+  // Ehhez a kerék cél-szöge: extra körök + (330 - i*60) (azaz 360 - (i*60+30))
+  const prizes = [0,3,5,7,0,5];
   let spinning = false;
 
   spinBtn.addEventListener('click', ()=>{
     if(spinning) return;
     spinning = true;
+    resultBox.hidden = true;
 
-    // VÉLETLEN INDEX (nem indexOf) – így pontos a találat
-    const idx = Math.floor(Math.random()*prizes.length);
-    const prize = prizes[idx];
+    const i = Math.floor(Math.random()*prizes.length);
+    const prize = prizes[i];
 
-    // 6 szelet → 60°/szelet; -30° offset a mutató közepére
-    const targetDeg = 360*5 + (360 - idx*60) - 30;
+    const extraTurns = 360*5; // 5 teljes kör a látványért
+    const targetDeg = extraTurns + (330 - i*60);
+
     wheel.style.transform = `rotate(${targetDeg}deg)`;
 
+    // A transition 3s, várjunk kicsit rá
     setTimeout(()=>{
       resultBox.hidden = false;
       if(prize>0){
@@ -497,34 +509,72 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':
         resultBox.innerHTML = `🎉 <strong>Gratulálunk!</strong><br>Nyertél <b>${prize}%</b> kupont!<br>Kód: <code>${code}</code>`;
         sessionStorage.setItem('couponPercent', String(prize));
         sessionStorage.setItem('couponCode', code);
-        startConfetti(); setTimeout(stopConfetti,2000);
-      }else{
+        runConfetti(2000); // PONTOSAN 2 mp
+      } else {
         resultBox.innerHTML = `😥 <strong>Sajnáljuk!</strong><br>Most nem nyertél kupont.`;
       }
       spinning = false;
     }, 3100);
   });
 
-  // egyszerű konfetti-eső 🎉
-  function startConfetti(){
-    for(let i=0;i<50;i++){
-      const conf=document.createElement('div');
-      conf.textContent='🎉';
-      conf.style.position='fixed';
-      conf.style.left=Math.random()*100+'vw';
-      conf.style.top='-10px';
-      conf.style.fontSize='24px';
-      conf.style.animation=`fall ${2+Math.random()*2}s linear forwards`;
-      conf.style.pointerEvents='none';
-      document.body.appendChild(conf);
-      setTimeout(()=>conf.remove(),3000);
-    }
+})();
+
+/* === Profi Canvas-konfetti (pontosan 2 mp) === */
+(function confettiSetup(){
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  let parts = [];
+  let running = false;
+  function resize(){
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
   }
-  function stopConfetti(){} // magától eltűnik
+  addEventListener('resize', resize); resize();
+
+  function makeParts(){
+    const N = Math.min(250, Math.floor((canvas.width*canvas.height)/12000));
+    parts = new Array(N).fill(0).map(()=>({
+      x: Math.random()*canvas.width,
+      y: -10 - Math.random()*canvas.height*0.2,
+      vx: (Math.random()-.5)*3,
+      vy: 3+Math.random()*3,
+      w: 6+Math.random()*6,
+      h: 10+Math.random()*14,
+      rot: Math.random()*Math.PI,
+      vr: (Math.random()-.5)*0.3,
+      color: confettiColor()
+    }));
+  }
+  function confettiColor(){
+    const p = ["#22c55e","#3b82f6","#f59e0b","#ef4444","#8b5cf6","#06b6d4","#eab308","#10b981"];
+    return p[(Math.random()*p.length)|0];
+  }
+
+  function loop(endAt){
+    if(!running) return;
+    const now = performance.now();
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(const p of parts){
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += 0.03;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+      if(p.y>canvas.height+40){ p.y=-20; p.x=Math.random()*canvas.width; p.vy=3+Math.random()*3; }
+    }
+    if(now<endAt){ requestAnimationFrame(()=>loop(endAt)); }
+    else { running=false; canvas.style.display='none'; }
+  }
+
+  window.runConfetti = function(durationMs=2000){
+    makeParts();
+    canvas.style.display='block';
+    running = true;
+    const endAt = performance.now()+durationMs;
+    loop(endAt);
+  };
 })();
 </script>
 
-<!-- Footer (új) -->
+<!-- Footer -->
 <footer style="background:#f5f7fb;border-top:1px solid #e5e9f2;padding:20px;margin-top:40px;font-size:14px;color:#555">
   <div class="wrap row space" style="flex-wrap:wrap;gap:10px">
     <div>© 2025 Szőke-Épker Kft. Minden jog fenntartva.</div>

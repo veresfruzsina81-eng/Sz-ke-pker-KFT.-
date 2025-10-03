@@ -31,7 +31,7 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
 .grid-2{grid-template-columns:1fr}
 @media(min-width:900px){.grid-2{grid-template-columns:380px 1fr}}
 
-/* Termék kártya */
+/* Termékkártya */
 .item{
   display:grid;grid-template-columns:96px 1fr auto;gap:12px;align-items:center;
   border:1px solid #e5e9f2;border-radius:12px;padding:12px;background:#fff
@@ -47,7 +47,7 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
 #plist,#olist,#rlist{padding-right:4px;margin-top:8px}
 #olist .card + .card{margin-top:10px}
 
-/* akciógombsor: feszes, nem csúszik szét */
+/* akciógombsor */
 .actions{display:flex;gap:8px;flex-wrap:nowrap}
 .actions .btn{min-width:112px}
 @media(max-width:640px){.actions{flex-wrap:wrap}}
@@ -148,8 +148,6 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
         <div class="row" style="justify-content:space-between;align-items:center">
           <h2 style="margin:0">Rendelések</h2>
           <div class="row">
-            <button class="btn ghost" id="exportPdfBtn" type="button">Számlaszerű (PDF)</button>
-            <button class="btn ghost" id="exportBtn" type="button">CSV export</button>
             <button class="btn" id="refreshOrders" type="button">Frissítés</button>
           </div>
         </div>
@@ -243,12 +241,10 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("plist").addEventListener("click", onProductsClick);
   document.getElementById("psearch").addEventListener("input", ()=>renderProductsFiltered());
   document.getElementById("refreshOrders").addEventListener("click", loadOrders);
-  document.getElementById("exportBtn").addEventListener("click", exportCSV);
-  document.getElementById("exportPdfBtn").addEventListener("click", exportInvoicesPdf);
 });
 
 /* ===== Termékek ===== */
-let P_ADMIN = []; // utoljára lekért termékek
+let P_ADMIN = [];
 
 async function listProducts(){
   if(!ensureSB()) return alert("Supabase nem elérhető (script).");
@@ -305,11 +301,11 @@ async function addProduct(){
     }
   }
 
-  const ins=await sb.from('products').insert({title,price,description,instock,image_url}).select().single();
+  const ins=await sb.from('products').insert({title,price,description,instock,image_url}).select().maybeSingle();
   if(ins.error){ alert("Hiba: "+ins.error.message); return; }
   document.getElementById("title").value=""; document.getElementById("price").value="";
   document.getElementById("desc").value=""; document.getElementById("file").value="";
-  info.textContent="Mentve. ID: "+ins.data.id;
+  info.textContent="Mentve. ID: "+(ins.data?.id||'');
   toast("Termék hozzáadva");
   listProducts();
 }
@@ -329,15 +325,15 @@ function onProductsClick(e){
 
 async function toggleStock(id, cur, btn, itemEl){
   if(!ensureSB()) return;
-  const { data, error } = await sb.from('products').update({instock:!cur}).eq('id',id).select('id,instock').single();
-  if(error){ alert("Hiba: "+error.message+"\n(Ellenőrizd az RLS policy-t: UPDATE engedélyezve?)"); return; }
-  // azonnali UI frissítés
-  btn.dataset.instock = data.instock ? '1':'0';
-  btn.textContent = data.instock ? 'Leállít' : 'Elérhetővé';
+  const { data, error } = await sb.from('products').update({instock:!cur}).eq('id',id).select('id,instock').maybeSingle();
+  if(error){ alert("Hiba: "+error.message+"\n(Tipp: RLS UPDATE policy hiányzik a products táblán)"); return; }
+  btn.dataset.instock = data?.instock ? '1':'0';
+  btn.textContent = data?.instock ? 'Leállít' : 'Elérhetővé';
   const label = itemEl.querySelector('.muted');
-  if(label){ label.innerHTML = label.innerHTML.replace(cur?'nem elérhető':'készleten', data.instock?'készleten':'nem elérhető'); }
+  if(label){
+    label.innerHTML = label.innerHTML.replace(cur?'nem elérhető':'készleten', (data?.instock)?'készleten':'nem elérhető');
+  }
   toast("Mentve");
-  // teljes újratöltés is, hogy kép/ár esetleges változás feljöjjön
   listProducts();
 }
 
@@ -381,7 +377,6 @@ async function saveEdit(){
 
   const patch={ title, price, description, instock };
 
-  // opcionális képcsere
   if(file){
     const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
     const fname=`${crypto.randomUUID()}.${ext}`;
@@ -394,8 +389,8 @@ async function saveEdit(){
     }
   }
 
-  const { data, error } = await sb.from('products').update(patch).eq('id', EDIT_ID).select('id').single();
-  if(error){ alert("Hiba: "+error.message+"\n(Ellenőrizd: UPDATE policy megvan?)"); return; }
+  const { data, error } = await sb.from('products').update(patch).eq('id', EDIT_ID).select('id').maybeSingle();
+  if(error){ alert("Hiba: "+error.message+"\n(Tipp: RLS UPDATE policy hiányzik a products táblán)"); return; }
   info.textContent = "Frissítve.";
   toast("Termék frissítve");
   closeEdit();
@@ -448,14 +443,16 @@ function renderOrders(list){
         </div>
         <div class="row" style="gap:8px">
           ${sel}
-          <button class="btn bad" type="button" onclick="deleteOrder('${o.id}')">Rendelés törlése</button>
+          <button class="btn ghost" data-pdf="${o.id}" type="button">PDF</button>
+          <button class="btn ghost" data-csv="${o.id}" type="button">CSV</button>
+          <button class="btn bad"  type="button" onclick="deleteOrder('${o.id}')">Törlés</button>
         </div>
       </div>
     </div>`;
   }).join("");
   document.getElementById("oempty").style.display=list.length?"none":"block";
 
-  // státusz változtatás – azonnali jelzés a kártyán
+  // státusz váltás
   box.querySelectorAll('select[data-status]').forEach(sel=>{
     sel.addEventListener('change', async ()=>{
       const id = sel.getAttribute('data-status');
@@ -469,19 +466,34 @@ function renderOrders(list){
         }
         toast("Státusz frissítve");
       }else{
-        alert("Nem sikerült menteni a státuszt.");
+        alert("Nem sikerült menteni a státuszt (ellenőrizd az orders UPDATE RLS policy-t).");
       }
+    });
+  });
+
+  // export (PDF/CSV) – rendelésenként
+  box.querySelectorAll('[data-pdf]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-pdf');
+      const ord = ORDERS_CACHE.find(o=>String(o.id)===String(id));
+      if(ord) exportOrderPdf(ord);
+    });
+  });
+  box.querySelectorAll('[data-csv]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-csv');
+      const ord = ORDERS_CACHE.find(o=>String(o.id)===String(id));
+      if(ord) exportOrderCsv(ord);
     });
   });
 }
 async function saveStatus(id, statusValue){
-  // 1) mentés 'status' oszlopba
-  const res = await sb.from('orders').update({ status: statusValue }).eq('id', id).select('id').single();
+  const res = await sb.from('orders').update({ status: statusValue }).eq('id', id).select('id').maybeSingle();
   if(!res.error) return true;
 
-  // 2) ha nincs oszlop, a note-hoz fűzzük
+  // fallback: ha nincs 'status' oszlop, note-hoz fűzzük
   if(/column.*status/i.test(String(res.error.message||''))){
-    const cur = await sb.from('orders').select('note').eq('id', id).single();
+    const cur = await sb.from('orders').select('note').eq('id', id).maybeSingle();
     if(cur.error) return false;
     const addon = ` [Status: ${statusValue}]`;
     const upd = await sb.from('orders').update({ note: (cur.data?.note||'') + addon }).eq('id', id);
@@ -497,41 +509,38 @@ async function deleteOrder(id){
   loadOrders();
 }
 
-/* === CSV export === */
-function exportCSV(){
-  if(!ORDERS_CACHE.length){ alert("Nincs exportálható rendelés."); return; }
-  const header = ['id','created_at','name','email','phone','address','shipping','subtotal','shipping_cost','discount','total','coupon_code','coupon_percent','status','items'];
-  const rows = ORDERS_CACHE.map(o=>{
-    const items = Array.isArray(o.items)? o.items.map(it=>`${(it.title||'').replace(/"/g,'""')} x ${it.qty}`).join(' | '):'';
-    return [
-      o.id, o.created_at, o.name, o.email, o.phone, o.address, o.shipping,
-      o.subtotal, o.shipping_cost, o.discount, o.total, o.coupon_code||'', o.coupon_percent||'',
-      o.status||'', items
-    ].map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',');
-  });
-  const csv = [header.join(','), ...rows].join('\n');
+/* === Egy rendelés CSV === */
+function exportOrderCsv(o){
+  const H = ['id','created_at','name','email','phone','address','shipping','subtotal','shipping_cost','discount','total','coupon_code','coupon_percent','status','items'];
+  const items = Array.isArray(o.items)? o.items.map(it=>`${(it.title||'').replace(/"/g,'""')} x ${it.qty}`).join(' | '):'';
+  const row = [
+    o.id, o.created_at, o.name, o.email, o.phone, o.address, o.shipping,
+    o.subtotal, o.shipping_cost, o.discount, o.total, o.coupon_code||'', o.coupon_percent||'',
+    o.status||'', items
+  ].map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',');
+  const csv = [H.join(','), row].join('\n');
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  const ts = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
-  a.download = `orders-${ts}.csv`;
+  a.download = `order-${String(o.id).slice(-6)}.csv`;
   document.body.appendChild(a); a.click(); a.remove();
 }
 
-/* === Számlaszerű PDF (print) === */
-function exportInvoicesPdf(){
-  if(!ORDERS_CACHE.length){ alert("Nincs exportálható rendelés."); return; }
+/* === Egy rendelés számlaszerű PDF (print) === */
+function exportOrderPdf(o){
   const HUF = n => (Number(n)||0).toLocaleString('hu-HU') + ' Ft';
   const esc = s => String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-  const rows = ORDERS_CACHE.map(o=>{
-    const items = (Array.isArray(o.items)? o.items:[]).map(it=>
-      `<tr><td>${esc(it.title)}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">${HUF(it.price)}</td><td style="text-align:right">${HUF(it.price*it.qty)}</td></tr>`
-    ).join('');
-    const discRow = Number(o.discount||0)>0
-      ? `<tr><td colspan="3" style="text-align:right">Kedvezmény</td><td style="text-align:right">-${HUF(o.discount)}</td></tr>` : '';
-    const couponRow = o.coupon_code ? `<div style="margin:4px 0 0;color:#374151">Kupon: <b>${esc(o.coupon_code)}</b>${o.coupon_percent?` (${o.coupon_percent}%)`:''}</div>`:'';
-    return `
-    <section style="page-break-inside:avoid;margin:18px 0;padding:14px;border:1px solid #e5e7eb;border-radius:12px">
+  const items = (Array.isArray(o.items)? o.items:[]).map(it=>
+    `<tr><td>${esc(it.title)}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">${HUF(it.price)}</td><td style="text-align:right">${HUF(it.price*it.qty)}</td></tr>`
+  ).join('');
+  const discRow = Number(o.discount||0)>0
+    ? `<tr><td colspan="3" style="text-align:right">Kedvezmény</td><td style="text-align:right">-${HUF(o.discount)}</td></tr>` : '';
+  const couponRow = o.coupon_code ? `<div style="margin:4px 0 0;color:#374151">Kupon: <b>${esc(o.coupon_code)}</b>${o.coupon_percent?` (${o.coupon_percent}%)`:''}</div>`:'';
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Rendelés #${String(o.id).slice(-6)} – Szőke Épker</title>
+  <style>@page{size:A4;margin:16mm}body{font-family:Inter,system-ui;background:#fff;color:#111}
+  h3{font-size:18px} table td,table th{font-size:13px;padding:6px 0}</style></head>
+  <body>
+    <section style="margin:18px 0;padding:14px;border:1px solid #e5e7eb;border-radius:12px">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div style="display:flex;gap:10px;align-items:center">
           <img src="logo.png" style="height:26px"><h3 style="margin:0">Szőke Épker – Rendelés</h3>
@@ -563,17 +572,9 @@ function exportInvoicesPdf(){
           <tr><td colspan="3" style="text-align:right;font-weight:700">Végösszeg</td><td style="text-align:right;font-weight:700">${HUF(o.total)}</td></tr>
         </tfoot>
       </table>
-    </section>`;
-  }).join('');
-
-  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Rendelések – Szőke Épker</title>
-  <style>@page{size:A4;margin:16mm}body{font-family:Inter,system-ui;background:#fff;color:#111}
-  h3{font-size:18px} table td,table th{font-size:13px;padding:6px 0}</style></head>
-  <body>
-    ${rows}
+    </section>
     <script>setTimeout(()=>window.print(),250);<\/script>
   </body></html>`;
-
   const blob = new Blob([html], {type:'text/html;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
   window.open(url, '_blank');

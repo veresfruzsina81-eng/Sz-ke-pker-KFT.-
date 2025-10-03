@@ -238,9 +238,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
   });
 
   document.getElementById("addBtn").addEventListener("click", addProduct);
+
+  // Delegált események (biztos kattintáskezelés)
   document.getElementById("plist").addEventListener("click", onProductsClick);
-  document.getElementById("psearch").addEventListener("input", ()=>renderProductsFiltered());
   document.getElementById("refreshOrders").addEventListener("click", loadOrders);
+  document.getElementById("olist").addEventListener("click", onOrdersClick);
+  document.getElementById("olist").addEventListener("change", onOrderStatusChange);
+  document.getElementById("rlist").addEventListener("click", onReviewsClick);
 });
 
 /* ===== Termékek ===== */
@@ -254,7 +258,7 @@ async function listProducts(){
   renderProductsFiltered();
 }
 function renderProductsFiltered(){
-  const q = (document.getElementById('psearch').value||'').toLowerCase().trim();
+  const q = (document.getElementById('psearch')?.value||'').toLowerCase().trim();
   const filtered = P_ADMIN.filter(p=>{
     const hay = `${p.title||''} ${p.description||''}`.toLowerCase();
     return hay.includes(q);
@@ -310,7 +314,7 @@ async function addProduct(){
   listProducts();
 }
 
-/* — gombok eseménykezelése — */
+/* — termék gombok eseménykezelése — */
 function onProductsClick(e){
   const actionBtn = e.target.closest('[data-action]');
   if(!actionBtn) return;
@@ -325,8 +329,8 @@ function onProductsClick(e){
 
 async function toggleStock(id, cur, btn, itemEl){
   if(!ensureSB()) return;
-  const { data, error } = await sb.from('products').update({instock:!cur}).eq('id',id).select('id,instock').maybeSingle();
-  if(error){ alert("Hiba: "+error.message+"\n(Tipp: RLS UPDATE policy hiányzik a products táblán)"); return; }
+  const { data, error } = await sb.from('products').update({instock:!cur}).eq('id', normalizeId(id)).select('id,instock').maybeSingle();
+  if(error){ alert("Hiba: "+error.message+"\n(Tipp: products UPDATE policy / RLS)"); return; }
   btn.dataset.instock = data?.instock ? '1':'0';
   btn.textContent = data?.instock ? 'Leállít' : 'Elérhetővé';
   const label = itemEl.querySelector('.muted');
@@ -334,15 +338,20 @@ async function toggleStock(id, cur, btn, itemEl){
     label.innerHTML = label.innerHTML.replace(cur?'nem elérhető':'készleten', (data?.instock)?'készleten':'nem elérhető');
   }
   toast("Mentve");
+  // lista friss
   listProducts();
 }
 
 async function delProduct(id){
   if(!confirm("Biztos törlöd a terméket?")) return;
   if(!ensureSB()) return;
-  const {error}=await sb.from('products').delete().eq('id',id);
+  const {error}=await sb.from('products').delete().eq('id', normalizeId(id));
   if(error) return alert("Hiba: "+error.message);
   toast("Termék törölve");
+  // azonnali DOM eltávolítás
+  const el = document.querySelector(`.item[data-id="${CSS.escape(String(id))}"]`);
+  if(el && el.parentNode) el.parentNode.removeChild(el);
+  // fallback lista friss
   listProducts();
 }
 
@@ -389,8 +398,8 @@ async function saveEdit(){
     }
   }
 
-  const { error } = await sb.from('products').update(patch).eq('id', EDIT_ID);
-  if(error){ alert("Hiba: "+error.message+"\n(Tipp: RLS UPDATE policy hiányzik a products táblán)"); return; }
+  const { error } = await sb.from('products').update(patch).eq('id', normalizeId(EDIT_ID));
+  if(error){ alert("Hiba: "+error.message+"\n(Tipp: products UPDATE policy / RLS)"); return; }
   info.textContent = "Frissítve.";
   toast("Termék frissítve");
   closeEdit();
@@ -399,6 +408,7 @@ async function saveEdit(){
 
 /* ===== Rendelések ===== */
 let ORDERS_CACHE = [];
+
 async function loadOrders(){
   if(!ensureSB()) return;
   const {data,error}=await sb.from('orders')
@@ -408,11 +418,13 @@ async function loadOrders(){
   ORDERS_CACHE = data||[];
   renderOrders(ORDERS_CACHE);
 }
+
 function statusBadge(st){
   const map = { 'Új':'badge yellow', 'Folyamatban':'badge', 'Kézbesítve':'badge green', 'Törölve':'badge red' };
   const cls = map[st] || 'badge gray';
   return `<span class="${cls}" style="margin-left:6px">${st||'—'}</span>`;
 }
+
 function renderOrders(list){
   const nf = (n)=>new Intl.NumberFormat('hu-HU').format(n||0);
   const HUF = (n)=> nf(n) + ' Ft';
@@ -422,16 +434,12 @@ function renderOrders(list){
     const couponBits = o.coupon_code
       ? ` • Kedvezmény −${HUF(o.discount||0)} • Kupon ${o.coupon_code}${o.coupon_percent?` (${o.coupon_percent}%)`:''}`
       : (Number(o.discount||0)>0 ? ` • Kedvezmény −${HUF(o.discount)}` : '');
-    const sel = `
-      <select data-status="${o.id}" class="input" style="width:auto">
-        ${['Új','Folyamatban','Kézbesítve','Törölve'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}
-      </select>`;
     return `<div class="card" data-order="${o.id}">
       <div class="row" style="justify-content:space-between">
         <strong>#${String(o.id).slice(-6)}</strong>
         <div class="muted">${new Date(o.created_at).toLocaleString('hu-HU')}</div>
       </div>
-      <div> ${o.name} • ${o.email} • ${o.phone} <span class="status-badge">${statusBadge(o.status)}</span></div>
+      <div>${o.name} • ${o.email} • ${o.phone} <span class="status-badge">${statusBadge(o.status)}</span></div>
       <div class="muted">Cím: ${o.address} • Szállítás: ${o.shipping||'-'}</div>
       ${o.note?`<div class="muted" style="font-size:13px">${o.note}</div>`:''}
       <div class="muted">Tételek: ${items||'-'}</div>
@@ -442,34 +450,17 @@ function renderOrders(list){
           ${o.coupon_code?` <span class="badge" style="margin-left:6px">${o.coupon_code}</span>`:''}
         </div>
         <div class="row" style="gap:8px">
-          ${sel}
+          <select data-status="${o.id}" class="input" style="width:auto">
+            ${['Új','Folyamatban','Kézbesítve','Törölve'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}
+          </select>
           <button class="btn ghost" data-pdf="${o.id}" type="button">PDF</button>
           <button class="btn ghost" data-csv="${o.id}" type="button">CSV</button>
-          <button class="btn bad" type="button" onclick="deleteOrder('${o.id}')">Törlés</button>
+          <button class="btn bad" data-del="${o.id}" type="button">Törlés</button>
         </div>
       </div>
     </div>`;
   }).join("");
   document.getElementById("oempty").style.display=list.length?"none":"block";
-
-  // státusz váltás
-  box.querySelectorAll('select[data-status]').forEach(sel=>{
-    sel.addEventListener('change', async ()=>{
-      const id = sel.getAttribute('data-status');
-      const val = sel.value;
-      const ok = await saveStatus(id, val);
-      if(ok){
-        const card = sel.closest('[data-order]');
-        if(card){
-          const sb = card.querySelector('.status-badge');
-          if(sb) sb.innerHTML = statusBadge(val);
-        }
-        toast("Státusz frissítve");
-      }else{
-        alert("Nem sikerült menteni a státuszt (részletek a konzolon).");
-      }
-    });
-  });
 
   // export (PDF/CSV) – rendelésenként
   box.querySelectorAll('[data-pdf]').forEach(btn=>{
@@ -488,11 +479,40 @@ function renderOrders(list){
   });
 }
 
+// törlés és státusz változás delegálva (stabilabb)
+function onOrdersClick(e){
+  const delBtn = e.target.closest('[data-del]');
+  if(delBtn){
+    const id = delBtn.getAttribute('data-del');
+    deleteOrder(id);
+  }
+}
+function onOrderStatusChange(e){
+  const sel = e.target.closest('select[data-status]');
+  if(!sel) return;
+  const id = sel.getAttribute('data-status');
+  const val = sel.value;
+  saveStatus(id, val).then(ok=>{
+    if(ok){
+      // badge csere
+      const card = sel.closest('[data-order]');
+      const sb = card?.querySelector('.status-badge');
+      if(sb) sb.innerHTML = statusBadge(val);
+      // cache frissítés
+      const idx = ORDERS_CACHE.findIndex(x=>String(x.id)===String(id));
+      if(idx>=0) ORDERS_CACHE[idx].status = val;
+      toast("Státusz frissítve");
+    }else{
+      alert("Nem sikerült menteni a státuszt (részletek a konzolon).");
+    }
+  });
+}
+
 /* === STÁTUSZ – biztos mentés + fallback note-ba === */
 async function saveStatus(id, statusValue){
-  const key = /^\d+$/.test(String(id)) ? parseInt(id,10) : id;
+  const key = normalizeId(id);
 
-  // 1) egyszerű UPDATE (nincs .select/.single)
+  // 1) egyszerű UPDATE
   const up = await sb.from('orders').update({ status: statusValue }).eq('id', key);
   if(!up.error) return true;
 
@@ -505,6 +525,21 @@ async function saveStatus(id, statusValue){
   const upd2 = await sb.from('orders').update({ note: (cur.data?.note||'') + addon }).eq('id', key);
   if(upd2.error){ console.warn('orders status write-to-note error:', upd2.error); return false; }
   return true;
+}
+
+/* === Rendelés törlés (REAGÁL + DOM eltávolítás + cache friss) === */
+async function deleteOrder(id){
+  if(!confirm("Biztos törlöd a rendelést?")) return;
+  const key = normalizeId(id);
+  const { error } = await sb.from('orders').delete().eq('id', key);
+  if(error){ alert("Hiba: "+error.message); return; }
+  toast("Rendelés törölve");
+  // DOM eltávolítás
+  const card = document.querySelector(`[data-order="${CSS.escape(String(id))}"]`);
+  if(card && card.parentNode) card.parentNode.removeChild(card);
+  // cache frissítés
+  ORDERS_CACHE = ORDERS_CACHE.filter(o=>String(o.id)!==String(id));
+  if(!ORDERS_CACHE.length){ document.getElementById('oempty').style.display='block'; }
 }
 
 /* === Egy rendelés CSV === */
@@ -585,23 +620,38 @@ async function loadReviews(){
   if(error){ console.error(error); return alert("Hiba: "+error.message); }
   const list=data||[]; const box=document.getElementById("rlist");
   box.innerHTML=list.map(r=>`
-    <div class="item" style="grid-template-columns:1fr auto">
+    <div class="item" data-review="${r.id}" style="grid-template-columns:1fr auto">
       <div>
         <div><strong>${r.username||'Névtelen'}</strong> ${r.rating?`<span class="muted">• ${"★".repeat(r.rating)}</span>`:''}</div>
         <div class="muted" style="font-size:13px">${new Date(r.created_at).toLocaleString('hu-HU')}</div>
         <div>${r.text}</div>
       </div>
-      <button class="btn bad" type="button" onclick="delReview('${r.id}')">Törlés</button>
+      <button class="btn bad" type="button" data-rdel="${r.id}">Törlés</button>
     </div>`).join("");
   document.getElementById("rempty").style.display=list.length?"none":"block";
 }
+
+function onReviewsClick(e){
+  const del = e.target.closest('[data-rdel]');
+  if(!del) return;
+  const id = del.getAttribute('data-rdel');
+  delReview(id);
+}
+
 async function delReview(id){
   if(!confirm("Biztos törlöd a véleményt?")) return;
-  const {error}=await sb.from('reviews').delete().eq('id',id);
-  if(error) return alert("Hiba: "+error.message);
+  const {error}=await sb.from('reviews').delete().eq('id', normalizeId(id));
+  if(error) { alert("Hiba: "+error.message); return; }
   toast("Vélemény törölve");
-  loadReviews();
+  // DOM eltávolítás
+  const row = document.querySelector(`[data-review="${CSS.escape(String(id))}"]`);
+  if(row && row.parentNode) row.parentNode.removeChild(row);
+  // ha kiürült
+  if(!document.querySelector('[data-review]')) document.getElementById('rempty').style.display='block';
 }
+
+/* ===== Segéd ===== */
+function normalizeId(id){ return /^\d+$/.test(String(id)) ? parseInt(id,10) : id; }
 
 /* ===== Init ===== */
 function loadAll(){ ensureSB(); listProducts(); }

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pénztár – Szőke-Épker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--ink:#222;--muted:#7a8594;--bg:#f5f7fb;--card:#fff;--brand:#2f6fed;--brand-2:#245bcb;--ring:0 0 0 3px rgba(47,111,237,.18)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
+.row{display:flex;align-items:center;gap:12px}.space{justify-content:space-between}
+.btn{appearance:none;border:0;padding:10px 16px;border-radius:12px;cursor:pointer;font-weight:700;background:var(--brand);color:#fff}
+.btn:hover{background:var(--brand-2)}.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+.card{background:var(--card);border:1px solid #e5e9f2;border-radius:16px;box-shadow:0 14px 32px rgba(22,29,37,.06);padding:16px}
+.grid{display:grid;gap:16px}@media(min-width:900px){.grid{grid-template-columns:2fr 1fr}}
+.inp,textarea{width:100%;border:1px solid #e5e9f2;background:#fff;padding:11px 12px;border-radius:10px}
+.inp:focus,textarea:focus{outline:none;box-shadow:var(--ring)}
+.item{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;border:1px solid #e5e9f2;border-radius:12px;padding:8px 10px}
+.item img{width:56px;height:56px;object-fit:cover;border-radius:10px;border:1px solid #e5e9f2}
+.muted{color:var(--muted)}.right{text-align:right}
+.center{text-align:center}
+.bigok{font-size:42px;line-height:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row space" style="margin-bottom:10px">
+    <a class="btn ghost" href="webshop.html">← Vissza a webshopba</a>
+    <a class="btn ghost" href="/">Vissza a weboldalra</a>
+  </div>
+
+  <div id="checkout" class="grid">
+    <div class="card">
+      <h2 style="margin:0 0 10px">Számlázási és szállítási adatok</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <input id="name" class="inp" placeholder="Név *">
+        <input id="email" class="inp" placeholder="E-mail *">
+        <input id="phone" class="inp" placeholder="Telefon *">
+        <input id="shipping" class="inp" placeholder="Szállítás módja (pl. futár / személyes)">
+        <input id="address" class="inp" placeholder="Szállítási cím *" style="grid-column:1/-1">
+        <textarea id="note" rows="4" placeholder="Megjegyzés (opcionális)" style="grid-column:1/-1"></textarea>
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="placeOrder()">Rendelés leadása</button>
+    </div>
+
+    <aside class="card">
+      <h2 style="margin:0 0 10px">Rendelés összegzés</h2>
+      <div id="items"></div>
+      <div class="row space" style="margin-top:8px"><span>Részösszeg</span><strong id="sub">0 Ft</strong></div>
+      <div class="row space"><span>Szállítás</span><strong id="ship">0 Ft</strong></div>
+      <div class="row space" style="margin-top:6px;border-top:1px solid #e5e9f2;padding-top:8px"><span>Végösszeg</span><strong id="tot">0 Ft</strong></div>
+    </aside>
+  </div>
+
+  <div id="thanks" class="card center" style="display:none">
+    <div class="bigok">✔</div>
+    <h2>Köszönjük a rendelést!</h2>
+    <p class="muted">Hamarosan felvesszük Önnel a kapcsolatot e-mailben/telefonon.</p>
+    <div class="row center" style="justify-content:center">
+      <a class="btn" href="webshop.html">Vissza a webshopba</a>
+      <a class="btn ghost" href="/">Vissza a weboldalra</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL="https://gckynywmoxylwyppmkck.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const HUF=n=>new Intl.NumberFormat('hu-HU').format(n||0)+" Ft";
+let CART=JSON.parse(localStorage.getItem("cart")||"[]");
+
+function renderSummary(){
+  const box=document.getElementById('items');
+  if(!CART.length){ box.innerHTML="<p class='muted'>A kosár üres.</p>"; return; }
+  box.innerHTML=CART.map(it=>`
+    <div class="item">
+      <img src="${it.image_url||'logo.png'}" alt="">
+      <div>
+        <div><strong>${it.title}</strong></div>
+        <div class="muted">${HUF(it.price)} • Mennyiség: ${it.qty}</div>
+      </div>
+      <div class="right"><strong>${HUF(it.price*it.qty)}</strong></div>
+    </div>`).join('');
+  const sub=CART.reduce((s,x)=>s+x.price*x.qty,0);
+  const ship=0; const tot=sub+ship;
+  document.getElementById('sub').textContent=HUF(sub);
+  document.getElementById('ship').textContent=HUF(ship);
+  document.getElementById('tot').textContent=HUF(tot);
+}
+renderSummary();
+
+async function placeOrder(){
+  if(!CART.length){ alert("A kosár üres."); return; }
+  const name=document.getElementById('name').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const address=document.getElementById('address').value.trim();
+  const shipping=document.getElementById('shipping').value.trim()||'Ismeretlen';
+  const note=document.getElementById('note').value.trim();
+  if(!name||!email||!phone||!address){ alert("Kérjük, töltsd ki: Név, E-mail, Telefon, Cím."); return; }
+
+  const subtotal=CART.reduce((s,x)=>s+x.price*x.qty,0);
+  const shipping_cost=0; const total=subtotal+shipping_cost;
+
+  const payload={ name,email,phone,address,shipping,note, items:CART, subtotal, shipping_cost, total };
+  const { error } = await sb.from('orders').insert(payload);
+  if(error){ alert("Hiba a mentéskor: "+error.message); return; }
+
+  // siker
+  CART=[]; localStorage.setItem("cart","[]");
+  document.getElementById('checkout').style.display="none";
+  document.getElementById('thanks').style.display="block";
+}
+</script>
+</body>
+</html>

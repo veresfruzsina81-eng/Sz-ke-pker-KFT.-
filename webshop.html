@@ -8,31 +8,54 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
 :root{--ink:#222;--muted:#7a8594;--bg:#f5f7fb;--card:#fff;--brand:#2f6fed;--brand-2:#245bcb;--ring:0 0 0 3px rgba(47,111,237,.18)}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .header{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #e5e9f2}
 .wrap{max-width:1200px;margin:0 auto;padding:14px 16px}
-.row{display:flex;align-items:center;gap:10px}.space{justify-content:space-between}
-.brand img{height:26px}.brand h1{font-size:18px;margin:0}
+.row{display:flex;align-items:center;gap:10px}
+.space{justify-content:space-between}
+.brand img{height:26px}
+.brand h1{font-size:18px;margin:0}
 .btn{appearance:none;border:0;padding:9px 14px;border-radius:12px;cursor:pointer;font-weight:700;background:var(--brand);color:#fff}
-.btn:hover{background:var(--brand-2)}.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+.btn:hover{background:var(--brand-2)}
+.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
 .badge{display:inline-flex;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#111;color:#fff;font-size:12px;align-items:center;justify-content:center}
 
 .search{margin:14px auto 0;max-width:640px}
 .search input{width:100%;border:1px solid #e5e9f2;background:#fff;padding:10px 12px;border-radius:12px}
 .search input:focus{outline:none;box-shadow:var(--ring);border-color:#d6def7}
 
-/* KISEBB KÁRTYÁK */
+/* TERMÉKKÁRTYÁK */
 .grid{display:grid;gap:12px;margin:16px auto;max-width:1200px}
 @media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1000px){.grid{grid-template-columns:repeat(3,1fr)}}
 .card{background:var(--card);border:1px solid #e5e9f2;border-radius:14px;box-shadow:0 10px 22px rgba(22,29,37,.05);overflow:hidden}
-.thumb{width:100%;height:160px;object-fit:cover;background:#fafbfe;border-bottom:1px solid #eef2f8}
+.thumb{
+  width:100%;
+  height:220px;              /* magasabb, hogy jobban elférjen */
+  object-fit:contain;        /* teljes kép látszik, nem vágjuk le */
+  background:#fff;           /* fehér háttér a "contain"-hez */
+  border-bottom:1px solid #eef2f8;
+  display:block;
+  padding:8px;               /* pici margó a kép köré */
+}
 .px{padding:10px 12px}
 .title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.price{font-weight:700}.muted{color:var(--muted)}
+.price{font-weight:700}
+.muted{color:var(--muted)}
 .qty{display:inline-flex;align-items:center;border:1px solid #e5e9f2;border-radius:999px;overflow:hidden}
 .qty button{background:#fff;border:0;width:26px;height:26px;cursor:pointer}
-.qty input{width:30px;border:0;text-align:center}
+.qty input{width:34px;border:0;text-align:center;appearance:textfield}
+.qty input::-webkit-outer-spin-button,
+.qty input::-webkit-inner-spin-button{appearance:none;margin:0}
+
+/* Kártyán lévő X gomb a kosárból törléshez */
+.icon-btn{
+  background:#fff;border:1px solid #e5e9f2;border-radius:10px;
+  width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;line-height:1;
+}
+.icon-btn:hover{box-shadow:var(--ring)}
 
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 12px;border-radius:10px;box-shadow:0 12px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:.25s}
 .toast.show{opacity:1}
@@ -58,15 +81,30 @@
 <div id="toast" class="toast">Hozzáadva a kosárhoz</div>
 
 <script>
+/* --- Supabase beállítások: változatlanul hagyva --- */
 const SB_URL="https://gckynywmoxylwyppmkck.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
 const sb=supabase.createClient(SB_URL,SB_KEY);
-let PRODUCTS=[]; let CART=JSON.parse(localStorage.getItem("cart")||"[]");
+
+/* --- CART kezelés --- */
+let PRODUCTS=[];
+/* Frissítéskor (reload) töröljük a kosarat ezen az oldalon */
+(function clearCartOnReload(){
+  try{
+    const nav=performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if(nav && nav.type==='reload'){ localStorage.removeItem('cart'); }
+    // alternatíva régi böngészőkre:
+    // if(performance.navigation && performance.navigation.type===1){ localStorage.removeItem('cart'); }
+  }catch(_){}
+})();
+let CART=JSON.parse(localStorage.getItem("cart")||"[]");
+
 const HUF=n=>new Intl.NumberFormat('hu-HU').format(n||0)+" Ft";
 const saveCart=()=>{localStorage.setItem("cart",JSON.stringify(CART)); setBadge();};
-const setBadge=()=>{document.getElementById('badge').textContent=CART.reduce((s,x)=>s+x.qty,0);};
+const setBadge=()=>{document.getElementById('badge').textContent=CART.reduce((s,x)=>s+(x.qty||0),0);};
 const toast=msg=>{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1200);};
 
+/* --- Renderelés --- */
 function render(list){
   const box=document.getElementById('list');
   box.innerHTML=list.map(p=>`
@@ -74,17 +112,20 @@ function render(list){
       <img class="thumb" src="${p.image_url||'logo.png'}" alt="">
       <div class="px">
         <div class="row" style="justify-content:space-between">
-          <div class="title">${p.title||'-'}</div>
+          <div class="title" title="${p.title||''}">${p.title||'-'}</div>
           <div class="price">${HUF(p.price)}</div>
         </div>
-        <div class="row" style="justify-content:space-between;margin-top:8px">
-          <div class="qty">
-            <button data-act="minus" data-id="${p.id}">−</button>
-            <input value="1" data-qty="${p.id}">
-            <button data-act="plus" data-id="${p.id}">+</button>
+
+        <div class="row" style="justify-content:space-between;margin-top:8px;flex-wrap:wrap">
+          <div class="qty" style="flex:0 0 auto">
+            <button data-act="minus" data-id="${p.id}" aria-label="Mennyiség csökkentése">−</button>
+            <input value="1" inputmode="numeric" pattern="[0-9]*" min="1" data-qty="${p.id}">
+            <button data-act="plus" data-id="${p.id}" aria-label="Mennyiség növelése">+</button>
           </div>
-          <div class="row">
+
+          <div class="row" style="flex:1 1 auto;justify-content:flex-end">
             <button class="btn" data-add="${p.id}">Kosárba</button>
+            <button class="icon-btn" title="Törlés a kosárból" data-remove="${p.id}">×</button>
             <a class="btn ghost" href="product.html?id=${encodeURIComponent(p.id)}">Megnyitás</a>
           </div>
         </div>
@@ -92,18 +133,47 @@ function render(list){
     </article>`).join('');
   document.getElementById('empty').style.display=list.length?'none':'block';
 }
+
+/* --- Események --- */
 document.getElementById('list').addEventListener('click',e=>{
   const minus=e.target.closest('[data-act="minus"]');
   const plus=e.target.closest('[data-act="plus"]');
   const add=e.target.closest('[data-add]');
-  if(minus){const id=minus.dataset.id; const q=document.querySelector(`[data-qty="${id}"]`); q.value=Math.max(1,parseInt(q.value||"1")-1);}
-  if(plus){const id=plus.dataset.id; const q=document.querySelector(`[data-qty="${id}"]`); q.value=Math.max(1,parseInt(q.value||"1")+1);}
+  const rem=e.target.closest('[data-remove]');
+
+  if(minus){
+    const id=minus.dataset.id;
+    const q=document.querySelector(`[data-qty="${id}"]`);
+    q.value=Math.max(1,parseInt(q.value||"1")-1);
+  }
+  if(plus){
+    const id=plus.dataset.id;
+    const q=document.querySelector(`[data-qty="${id}"]`);
+    q.value=Math.max(1,parseInt(q.value||"1")+1);
+  }
   if(add){
-    const id=add.dataset.add; const p=PRODUCTS.find(x=>String(x.id)===String(id));
-    const qEl=document.querySelector(`[data-qty="${id}"]`); const qty=Math.max(1,parseInt(qEl?.value||"1"));
+    const id=add.dataset.add;
+    const p=PRODUCTS.find(x=>String(x.id)===String(id));
+    const qEl=document.querySelector(`[data-qty="${id}"]`);
+    const qty=Math.max(1,parseInt(qEl?.value||"1"));
     const i=CART.findIndex(x=>String(x.id)===String(id));
-    if(i>=0) CART[i].qty+=qty; else CART.push({id:p.id,title:p.title,price:p.price,image_url:p.image_url,qty});
+    if(i>=0) CART[i].qty += qty;
+    else CART.push({id:p.id,title:p.title,price:p.price,image_url:p.image_url,qty});
     saveCart(); toast("Hozzáadva a kosárhoz");
+  }
+  if(rem){
+    const id=rem.dataset.remove;
+    const before=CART.length;
+    CART=CART.filter(x=>String(x.id)!==String(id));
+    if (CART.length!==before){ saveCart(); toast("Eltávolítva a kosárból"); }
+  }
+});
+
+/* mennyiség kézi átírás védelme */
+document.getElementById('list').addEventListener('input',e=>{
+  if(e.target.matches('[data-qty]')){
+    const v=parseInt(e.target.value||"1",10);
+    e.target.value = isNaN(v) || v<1 ? 1 : v;
   }
 });
 
@@ -113,10 +183,20 @@ document.getElementById('q').addEventListener('input',e=>{
   render(f);
 });
 
+/* --- Betöltés --- */
 async function load(){
-  const {data,error}=await sb.from('products').select('id,title,price,description,image_url,instock').eq('instock',true).order('created_at',{ascending:false});
-  if(error){document.getElementById('list').innerHTML="<p>Hiba: "+error.message+"</p>";return;}
-  PRODUCTS=data||[]; render(PRODUCTS); setBadge();
+  const {data,error}=await sb
+    .from('products')
+    .select('id,title,price,description,image_url,instock,created_at')
+    .eq('instock',true)
+    .order('created_at',{ascending:false});
+  if(error){
+    document.getElementById('list').innerHTML="<p>Hiba: "+error.message+"</p>";
+    return;
+  }
+  PRODUCTS=data||[];
+  render(PRODUCTS);
+  setBadge();
 }
 load();
 </script>

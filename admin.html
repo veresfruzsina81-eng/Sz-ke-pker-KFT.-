@@ -5,271 +5,403 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Szőke Épker – Admin</title>
 <link rel="icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#f6f7f9; --panel:#ffffff; --ink:#1e293b; --muted:#6b7280;
-    --brand:#0ea5e9; --brand-ink:#fff; --danger:#ef4444; --ok:#10b981;
-    --ring:0 0 0 3px rgba(14,165,233,.25); --radius:14px;
-    --table:#f8fafc;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    color:var(--ink); background:linear-gradient(180deg,#f1f5f9,#eef2f7 40%,#eaf0f7);
-  }
-  .wrap{max-width:1200px;margin:28px auto;padding:0 16px}
-  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand img{height:36px}
-  h1{font-size:24px;margin:0}
-  .chip{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0;padding:4px 8px;border-radius:999px;font-size:12px}
-  .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer;background:#eef2f7;color:#0f172a}
-  .btn.primary{background:var(--brand);color:var(--brand-ink)}
-  .btn.ghost{background:transparent;border:1px solid #e2e8f0}
-  .btn.danger{background:var(--danger);color:#fff}
-  .btn:focus-visible{box-shadow:var(--ring)}
-  .card{background:var(--panel);border-radius:var(--radius);box-shadow:0 10px 30px rgba(2,6,23,.06);padding:16px}
-  .tabs{display:flex;gap:8px;margin-bottom:12px}
-  .tab{padding:8px 12px;border:1px solid #e2e8f0;border-radius:999px;background:#fff;cursor:pointer}
-  .tab.active{background:var(--brand);color:#fff;border-color:transparent}
-  .grid{display:grid;gap:16px}
-  @media(min-width:1100px){ .grid-2{grid-template-columns:400px 1fr} }
-  label small{display:block;color:var(--muted);margin:10px 0 6px}
-  input[type="text"],input[type="number"],textarea{
-    width:100%;padding:12px 14px;border:1px solid #dbe0e7;border-radius:12px;background:#fff;outline:none;font:inherit
-  }
-  input:focus,textarea:focus{box-shadow:var(--ring);border-color:#b6d8f2}
-  textarea{min-height:110px;resize:vertical}
-  .list{display:grid;gap:12px}
-  .item{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid #e7ecf3;border-radius:12px;padding:10px}
-  .item img{width:64px;height:64px;object-fit:cover;border-radius:10px;background:#f3f4f6}
-  .muted{color:var(--muted)}
-  .price{font-weight:700}
-  .empty{padding:12px;color:var(--muted)}
-  table{width:100%;border-collapse:separate;border-spacing:0 8px}
-  thead th{font-size:13px;color:var(--muted);text-align:left;padding:0 10px}
-  tbody tr{background:#fff}
-  tbody td{padding:12px 10px;vertical-align:top;border-top:1px solid #e7ecf3;border-bottom:1px solid #e7ecf3}
-  tbody tr:first-child td{border-top-left-radius:12px;border-top-right-radius:12px}
-  tbody tr:last-child td{border-bottom-left-radius:12px;border-bottom-right-radius:12px}
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#1e293b; --muted:#6b7280;
+  --brand:#0ea5e9; --brand-ink:#fff; --danger:#ef4444; --ok:#10b981;
+  --ring:0 0 0 3px rgba(14,165,233,.25); --radius:14px; --bd:#e7ecf3;
+  --shadow:0 10px 30px rgba(2,6,23,.06);
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:linear-gradient(180deg,#f1f5f9,#eef2f7 40%,#eaf0f7);color:var(--ink);font:16px/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1200px;margin:28px auto;padding:0 16px}
+.card{background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;border:1px solid var(--bd)}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{height:36px;width:auto}
+h1{font-size:24px;margin:0}
+.muted{color:var(--muted)}
+.btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer;background:#eef2f7;color:#0f172a}
+.btn.primary{background:var(--brand);color:var(--brand-ink)}
+.btn.ghost{background:transparent;border:1px solid #e2e8f0}
+.btn.danger{background:var(--danger);color:#fff}
+.btn.warn{background:#fff;border:1px solid #f59e0b;color:#92400e}
+.btn:focus-visible{box-shadow:var(--ring)}
+.chip{background:#ecfdf5;color:#047857;border:1px solid #bbf7d0;padding:4px 8px;border-radius:999px;font-size:12px}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tab{padding:8px 12px;border:1px solid #e2e8f0;border-radius:999px;background:#fff;cursor:pointer}
+.tab.active{background:var(--brand);color:#fff;border-color:transparent}
+.grid{display:grid;gap:16px}
+@media(min-width:1100px){ .grid-2{grid-template-columns:400px 1fr} }
+label small{display:block;color:var(--muted);margin:10px 0 6px}
+input[type="text"],input[type="number"],input[type="password"],textarea,select{
+  width:100%;padding:12px 14px;border:1px solid #dbe0e7;border-radius:12px;background:#fff;outline:none;font:inherit
+}
+input:focus,textarea:focus,select:focus{box-shadow:var(--ring);border-color:#b6d8f2}
+textarea{min-height:110px;resize:vertical}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.list{display:grid;gap:12px}
+.item{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid var(--bd);border-radius:12px;padding:10px}
+.item img{width:64px;height:64px;object-fit:cover;border-radius:10px;background:#f3f4f6}
+.price{font-weight:700}
+.empty{padding:12px;color:var(--muted)}
+table{width:100%;border-collapse:separate;border-spacing:0 8px}
+thead th{font-size:13px;color:var(--muted);text-align:left;padding:0 10px}
+tbody tr{background:#fff}
+tbody td{padding:12px 10px;vertical-align:top;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+tbody tr:first-child td{border-top-left-radius:12px;border-top-right-radius:12px}
+tbody tr:last-child td{border-bottom-left-radius:12px;border-bottom-right-radius:12px}
+.hint{font-size:12px;color:var(--muted)}
+.thumb{width:100%;height:210px;object-fit:cover;border:1px solid var(--bd);border-radius:12px;background:#f3f4f6}
+.toast{position:fixed;right:16px;bottom:16px;background:#111827;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(8px);transition:.25s;z-index:100}
+.toast.on{opacity:1;transform:translateY(0)}
+/* LOGIN */
+.login-wrap{min-height:100%;display:grid;place-items:center;padding:24px}
+.login-card{width:min(560px,95vw);background:#fff;border:1px solid var(--bd);border-radius:16px;box-shadow:var(--shadow);padding:24px}
+.login-card .brand{margin-bottom:8px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="topbar">
-    <div class="brand">
-      <img src="/logo.png" alt="">
-      <h1>Admin felület</h1>
-    </div>
-    <div class="row">
-      <span class="chip">Bejelentkezve: <strong id="me">–</strong></span>
-      <a class="btn ghost" href="/admin/login.html">Kijelentkezés</a>
-    </div>
-  </div>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="products">Termékek</button>
-    <button class="tab" data-tab="orders">Rendelések</button>
-    <button class="tab" data-tab="reviews">Vélemények</button>
-  </div>
-
-  <!-- PRODUCTS -->
-  <section id="tab-products" class="card">
-    <div class="grid grid-2">
-      <div>
-        <h3 style="margin:6px 0 6px">Új termék</h3>
-        <label><small>Termék neve</small><input id="t_title" type="text" placeholder="pl. Zsák"></label>
-        <div class="row">
-          <label style="flex:1"><small>Ár (Ft)</small><input id="t_price" type="number" min="0" step="1" placeholder="5000"></label>
-          <label class="row" style="gap:8px;margin-top:28px"><input id="t_stock" type="checkbox" checked> <small>Készleten</small></label>
-        </div>
-        <label><small>Kép URL (jpg/png)</small><input id="t_img" type="text" placeholder="https://.../kep.jpg"></label>
-        <label><small>Rövid leírás</small><textarea id="t_desc" placeholder="Pár szó a termékről…"></textarea></label>
-        <div class="row" style="justify-content:flex-end">
-          <button class="btn primary" id="add">Hozzáadás</button>
-        </div>
-        <p class="muted" style="margin-top:8px">A kép beszúrásához adj meg <strong>publikus URL-t</strong> (pl. Supabase Storage „products” bucketből).</p>
+  <!-- LOGIN PANEL -->
+  <section id="login" class="login-wrap" hidden>
+    <div class="login-card">
+      <div class="brand">
+        <img src="/logo.png" alt="Szőke Épker" onerror="this.src='/logl.png'">
+        <h1>Szőke Épker – <span class="muted">Admin belépés</span></h1>
       </div>
-
-      <div>
-        <div class="row" style="justify-content:space-between;margin:6px 0 10px">
-          <h3 style="margin:0">Legutóbbi termékek</h3>
-          <button class="btn ghost" id="refreshP">Lista frissítése</button>
-        </div>
-        <div id="plist" class="list"><div class="empty">Betöltés…</div></div>
+      <p class="muted" style="margin-top:-6px">Add meg a belépési adatokat.</p>
+      <label><small>Felhasználónév</small><input id="lu" type="text" placeholder="pl. szokeadmin" autocomplete="username"></label>
+      <label><small>Jelszó</small><input id="lp" type="password" placeholder="••••••••" autocomplete="current-password"></label>
+      <div class="row" style="margin-top:10px">
+        <button class="btn primary" id="doLogin" type="button" onclick="window.__login?.()">Belépés</button>
+        <span class="muted">Helyi bejelentkezés – mást nem enged be.</span>
       </div>
+      <p class="hint" style="margin-top:10px">Képfeltöltéshez Supabase Storage „products” bucket INSERT/SELECT policy szükséges.</p>
     </div>
   </section>
 
-  <!-- ORDERS -->
-  <section id="tab-orders" class="card" hidden>
-    <div class="row" style="justify-content:space-between;margin:6px 0 10px">
-      <h3 style="margin:0">Rendelések</h3>
-      <button class="btn ghost" id="refreshO">Frissítés</button>
+  <!-- APP -->
+  <section id="app" class="card" hidden>
+    <div class="topbar">
+      <div class="brand">
+        <img src="/logo.png" alt="" onerror="this.src='/logl.png'">
+        <h1>Admin felület</h1>
+      </div>
+      <div class="row">
+        <span class="chip">Bejelentkezve: <strong id="me">–</strong></span>
+        <button class="btn ghost" id="logout">Kijelentkezés</button>
+      </div>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Dátum</th><th>Név</th><th>E-mail</th><th>Telefon</th><th>Cím</th><th>Megjegyzés</th><th>Összeg</th></tr>
-        </thead>
-        <tbody id="otbody"><tr><td class="muted" colspan="7">Betöltés…</td></tr></tbody>
-      </table>
-    </div>
-  </section>
 
-  <!-- REVIEWS -->
-  <section id="tab-reviews" class="card" hidden>
-    <div class="row" style="justify-content:space-between;margin:6px 0 10px">
-      <h3 style="margin:0">Vélemények</h3>
-      <button class="btn ghost" id="refreshR">Frissítés</button>
+    <div class="tabs">
+      <button class="tab active" data-tab="products">Termékek</button>
+      <button class="tab" data-tab="orders">Rendelések</button>
+      <button class="tab" data-tab="reviews">Vélemények</button>
     </div>
-    <div id="rlist" class="list"><div class="empty">Betöltés…</div></div>
+
+    <!-- PRODUCTS -->
+    <section id="tab-products">
+      <div class="grid grid-2">
+        <!-- ÚJ / SZERKESZTŐ -->
+        <div>
+          <h3 style="margin:6px 0 6px"><span id="formTitle">Új termék</span></h3>
+          <input type="hidden" id="editId">
+          <label><small>Termék neve</small><input id="pTitle" type="text" placeholder="pl. Zsák"></label>
+          <div class="row">
+            <label style="flex:1"><small>Ár (Ft)</small><input id="pPrice" type="number" min="0" step="1" placeholder="5000"></label>
+            <label class="row" style="gap:8px;margin-top:28px"><input id="pStock" type="checkbox" checked> <small>Készleten</small></label>
+          </div>
+
+          <label><small>Kép feltöltése (jpg/png)</small>
+            <input id="pFile" type="file" accept="image/*">
+            <div class="hint">A fájl a Supabase Storage <code>products</code> bucketbe kerül. Publikus URL-t kap és úgy mentjük.</div>
+          </label>
+          <img id="pPrev" class="thumb" alt="" style="display:none;margin-top:10px">
+
+          <label><small>Leírás</small><textarea id="pDesc" placeholder="Pár szó a termékről…"></textarea></label>
+
+          <div class="row" style="justify-content:flex-end">
+            <button class="btn" id="resetForm">Mégse</button>
+            <button class="btn primary" id="saveProduct">Mentés</button>
+          </div>
+        </div>
+
+        <!-- LISTA -->
+        <div>
+          <div class="row" style="justify-content:space-between;margin:6px 0 10px">
+            <h3 style="margin:0">Termékek</h3>
+            <div class="row">
+              <input id="search" type="text" placeholder="Keresés…" style="min-width:220px">
+              <button class="btn ghost" id="refreshList">Frissítés</button>
+            </div>
+          </div>
+          <div id="prodList" class="list"><div class="empty">Betöltés…</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ORDERS -->
+    <section id="tab-orders" class="card" hidden>
+      <div class="row" style="justify-content:space-between;margin:6px 0 10px">
+        <h3 style="margin:0">Rendelések</h3>
+        <button class="btn ghost" id="refreshOrders">Frissítés</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Dátum</th><th>Név</th><th>E-mail</th><th>Telefon</th><th>Cím</th><th>Megjegyzés</th><th>Összeg</th></tr></thead>
+          <tbody id="ordersBody"><tr><td class="muted" colspan="7">Betöltés…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section id="tab-reviews" class="card" hidden>
+      <div class="row" style="justify-content:space-between;margin:6px 0 10px">
+        <h3 style="margin:0">Vélemények</h3>
+        <button class="btn ghost" id="refreshReviews">Frissítés</button>
+      </div>
+      <div id="revList" class="list"><div class="empty">Betöltés…</div></div>
+    </section>
   </section>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script type="module">
-  // ===== Supabase =====
-  const URL = "https://gckynywmoxylwyppmkck.supabase.co";
-  const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
-  const sb = supabase.createClient(URL, KEY);
+<div id="toast" class="toast"></div>
 
-  // ===== Access guard =====
-  if(localStorage.getItem("admin_logged")!=="1"){
-    location.href="/admin/login.html";
-  } else {
-    document.querySelector("#me").textContent = "szokeadmin";
-  }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+/* ==== Supabase KONFIG – A TE ADATAIDDAL ==== */
+const SUPABASE_URL = "https://gckynywmoxylwyppmkck.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
+const BUCKET = "products";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // ===== Tabs =====
-  const tabs = document.querySelectorAll(".tab");
-  tabs.forEach(b=>b.addEventListener("click", ()=>{
-    tabs.forEach(t=>t.classList.remove("active"));
+/* ==== Helyi belépés ==== */
+const USER="szokeadmin", PASS="szoke2025";
+const $=s=>document.querySelector(s);
+const toast=(m)=>{ const t=$("#toast"); t.textContent=m; t.classList.add("on"); setTimeout(()=>t.classList.remove("on"),1800); };
+
+window.__login = function(){
+  const u=$("#lu").value.trim(), p=$("#lp").value.trim();
+  if(u===USER && p===PASS){ localStorage.setItem("admin_logged","1"); showApp(u); }
+  else alert("Hibás jelszó vagy inaktív fiók.");
+};
+
+$("#logout")?.addEventListener("click", ()=>{ localStorage.removeItem("admin_logged"); location.reload(); });
+
+function showLogin(){ $("#login").hidden=false; $("#app").hidden=true; }
+function showApp(name){ $("#login").hidden=true; $("#app").hidden=false; $("#me").textContent=name; loadProducts(); loadOrders(); loadReviews(); }
+
+(function boot(){
+  if(localStorage.getItem("admin_logged")==="1") showApp("szokeadmin"); else showLogin();
+  document.addEventListener("DOMContentLoaded", ()=>{
+    const b=$("#doLogin"); if(b && !b._bound){ b._bound=true; b.addEventListener("click", ()=>window.__login()); }
+  });
+})();
+
+/* ==== Tabs ==== */
+document.querySelectorAll(".tab").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
-    const id = b.dataset.tab;
-    for(const s of ["products","orders","reviews"]){
-      document.querySelector("#tab-"+s).hidden = (s!==id);
-    }
-  }));
+    const id=b.dataset.tab;
+    ["products","orders","reviews"].forEach(s=>{ $("#tab-"+s)?.closest("section.card")?.setAttribute("hidden", s!==id); });
+  });
+});
 
-  // ===== Helpers =====
-  const $=s=>document.querySelector(s);
-  const fmtFt = n => new Intl.NumberFormat("hu-HU").format(n) + " Ft";
-  function toast(m){ alert(m); }
+/* ==== Image preview ==== */
+$("#pFile")?.addEventListener("change", e=>{
+  const f=e.target.files?.[0]; if(!f){ $("#pPrev").style.display="none"; return; }
+  const r=new FileReader(); r.onload=()=>{ $("#pPrev").src=r.result; $("#pPrev").style.display="block"; }; r.readAsDataURL(f);
+});
 
-  // ===== Products =====
-  async function loadProducts(){
-    const box = $("#plist");
-    box.innerHTML = `<div class="empty">Betöltés…</div>`;
-    const { data, error } = await sb
-      .from("products")
-      .select("id,title,price,instock,image_url")
-      .order("created_at",{ascending:false})
-      .limit(50);
-    if(error){ box.innerHTML = `<div class="empty">Hiba: ${error.message}</div>`; return; }
-    if(!data?.length){ box.innerHTML = `<div class="empty">Még nincs termék.</div>`; return; }
-    box.innerHTML = data.map(p=>`
-      <div class="item">
-        <img src="${p.image_url||''}" alt="">
-        <div>
-          <h4 style="margin:0 0 4px">${p.title||'Névtelen'}</h4>
-          <div class="muted">${p.instock?'készleten':'nem elérhető'}</div>
-        </div>
-        <div class="row">
-          <div class="price">${fmtFt(p.price||0)}</div>
-          <button class="btn danger" data-del="${p.id}">Törlés</button>
-        </div>
+/* ==== Upload helper ==== */
+async function uploadToBucket(file){
+  if(!file) return null;
+  const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
+  const path=`images/${crypto.randomUUID()}.${ext}`;
+  const { error } = await sb.storage.from(BUCKET).upload(path, file, { upsert:false, cacheControl:"3600" });
+  if(error) throw new Error(error.message);
+  const { data } = sb.storage.from(BUCKET).getPublicUrl(path);
+  return data?.publicUrl || null;
+}
+
+/* ==== PRODUCTS ==== */
+let allProducts = [];
+
+async function loadProducts(){
+  $("#prodList").innerHTML = `<div class="empty">Betöltés…</div>`;
+  const { data, error } = await sb.from("products")
+    .select("id,title,price,instock,image_url,description,created_at")
+    .order("created_at",{ascending:false}).limit(200);
+  if(error){ $("#prodList").innerHTML = `<div class="empty">Hiba: ${error.message}</div>`; return; }
+  allProducts = data||[];
+  renderProductList(allProducts);
+}
+function renderProductList(arr){
+  const q=$("#search").value.trim().toLowerCase();
+  const list = q ? arr.filter(p=>(p.title||"").toLowerCase().includes(q)) : arr;
+  if(!list.length){ $("#prodList").innerHTML = `<div class="empty">Nincs találat.</div>`; return; }
+  $("#prodList").innerHTML = list.map(p=>`
+    <div class="item">
+      <img src="${p.image_url||''}" alt="">
+      <div>
+        <h4 style="margin:0 0 4px">${p.title||'Névtelen'}</h4>
+        <div class="muted">${p.instock?'készleten':'nem elérhető'}</div>
+        <div class="muted" style="font-size:13px;max-height:2.8em;overflow:hidden">${(p.description||'').replace(/</g,'&lt;')}</div>
       </div>
-    `).join("");
-  }
-  $("#plist").addEventListener("click", async (e)=>{
-    const id=e.target?.dataset?.del; if(!id) return;
-    if(!confirm("Biztosan törlöd?")) return;
-    const { error } = await sb.from("products").delete().eq("id", id);
-    if(error){ toast("Hiba: "+error.message); return; }
-    loadProducts();
-  });
-  $("#add").addEventListener("click", async ()=>{
-    const title=$("#t_title").value.trim();
-    const price=parseInt($("#t_price").value||"0",10)||0;
-    const instock=$("#t_stock").checked;
-    const image_url=$("#t_img").value.trim()||null;
-    const description=$("#t_desc").value.trim()||null;
-    if(!title||price<=0){ toast("Név és ár kötelező."); return; }
-    const { error } = await sb.from("products").insert([{title,price,instock,image_url,description}]);
-    if(error){ toast("Hiba: "+error.message); return; }
-    $("#t_title").value=""; $("#t_price").value=""; $("#t_stock").checked=true; $("#t_img").value=""; $("#t_desc").value="";
-    loadProducts();
-  });
-  $("#refreshP").addEventListener("click", loadProducts);
-
-  // ===== Orders =====
-  async function loadOrders(){
-    const tb=$("#otbody");
-    tb.innerHTML = `<tr><td class="muted" colspan="7">Betöltés…</td></tr>`;
-    const { data, error } = await sb
-      .from("orders")
-      .select("created_at,name,email,phone,address,note,total")
-      .order("created_at",{ascending:false})
-      .limit(200);
-    if(error){ tb.innerHTML = `<tr><td colspan="7">Hiba: ${error.message}</td></tr>`; return; }
-    if(!data?.length){ tb.innerHTML=`<tr><td class="muted" colspan="7">Még nincs rendelés.</td></tr>`; return; }
-    tb.innerHTML = data.map(o=>`
-      <tr>
-        <td>${new Date(o.created_at).toLocaleString('hu-HU')}</td>
-        <td>${o.name||''}</td>
-        <td>${o.email||''}</td>
-        <td>${o.phone||''}</td>
-        <td>${o.address||''}</td>
-        <td>${o.note||''}</td>
-        <td><strong>${fmtFt(o.total||0)}</strong></td>
-      </tr>
-    `).join("");
-  }
-  $("#refreshO").addEventListener("click", loadOrders);
-
-  // ===== Reviews =====
-  async function loadReviews(){
-    const box=$("#rlist");
-    box.innerHTML = `<div class="empty">Betöltés…</div>`;
-    // ha van products kapcsolat: reviews select + products(title)
-    const { data, error } = await sb
-      .from("reviews")
-      .select("id,product_id,username,text,created_at,products(title)")
-      .order("created_at",{ascending:false})
-      .limit(200);
-    if(error){ box.innerHTML=`<div class="empty">Hiba: ${error.message}</div>`; return; }
-    if(!data?.length){ box.innerHTML=`<div class="empty">Még nincs vélemény.</div>`; return; }
-    box.innerHTML = data.map(r=>`
-      <div class="item" style="grid-template-columns:1fr auto;">
-        <div>
-          <h4 style="margin:0 0 4px">${r.products?.title||'Ismeretlen termék'}</h4>
-          <div class="muted" style="font-size:13px;margin-bottom:6px">
-            ${r.username||'Névtelen'} • ${new Date(r.created_at).toLocaleString('hu-HU')}
-          </div>
-          <div>${(r.text||'').replace(/\n/g,'<br>')}</div>
-        </div>
-        <div class="row">
-          <button class="btn danger" data-rdel="${r.id}">Törlés</button>
-        </div>
+      <div class="row">
+        <div class="price">${(p.price||0).toLocaleString('hu-HU')} Ft</div>
+        <button class="btn warn" data-edit="${p.id}">Szerk.</button>
+        <button class="btn danger" data-del="${p.id}">Törlés</button>
       </div>
-    `).join("");
-  }
-  $("#rlist").addEventListener("click", async (e)=>{
-    const id=e.target?.dataset?.rdel; if(!id) return;
-    if(!confirm("Biztosan törlöd ezt a véleményt?")) return;
-    const { error } = await sb.from("reviews").delete().eq("id", id);
-    if(error){ toast("Hiba: "+error.message); return; }
-    loadReviews();
-  });
-  $("#refreshR").addEventListener("click", loadReviews);
+    </div>
+  `).join("");
+}
 
-  // ===== boot =====
+$("#search")?.addEventListener("input", ()=>renderProductList(allProducts));
+$("#refreshList")?.addEventListener("click", loadProducts);
+
+/* Új/szerkesztett mentése */
+$("#saveProduct")?.addEventListener("click", async ()=>{
+  const id = $("#editId").value || null;
+  const title = $("#pTitle").value.trim();
+  const price = parseInt($("#pPrice").value||"0",10) || 0;
+  const instock = $("#pStock").checked;
+  const desc = $("#pDesc").value.trim() || null;
+  const file = $("#pFile").files?.[0]||null;
+
+  if(!title || price<=0){ alert("Név és ár kötelező."); return; }
+
+  let image_url = null;
+  try{
+    if(file){ image_url = await uploadToBucket(file); }
+  }catch(err){
+    alert("Képfeltöltés hiba: "+err.message+"\nEllenőrizd a Storage policy-t és a 'products' bucketet.");
+    return;
+  }
+
+  if(id){
+    // update
+    const payload = { title, price, instock, description: desc };
+    if(image_url) payload.image_url = image_url;
+    const { error } = await sb.from("products").update(payload).eq("id", id);
+    if(error){ alert("Mentési hiba: "+error.message); return; }
+    toast("✔ Termék frissítve");
+  } else {
+    // insert
+    const { error } = await sb.from("products").insert([{ title, price, instock, description: desc, image_url }]);
+    if(error){ alert("Mentési hiba: "+error.message); return; }
+    toast("✔ Termék hozzáadva");
+  }
+
+  resetForm();
   loadProducts();
-  loadOrders();
+});
+
+/* Szerkesztés megnyitása */
+document.addEventListener("click", (e)=>{
+  const t=e.target;
+  const idEdit = t?.dataset?.edit;
+  const idDel  = t?.dataset?.del;
+  if(idEdit){ openEdit(idEdit); }
+  if(idDel){ delProduct(idDel); }
+});
+function openEdit(id){
+  const p = allProducts.find(x=>String(x.id)===String(id)); if(!p) return;
+  $("#formTitle").textContent="Termék szerkesztése";
+  $("#editId").value=p.id;
+  $("#pTitle").value=p.title||"";
+  $("#pPrice").value=p.price||"";
+  $("#pStock").checked=!!p.instock;
+  $("#pDesc").value=p.description||"";
+  $("#pFile").value="";
+  $("#pPrev").src=p.image_url||"";
+  $("#pPrev").style.display = p.image_url ? "block" : "none";
+}
+async function delProduct(id){
+  if(!confirm("Biztos törlöd a terméket?")) return;
+  const { error } = await sb.from("products").delete().eq("id", id);
+  if(error){ alert("Törlés hiba: "+error.message); return; }
+  toast("🗑 Törölve");
+  loadProducts();
+}
+$("#resetForm")?.addEventListener("click", (e)=>{ e.preventDefault(); resetForm(); });
+function resetForm(){
+  $("#formTitle").textContent="Új termék";
+  $("#editId").value="";
+  $("#pTitle").value="";
+  $("#pPrice").value="";
+  $("#pStock").checked=true;
+  $("#pDesc").value="";
+  $("#pFile").value="";
+  $("#pPrev").style.display="none";
+}
+
+/* ==== ORDERS ==== */
+async function loadOrders(){
+  const tb=$("#ordersBody");
+  tb.innerHTML = `<tr><td class="muted" colspan="7">Betöltés…</td></tr>`;
+  const { data, error } = await sb.from("orders")
+    .select("created_at,name,email,phone,address,note,total")
+    .order("created_at",{ascending:false}).limit(200);
+  if(error){ tb.innerHTML = `<tr><td colspan="7">Hiba: ${error.message}</td></tr>`; return; }
+  if(!data?.length){ tb.innerHTML=`<tr><td class="muted" colspan="7">Még nincs rendelés.</td></tr>`; return; }
+  tb.innerHTML = data.map(o=>`
+    <tr>
+      <td>${new Date(o.created_at).toLocaleString('hu-HU')}</td>
+      <td>${o.name||''}</td>
+      <td>${o.email||''}</td>
+      <td>${o.phone||''}</td>
+      <td>${o.address||''}</td>
+      <td>${o.note||''}</td>
+      <td><strong>${(o.total||0).toLocaleString('hu-HU')} Ft</strong></td>
+    </tr>
+  `).join("");
+}
+$("#refreshOrders")?.addEventListener("click", loadOrders);
+
+/* ==== REVIEWS ==== */
+async function loadReviews(){
+  const box=$("#revList");
+  box.innerHTML = `<div class="empty">Betöltés…</div>`;
+  const { data, error } = await sb.from("reviews")
+    .select("id,product_id,username,text,created_at,products(title)")
+    .order("created_at",{ascending:false}).limit(200);
+  if(error){ box.innerHTML=`<div class="empty">Hiba: ${error.message}</div>`; return; }
+  if(!data?.length){ box.innerHTML=`<div class="empty">Még nincs vélemény.</div>`; return; }
+  box.innerHTML = data.map(r=>`
+    <div class="item" style="grid-template-columns:1fr auto;">
+      <div>
+        <h4 style="margin:0 0 4px">${r.products?.title||'Ismeretlen termék'}</h4>
+        <div class="muted" style="font-size:13px;margin-bottom:6px">
+          ${r.username||'Névtelen'} • ${new Date(r.created_at).toLocaleString('hu-HU')}
+        </div>
+        <div>${(r.text||'').replace(/\n/g,'<br>')}</div>
+      </div>
+      <div class="row">
+        <button class="btn danger" data-rdel="${r.id}">Törlés</button>
+      </div>
+    </div>
+  `).join("");
+}
+document.addEventListener("click", async (e)=>{
+  const id=e.target?.dataset?.rdel; if(!id) return;
+  if(!confirm("Biztosan törlöd ezt a véleményt?")) return;
+  const { error } = await sb.from("reviews").delete().eq("id", id);
+  if(error){ alert("Hiba: "+error.message); return; }
   loadReviews();
+});
+$("#refreshReviews")?.addEventListener("click", loadReviews);
+
+/* ==== start ==== */
+</script>
+<script>
+// induláskor betöltjük a listákat (showApp is hívja, de ha be van lépve, gyors)
 </script>
 </body>
 </html>

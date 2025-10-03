@@ -534,7 +534,80 @@ functi/* === Szerencsekerék logika (JAVÍTOTT + MODERN) === */
     </div>
   </div>
 </footer>
+/* === Szerencsekerék logika (JAVÍTOTT + MODERN) === */
+(function wheelInit(){
+  const scrim = document.getElementById('wheelScrim');
+  const modal = document.getElementById('wheelModal');
+  const close = document.getElementById('wheelClose');
+  const spinBtn = document.getElementById('spinBtn');
+  const wheel = document.getElementById('wheel');
+  const resultBox = document.getElementById('wheelResult');
 
+  // csak egyszer jelenjen meg munkamenetenként
+  if(!sessionStorage.getItem('wheelShown')){
+    scrim.hidden=false; 
+    modal.hidden=false; 
+    document.body.style.overflow='hidden';
+    sessionStorage.setItem('wheelShown','1');
+  }
+
+  function closeWheel(){
+    scrim.hidden=true; 
+    modal.hidden=true; 
+    document.body.style.overflow='';
+  }
+  close.addEventListener('click', closeWheel);
+  scrim.addEventListener('click', closeWheel);
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape' && !modal.hidden) closeWheel();
+  });
+
+  const prizes = [0,3,5,7,0,5]; 
+  let spinning = false;
+
+  spinBtn.addEventListener('click', ()=>{
+    if(spinning) return;
+    spinning = true;
+
+    const idx = Math.floor(Math.random()*prizes.length);
+    const prize = prizes[idx];
+
+    const targetDeg = 360*5 + (360 - idx*60) - 30;
+    wheel.style.transform = `rotate(${targetDeg}deg)`;
+
+    setTimeout(()=>{
+      resultBox.hidden = false;
+      if(prize>0){
+        const code = `SAVE${prize}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
+        resultBox.innerHTML = `🎉 <strong>Gratulálunk!</strong><br>Nyertél <b>${prize}%</b> kupont!<br>Kód: <code>${code}</code>`;
+        sessionStorage.setItem('couponPercent', String(prize));
+        sessionStorage.setItem('couponCode', code);
+        startConfetti(); 
+        setTimeout(stopConfetti,2000);
+      }else{
+        resultBox.innerHTML = `😥 <strong>Sajnáljuk!</strong><br>Most nem nyertél kupont.`;
+      }
+      spinning = false;
+    }, 3100);
+  });
+
+  // 🎉 Konfetti eső
+  function startConfetti(){
+    for(let i=0;i<50;i++){
+      const conf=document.createElement('div');
+      conf.textContent='🎉';
+      conf.style.position='fixed';
+      conf.style.left=Math.random()*100+'vw';
+      conf.style.top='-10px';
+      conf.style.fontSize='24px';
+      conf.style.animation=`fall ${2+Math.random()*2}s linear forwards`;
+      conf.style.pointerEvents='none';
+      document.body.appendChild(conf);
+      setTimeout(()=>conf.remove(),3000);
+    }
+  }
+  function stopConfetti(){} 
+})();
 </body>
 </html>
 

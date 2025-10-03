@@ -274,3 +274,45 @@ function loadAll(){ ensureSB(); listProducts(); }
 </script>
 </body>
 </html>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+const SUPA_URL  = "https://gckynywmoxylwyppmkck.supabase.co";
+const SUPA_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+async function loadOrders() {
+  const list = document.querySelector('#orders-list');
+  list.innerHTML = "Betöltés...";
+  const { data, error } = await supa.from('orders').select('*').order('created_at', { ascending:false });
+  if (error) { list.innerHTML = "Hiba: "+error.message; return; }
+
+  list.innerHTML = data.map(o => `
+    <div class="order-card">
+      <div><b>${o.name}</b> • ${o.email} • ${o.phone}</div>
+      <div>${o.address}</div>
+      <div><small>${new Date(o.created_at).toLocaleString()}</small> • <b>${o.total} Ft</b> • státusz: ${o.status}</div>
+      <pre class="items">${JSON.stringify(o.items, null, 2)}</pre>
+      <div class="actions">
+        <button onclick="setStatus('${o.id}','processing')">Folyamatban</button>
+        <button onclick="setStatus('${o.id}','done')">Kész</button>
+        <button class="danger" onclick="deleteOrder('${o.id}')">Törlés</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function setStatus(id, status) {
+  const { error } = await supa.from('orders').update({ status }).eq('id', id);
+  if (error) return alert("Hiba: "+error.message);
+  loadOrders();
+}
+
+async function deleteOrder(id) {
+  if (!confirm("Biztos törlöd ezt a rendelést?")) return;
+  const { error } = await supa.from('orders').delete().eq('id', id);
+  if (error) return alert("Hiba: "+error.message);
+  loadOrders();
+}
+
+document.addEventListener('DOMContentLoaded', loadOrders);
+</script>

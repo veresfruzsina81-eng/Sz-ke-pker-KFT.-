@@ -10,30 +10,25 @@
 :root{--ink:#1f2937;--muted:#6b7280;--bg:#f7f4ef;--card:#fff;--brand:#8b5e34;--ring:0 0 0 3px rgba(193,154,107,.25);--radius:16px}
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
-/* Fejléc */
 .header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #eee3d6}
 .head-inner{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800}
 .brand img{height:26px}
 .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;background:var(--brand);color:#fff;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
 .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
-/* Top szűrősor */
 .filters{max-width:1100px;margin:0 auto;padding:12px 16px;display:grid;grid-template-columns:1fr auto;gap:10px}
-#search, #sort{border:1px solid #eadfce;border-radius:12px;padding:10px 12px;background:#fff;font:inherit}
+#search,#sort{border:1px solid #eadfce;border-radius:12px;padding:10px 12px;background:#fff;font:inherit}
 @media(max-width:640px){.filters{grid-template-columns:1fr}}
-/* Lista */
 .container{max-width:1100px;margin:0 auto;padding:6px 16px 16px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
 .card{background:var(--card);border:1px solid #eee3d6;border-radius:14px;padding:12px;box-shadow:0 10px 24px rgba(87,61,34,.05);display:flex;flex-direction:column}
 .card img{width:100%;height:180px;object-fit:cover;border-radius:10px;border:1px solid #eee3d6;background:#f7f4ef}
 .title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:8px}
 .price{color:var(--muted);margin-top:2px}
-.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.actions{margin-top:10px;display:flex;gap:8px}
+.actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
 .qty{display:inline-flex;align-items:center;border:1px solid #eadfce;border-radius:12px;overflow:hidden}
 .qty button{background:#fff;color:var(--ink);border:0;padding:6px 10px;cursor:pointer}
 .qty input{width:48px;text-align:center;border:0;height:34px}
-/* Kosár (jobb oldali fiók) */
 .cart{position:fixed;right:0;top:0;height:100vh;width:420px;max-width:95vw;background:#fff;border-left:1px solid #eee3d6;box-shadow:-20px 0 40px rgba(0,0,0,.08);transform:translateX(100%);transition:transform .25s ease;z-index:60;display:flex;flex-direction:column}
 .cart.open{transform:translateX(0)}
 .cart .top{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #eee3d6}
@@ -43,7 +38,6 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .itemline img{width:60px;height:60px;object-fit:cover;border-radius:8px;border:1px solid #eee3d6}
 .itemline .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .muted{color:var(--muted)}
-/* Termék modal */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:70;padding:14px}
 .modal.open{display:flex}
 .modal>.card{max-width:900px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -51,7 +45,6 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 </style>
 </head>
 <body>
-<!-- Fejléc -->
 <div class="header">
   <div class="head-inner">
     <div class="brand"><img src="logo.png" alt=""><span>Szőke-Épker Kft.</span></div>
@@ -62,7 +55,6 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
   </div>
 </div>
 
-<!-- Szűrősor -->
 <div class="filters">
   <input id="search" placeholder="Keresés a termékek közt…">
   <select id="sort">
@@ -72,13 +64,11 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
   </select>
 </div>
 
-<!-- Lista -->
 <main class="container">
   <div id="list" class="grid"></div>
   <div id="empty" class="muted">Nincs találat.</div>
 </main>
 
-<!-- Kosár fiók -->
 <aside id="cart" class="cart" aria-hidden="true">
   <div class="top"><strong>Kosár</strong><button class="btn ghost" id="cartClose" type="button">✕</button></div>
   <div class="body" id="cartBody"></div>
@@ -87,7 +77,6 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
       <strong>Összesen: <span id="sum">0</span> Ft</strong>
       <button class="btn" id="checkoutBtn" type="button">Megrendelés</button>
     </div>
-    <!-- Checkout űrlap -->
     <div id="chk" style="margin-top:10px;display:none">
       <div class="row" style="gap:8px;flex-wrap:wrap">
         <input id="c_name" placeholder="Név" style="flex:1 1 240px">
@@ -102,7 +91,6 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
   </div>
 </aside>
 
-<!-- Termék modal -->
 <div id="modal" class="modal" aria-hidden="true">
   <div class="card">
     <img id="m_img" src="" alt="">
@@ -115,9 +103,9 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
       <div id="m_desc" class="muted" style="white-space:pre-wrap"></div>
       <div class="row" style="margin-top:12px">
         <div class="qty">
-          <button data-act="m-qty" data-delta="-1" type="button">−</button>
+          <button type="button" onclick="incModalQty(-1)">−</button>
           <input id="m_qty" value="1">
-          <button data-act="m-qty" data-delta="1" type="button">+</button>
+          <button type="button" onclick="incModalQty(1)">+</button>
         </div>
         <button class="btn" id="m_add" type="button">Kosárba</button>
       </div>
@@ -126,39 +114,39 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 </div>
 
 <script>
-/* ===== Supabase ===== */
-const SUPABASE_URL = "https://gckynywmoxylwyppmkck.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+/*** Supabase ***/
+const SUPABASE_URL  = "https://gckynywmoxylwyppmkck.supabase.co";
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-/* ===== Állapot ===== */
+/*** Állapot ***/
 let products = [];
-let cart = [];            // {id,title,price,qty,image_url}
-let current = null;       // modal termék
+let cart = [];
+let current = null;
 
 const nf = n => new Intl.NumberFormat('hu-HU').format(n||0);
 
-/* ===== Betöltés ===== */
+/*** Init ***/
 document.addEventListener('DOMContentLoaded', async ()=>{
   await loadProducts();
-  bindUI();
+  bindTop();
 });
 
+/*** Termékek ***/
 async function loadProducts(){
-  const {data, error} = await sb.from('products').select('id,title,price,description,instock,image_url,created_at').eq('instock',true).order('created_at',{ascending:false});
+  const {data,error} = await sb
+    .from('products')
+    .select('id,title,price,description,instock,image_url,created_at')
+    .eq('instock',true)
+    .order('created_at',{ascending:false});
   if(error){ console.error(error); return; }
   products = data||[];
   renderList(products);
 }
 
-/* ===== Lista / Kártyák ===== */
 function renderList(list){
   const wrap = document.getElementById('list');
-  if(!list.length){
-    wrap.innerHTML = '';
-    document.getElementById('empty').style.display='block';
-    return;
-  }
+  if(!list.length){ wrap.innerHTML=''; document.getElementById('empty').style.display='block'; return; }
   document.getElementById('empty').style.display='none';
   wrap.innerHTML = list.map(p=>`
     <article class="card" data-id="${p.id}">
@@ -166,78 +154,62 @@ function renderList(list){
       <div class="title">${p.title}</div>
       <div class="price">${nf(p.price)} Ft</div>
       <div class="actions">
-        <div class="qty" data-qty="${p.id}">
-          <button type="button" data-act="qty" data-id="${p.id}" data-delta="-1">−</button>
+        <div class="qty">
+          <button type="button" onclick="incQty('${p.id}',-1)">−</button>
           <input id="q_${p.id}" value="1">
-          <button type="button" data-act="qty" data-id="${p.id}" data-delta="1">+</button>
+          <button type="button" onclick="incQty('${p.id}',1)">+</button>
         </div>
-        <button class="btn" type="button" data-act="add" data-id="${p.id}">Kosárba</button>
-        <button class="btn ghost" type="button" data-act="open" data-id="${p.id}">Megnyitás</button>
+        <button class="btn" type="button" onclick="addFromCard('${p.id}')">Kosárba</button>
+        <button class="btn ghost" type="button" onclick="openModal('${p.id}')">Megnyitás</button>
       </div>
     </article>
   `).join('');
 }
 
-/* ===== UI események (delegálva!) ===== */
-function bindUI(){
-  // fejléc kosár
-  document.getElementById('cartBtn').addEventListener('click', openCart);
-  document.getElementById('cartClose').addEventListener('click', closeCart);
-  document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+/*** Kártya gombok – közvetlen onclick ***/
+function incQty(id, delta){
+  const el = document.getElementById('q_'+id);
+  let v = parseInt(el.value||'1',10);
+  v = isNaN(v)?1:v; v += delta; if(v<1) v=1; if(v>99) v=99;
+  el.value = v;
+}
+function addFromCard(id){
+  const el = document.getElementById('q_'+id);
+  const q = clampQty(el?.value);
+  addToCart(id,q,true);
+}
+
+/*** Fejléc/kosár ***/
+function bindTop(){
+  document.getElementById('cartBtn').onclick = openCart;
+  document.getElementById('cartClose').onclick = closeCart;
+  document.getElementById('checkoutBtn').onclick = ()=>{
     if(cart.length===0){ alert('A kosár üres.'); return; }
     document.getElementById('chk').style.display='block';
-  });
-  document.getElementById('sendBtn').addEventListener('click', sendOrder);
+  };
+  document.getElementById('sendBtn').onclick = sendOrder;
 
-  // kereső / rendezés
-  document.getElementById('search').addEventListener('input', e=>{
+  document.getElementById('search').oninput = e=>{
     const q = e.target.value.toLowerCase();
-    const filtered = products.filter(p => (p.title||'').toLowerCase().includes(q));
-    renderList(filtered);
-  });
-  document.getElementById('sort').addEventListener('change', e=>{
+    renderList(products.filter(p => (p.title||'').toLowerCase().includes(q)));
+  };
+  document.getElementById('sort').onchange = e=>{
     const v = e.target.value;
     const arr = [...products];
     if(v==='price_asc') arr.sort((a,b)=>(a.price||0)-(b.price||0));
     else if(v==='price_desc') arr.sort((a,b)=>(b.price||0)-(a.price||0));
     renderList(arr);
-  });
+  };
 
-  // kártya gombok
-  document.getElementById('list').addEventListener('click', (ev)=>{
-    const t = ev.target.closest('[data-act]'); if(!t) return;
-    const id = t.dataset.id;
-    const act = t.dataset.act;
-    if(act==='open'){ openModal(id); }
-    if(act==='add'){
-      const q = clampQty(document.getElementById('q_'+id)?.value);
-      addToCart(id, q, true);
-    }
-    if(act==='qty'){
-      const input = document.getElementById('q_'+id);
-      const next = clampQty(parseInt(input.value||'1',10) + parseInt(t.dataset.delta,10));
-      input.value = next;
-    }
-  });
-
-  // modal
-  document.getElementById('modalClose').addEventListener('click', closeModal);
-  document.getElementById('m_add').addEventListener('click', ()=>{
+  document.getElementById('modalClose').onclick = closeModal;
+  document.getElementById('m_add').onclick = ()=>{
     const q = clampQty(document.getElementById('m_qty').value);
-    addToCart(current.id, q, true);
+    addToCart(current.id,q,true);
     closeModal();
-  });
-  document.getElementById('modal').addEventListener('click', e=>{
-    if(e.target.id==='modal') closeModal();
-  });
-  document.getElementById('modal').addEventListener('click', e=>{
-    const btn = e.target.closest('[data-act="m-qty"]'); if(!btn) return;
-    const el = document.getElementById('m_qty');
-    el.value = clampQty(parseInt(el.value||'1',10) + parseInt(btn.dataset.delta,10));
-  });
+  };
 }
 
-/* ===== Modal ===== */
+/*** Modal ***/
 function openModal(id){
   current = products.find(p=>p.id===id);
   if(!current) return;
@@ -249,18 +221,22 @@ function openModal(id){
   document.getElementById('modal').classList.add('open');
 }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+function incModalQty(d){
+  const el = document.getElementById('m_qty');
+  let v = parseInt(el.value||'1',10); if(isNaN(v)) v=1; v+=d; if(v<1)v=1; if(v>99)v=99; el.value=v;
+}
 
-/* ===== Kosár ===== */
+/*** Kosár ***/
 function clampQty(v){ v=parseInt(v||'1',10); if(isNaN(v)||v<1) v=1; if(v>99) v=99; return v; }
 function openCart(){ document.getElementById('cart').classList.add('open'); }
 function closeCart(){ document.getElementById('cart').classList.remove('open'); }
 
-function addToCart(id, qty=1, shouldOpen=false){
+function addToCart(id, qty=1, open=false){
   const p = products.find(x=>x.id===id); if(!p) return;
   const i = cart.findIndex(x=>x.id===id);
   if(i>-1) cart[i].qty += qty; else cart.push({id:p.id,title:p.title,price:p.price,qty:qty,image_url:p.image_url});
   renderCart();
-  if(shouldOpen) openCart();
+  if(open) openCart();
 }
 function changeQty(id, d){
   const i = cart.findIndex(x=>x.id===id); if(i<0) return;
@@ -297,7 +273,7 @@ function renderCart(){
   document.getElementById('cartCount').textContent = cart.reduce((s,x)=>s+x.qty,0);
 }
 
-/* ===== Rendelés beküldése ===== */
+/*** Rendelés ***/
 async function sendOrder(){
   if(cart.length===0){ alert('A kosár üres.'); return; }
   const name = document.getElementById('c_name').value.trim();
@@ -309,8 +285,7 @@ async function sendOrder(){
   if(!name||!email||!phone||!addr){ alert('Kérjük, tölts ki minden mezőt.'); return; }
 
   const subtotal = cart.reduce((s,x)=>s+x.price*x.qty,0);
-  const shipping_cost = 0;
-  const total = subtotal+shipping_cost;
+  const shipping_cost = 0, total = subtotal+shipping_cost;
 
   const payload = {
     name,email,phone,address:addr,shipping:ship||'Ismeretlen',note,

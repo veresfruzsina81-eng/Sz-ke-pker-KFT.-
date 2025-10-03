@@ -1,74 +1,77 @@
 <!doctype html>
 <html lang="hu">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Termék – Szőke Épker</title>
-  <link rel="icon" href="logo.png">
-  <style>
-    :root{--brand:#8b5e34;--bg:#fbf7f3}
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg)}
-    header{background:#1e293b;color:#fff;padding:.9rem 1rem}
-    main{max-width:1000px;margin:24px auto;padding:0 16px}
-    .wrap{display:grid;grid-template-columns:360px 1fr;gap:20px}
-    .card{background:#fff;border:1px solid #eee;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.04)}
-    .pad{padding:14px}
-    img.hero{width:100%;height:320px;object-fit:cover;background:#fafafa;display:block}
-    .btn{appearance:none;border:0;background:var(--brand);color:#fff;padding:.6rem 1rem;border-radius:999px;font-weight:700;cursor:pointer}
-    @media(max-width:860px){ .wrap{grid-template-columns:1fr} img.hero{height:240px} }
-  </style>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Termék</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#fafafb;font-family:Inter} .wrap{max-width:1000px;margin:0 auto;padding:20px}
+.btn{border:1px solid #e5e7eb;background:#fff;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px} @media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px}
+img{width:100%;border-radius:12px;border:1px solid #e5e7eb;object-fit:cover}
+.price{font-weight:700} .muted{color:#6b7280}
+.rate .star{cursor:pointer} .badge{display:inline-block;background:#eef2f7;border:1px solid #e5e7eb;border-radius:999px;padding:6px 10px;font-size:12px;color:#334155}
+</style>
 </head>
 <body>
-<header><a href="webshop.html" style="color:#fff;text-decoration:none">&larr; Vissza a webshopra</a></header>
-<main>
-  <div id="view" class="card"><div class="pad">Betöltés…</div></div>
-</main>
+<div class="wrap">
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+    <button class="btn" onclick="history.back()">⬅ Vissza</button>
+    <a class="btn" href="webshop.html">Webshop</a>
+  </div>
+  <div class="grid">
+    <div class="card"><img id="img" alt=""></div>
+    <div class="card">
+      <h2 id="title"></h2>
+      <div id="avail" class="muted"></div>
+      <div id="price" class="price" style="margin:8px 0"></div>
+      <div id="desc" style="white-space:pre-wrap"></div>
+      <div style="margin-top:12px"><button class="btn" id="add">Kosárba</button></div>
+    </div>
+  </div>
 
-<script>
-/*** TÖLTSD KI EZT A KÉT SORT ***/
-const SUPABASE_URL =https://gckynywmoxylwyppmkck.supabase.co 'https://<PROJECT>.supabase.co';
-const SUPABASE_ANON_KEY = '<PUBLIC-ANON-KEY>';
-/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI/
+  <div class="card" style="margin-top:16px">
+    <h3>Vélemények</h3>
+    <div id="revList" class="muted">Még nincs vélemény.</div>
+    <div class="badge" style="margin:8px 0">Írj véleményt</div>
+    <input id="rvName" class="btn" style="width:100%;text-align:left" placeholder="Név">
+    <div class="rate" id="rvStars">★ ★ ★ ★ ☆</div>
+    <textarea id="rvText" class="btn" style="width:100%;min-height:90px;text-align:left" placeholder="Vélemény…"></textarea>
+    <div><button class="btn" id="sendRev">Küldés</button></div>
+  </div>
+</div>
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const q = sel => document.querySelector(sel);
-const fmt = n => new Intl.NumberFormat('hu-HU').format(n)+' Ft';
-const id = new URL(location.href).searchParams.get('id');
+<script type="module">
+const u=new URLSearchParams(location.search); const pid=u.get("id");
+const SUPABASE_URL="https://gckynywmoxylwyppmkck.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
+if(!window.supabase){await new Promise(r=>{const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";s.onload=r;document.head.appendChild(s);});}
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const fmt=n=> (n||0).toLocaleString('hu-HU')+" Ft";
 
 async function load(){
-  if(!id){ q('#view').innerHTML='<div class="pad">Hiányzó termék azonosító.</div>'; return; }
-  const { data, error } = await sb.from('products')
-    .select('id,title,price,instock,image_url,description')
-    .eq('id', id).single();
-  if(error || !data){ q('#view').innerHTML='<div class="pad">A termék nem található.</div>'; return; }
-
-  q('#view').innerHTML = `
-    <div class="wrap">
-      <div><img class="hero" src="${data.image_url||'logo.png'}" alt=""></div>
-      <div class="pad">
-        <h1 style="margin:.2rem 0 6px">${data.title||'(névtelen)'}</h1>
-        <div style="font-weight:700;margin-bottom:10px">${fmt(data.price||0)}</div>
-        <div style="margin-bottom:14px">${data.instock?'Készleten':'Nem elérhető'}</div>
-        <button class="btn" onclick="addToCart()">Kosárba</button>
-      </div>
-    </div>
-    <div class="pad" style="padding-top:0">
-      ${data.description ? `<h3>Leírás</h3><div>${escapeHtml(data.description).replace(/\n/g,'<br>')}</div>` : ''}
-    </div>
-  `;
-
-  window.addToCart = function(){
-    const cart = JSON.parse(localStorage.getItem('cart_v1')||'[]');
-    const it = cart.find(x=>x.id===data.id);
-    if(it) it.qty++; else cart.push({id:data.id,title:data.title,price:data.price,img:data.image_url,qty:1});
-    localStorage.setItem('cart_v1', JSON.stringify(cart));
-    alert('A termék a kosárba került.');
-  };
+  const { data, error } = await sb.from("products").select("*").eq("id", pid).single();
+  if(error||!data){ document.body.innerHTML="<div class='wrap'>Nem található termék.</div>"; return; }
+  img.src=data.image_url||'logo.png'; title.textContent=data.title||""; avail.textContent=data.instock?'Készleten':'Nem elérhető';
+  price.textContent=fmt(data.price||0); desc.textContent=data.description||"";
+  add.onclick=()=>alert("Kosár funkció itt is beköthető (a webshop.html kosarához ugyanazzal a kulccsal).");
+  loadRevs();
 }
-
-function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
-
+async function loadRevs(){
+  const box=revList; const { data, error } = await sb.from("reviews").select("username,stars,text,created_at").eq("product_id", pid).order("created_at",{ascending:false});
+  if(error||!data?.length){ box.textContent="Még nincs vélemény."; return; }
+  box.innerHTML=data.map(r=>`<div style="border:1px solid #e5e7eb;border-radius:12px;padding:10px;margin:8px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between"><strong>${r.username||"Vendég"}</strong><span>${"★".repeat(+r.stars||0)}${"☆".repeat(5-(+r.stars||0))}</span></div>
+  <div style="color:#6b7280;font-size:12px">${new Date(r.created_at).toLocaleString('hu-HU')}</div>
+  <div style="margin-top:6px;white-space:pre-wrap">${r.text||""}</div></div>`).join("");
+}
+let s=4; document.getElementById("rvStars").addEventListener("click",e=>{ s = s===5?1:s+1; e.currentTarget.textContent = "★ ".repeat(s)+"☆ ".repeat(5-s); });
+document.getElementById("sendRev").addEventListener("click", async ()=>{
+  const username=document.getElementById("rvName").value.trim()||"Vendég";
+  const text=document.getElementById("rvText").value.trim();
+  const { error } = await sb.from("reviews").insert({ product_id: pid, username, text, stars:s });
+  alert(error?("Nem sikerült: "+error.message):"Köszönjük!"); loadRevs();
+});
 load();
 </script>
 </body>

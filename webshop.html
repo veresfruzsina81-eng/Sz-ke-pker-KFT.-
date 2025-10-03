@@ -33,7 +33,7 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .searchbar input:focus{outline:none;box-shadow:var(--ring);border-color:#d6def7}
 .filter{border:1px solid #e5e9f2;background:#fff;border-radius:12px;padding:9px 10px;font-size:14px}
 
-/* === MINI REEL (új) === */
+/* === MINI REEL === */
 .mini-reel{overflow:hidden;height:64px;border-radius:12px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.06);margin:10px auto;max-width:1200px}
 .mini-track{display:flex;align-items:center;gap:10px;padding:8px;animation:reelScroll 40s linear infinite;will-change:transform}
 .mini-thumb{width:84px;height:48px;object-fit:cover;border-radius:8px;flex:0 0 auto}
@@ -45,16 +45,7 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 @media(min-width:1000px){.grid{grid-template-columns:repeat(3,1fr)}}
 .card{background:var(--card);border:1px solid #e5e9f2;border-radius:14px;box-shadow:0 10px 22px rgba(22,29,37,.05);overflow:hidden;opacity:0;transform:translateY(20px);animation:fadeUp .6s forwards}
 @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-.thumb{
-  width:100%;
-  height:220px;
-  object-fit:contain;
-  background:#fff;
-  border-bottom:1px solid #eef2f8;
-  display:block;
-  padding:8px;
-  cursor:zoom-in;
-}
+.thumb{width:100%;height:220px;object-fit:contain;background:#fff;border-bottom:1px solid #eef2f8;display:block;padding:8px;cursor:zoom-in}
 .px{padding:10px 12px}
 .title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .price{font-weight:700}
@@ -62,15 +53,10 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .qty{display:inline-flex;align-items:center;border:1px solid #e5e9f2;border-radius:999px;overflow:hidden}
 .qty button{background:#fff;border:0;width:26px;height:26px;cursor:pointer}
 .qty input{width:34px;border:0;text-align:center;appearance:textfield}
-.qty input::-webkit-outer-spin-button,
-.qty input::-webkit-inner-spin-button{appearance:none;margin:0}
+.qty input::-webkit-outer-spin-button,.qty input::-webkit-inner-spin-button{appearance:none;margin:0}
 
 /* ikon gomb */
-.icon-btn{
-  background:#fff;border:1px solid #e5e9f2;border-radius:10px;
-  width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:18px;line-height:1;
-}
+.icon-btn{background:#fff;border:1px solid #e5e9f2;border-radius:10px;width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;line-height:1}
 .icon-btn:hover{box-shadow:var(--ring)}
 
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 12px;border-radius:10px;box-shadow:0 12px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:.25s}
@@ -80,18 +66,10 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .lb-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.75);display:grid;place-items:center;z-index:1000}
 .lb-backdrop[hidden]{display:none}
 .lb-img{max-width:90vw;max-height:90vh;border-radius:12px}
-.lb-close{
-  position:fixed;top:16px;right:16px;z-index:1001;
-  width:40px;height:40px;font-size:28px;line-height:1;border:none;border-radius:50%;background:#fff;cursor:pointer
-}
+.lb-close{position:fixed;top:16px;right:16px;z-index:1001;width:40px;height:40px;font-size:28px;line-height:1;border:none;border-radius:50%;background:#fff;cursor:pointer}
 
 /* OLDALSÓ KOSÁR FIÓK */
-.cart-drawer{
-  position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);
-  background:#fff;box-shadow:-8px 0 24px rgba(0,0,0,.15);
-  transform:translateX(100%);transition:transform .28s ease;z-index:1002;
-  display:flex;flex-direction:column
-}
+.cart-drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);background:#fff;box-shadow:-8px 0 24px rgba(0,0,0,.15);transform:translateX(100%);transition:transform .28s ease;z-index:1002;display:flex;flex-direction:column}
 .cart-drawer.open{transform:translateX(0)}
 .cart-scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1001}
 .cart-scrim[hidden]{display:none}
@@ -108,25 +86,23 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .cart-foot{border-top:1px solid #eee;padding:12px}
 .cart-foot .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 
-/* === Szerencsekerék modal === */
+/* === Szerencsekerék modal (modern belső) === */
 .wheel-scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200}
 .wheel-scrim[hidden]{display:none}
 .wheel-modal{position:fixed;inset:0;display:grid;place-items:center;z-index:1201;padding:16px}
 .wheel-modal[hidden]{display:none}
-.wheel-modal>div{background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.2);width:min(520px,92vw);padding:18px;position:relative;text-align:center}
-.wheel-x{position:absolute;right:14px;top:14px;width:36px;height:36px;border:0;border-radius:50%;background:#f3f3f3;font-size:20px;cursor:pointer}
-.wheel{width:280px;height:280px;border-radius:50%;border:10px solid #eef2f7;transition:transform 3s cubic-bezier(.2,.8,.1,1);position:relative;overflow:hidden;margin:10px auto}
-.slice{position:absolute;inset:-10px 0 0 0;width:50%;height:50%;transform-origin:100% 100%;display:flex;align-items:center;justify-content:center;font-weight:700}
-.s1{transform:rotate(0deg) skewY(-30deg);background:#e3f2fd}.s2{transform:rotate(60deg) skewY(-30deg);background:#f1f8e9}
-.s3{transform:rotate(120deg) skewY(-30deg);background:#fff3e0}.s4{transform:rotate(180deg) skewY(-30deg);background:#e8eaf6}
-.s5{transform:rotate(240deg) skewY(-30deg);background:#fce4ec}.s6{transform:rotate(300deg) skewY(-30deg);background:#ede7f6}
-.pin{position:absolute;top:-8px;font-size:20px;color:#1a73e8}
-.wheel-result{margin-top:10px;padding:10px;border-radius:10px;background:#f5faff;font-weight:600}
+.wheel-modal>div{background:#0b1220;color:#e7ecf7;border-radius:18px;box-shadow:0 20px 50px rgba(0,0,0,.35);width:min(540px,92vw);padding:18px;position:relative;text-align:center;border:1px solid rgba(255,255,255,.08)}
+.wheel-x{position:absolute;right:14px;top:14px;width:36px;height:36px;border:0;border-radius:10px;background:#10192f;color:#cbd5e1;font-size:18px;cursor:pointer}
+.wheel-x:hover{background:#16223b}
+.wheel-wrap{position:relative;display:grid;place-items:center;margin:10px auto}
+.wheel-pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:18px solid #ffd166;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5))}
+#wheelCanvas{display:block;width:300px;height:300px;max-width:80vw;background:radial-gradient(120px 120px at 50% 50%, rgba(255,255,255,.06), transparent)}
+.center-cap{position:absolute;width:84px;height:84px;border-radius:50%;background:#0b1220;border:2px solid rgba(255,255,255,.15);display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.35) inset}
+.center-cap span{font:700 12px/1.1 "Inter",system-ui;color:#e7ecf7;letter-spacing:.3px;text-align:center}
+.wheel-result{margin-top:12px;padding:10px;border-radius:10px;background:#10192f;border:1px solid rgba(255,255,255,.08);font-weight:600}
 
 /* === Canvas konfetti (nyeréskor 2 mp) === */
-#confettiCanvas{
-  position:fixed; inset:0; z-index:1300; pointer-events:none; display:none;
-}
+#confettiCanvas{position:fixed;inset:0;z-index:1300;pointer-events:none;display:none}
 </style>
 </head>
 <body>
@@ -135,7 +111,6 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
     <div class="brand row"><img src="logo.png" alt=""><h1>Szőke-Épker Kft.</h1></div>
     <div class="row">
       <a class="btn ghost" href="/">Vissza a weboldalra</a>
-      <!-- KOSÁR gomb a fiókhoz -->
       <button id="cartOpen" class="btn">Kosár <span id="badge" class="badge">0</span></button>
     </div>
   </div>
@@ -166,13 +141,13 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
   <p id="empty" class="muted" style="display:none;text-align:center">Nincs találat.</p>
 </main>
 
-<!-- Lightbox képnagyító -->
+<!-- Lightbox -->
 <div id="imgLightbox" class="lb-backdrop" hidden>
   <button class="lb-close" aria-label="Bezárás">×</button>
   <img class="lb-img" alt="Preview">
 </div>
 
-<!-- Oldalsó kosár fiók -->
+<!-- Oldalsó kosár -->
 <div id="cartDrawer" class="cart-drawer" aria-hidden="true">
   <div class="cart-head">
     <h3>Kosár</h3>
@@ -190,124 +165,91 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 
 <div id="toast" class="toast">Hozzáadva a kosárhoz</div>
 
-<!-- Szerencsekerék -->
+<!-- Szerencsekerék (modern, canvas) -->
 <div id="wheelScrim" class="wheel-scrim" hidden></div>
 <div id="wheelModal" class="wheel-modal" hidden aria-modal="true" role="dialog" aria-labelledby="wheelTitle">
   <div>
     <button id="wheelClose" class="wheel-x" aria-label="Bezárás">×</button>
-    <h3 id="wheelTitle">Pörgesd meg a szerencsekereket!</h3>
-    <p>Akár <strong>7%</strong> kedvezmény – egyszeri kupon.</p>
-    <div class="wheel-wrap" style="position:relative;display:grid;place-items:center;">
-      <div id="wheel" class="wheel">
-        <div class="slice s1">0%</div>
-        <div class="slice s2">3%</div>
-        <div class="slice s3">5%</div>
-        <div class="slice s4">7%</div>
-        <div class="slice s5">0%</div>
-        <div class="slice s6">5%</div>
-      </div>
-      <div class="pin">▼</div>
+    <h3 id="wheelTitle" style="margin:4px 0 6px">Pörgesd meg a szerencsekereket!</h3>
+    <p style="margin:0 0 6px;color:#9fb0c7">Akár <strong>7%</strong> kedvezmény – egyszeri kupon.</p>
+    <div class="wheel-wrap">
+      <div class="wheel-pointer"></div>
+      <canvas id="wheelCanvas" width="620" height="620" aria-label="Szerencsekerék"></canvas>
+      <div class="center-cap"><span>PÖRGESD<br>MEG</span></div>
     </div>
-    <button id="spinBtn" class="btn-primary">Pörgetés</button>
+    <button id="spinBtn" class="btn" style="width:100%;margin-top:8px">Pörgetés</button>
     <div id="wheelResult" class="wheel-result" hidden></div>
   </div>
 </div>
 
-<!-- Canvas konfetti réteg -->
+<!-- Konfetti -->
 <canvas id="confettiCanvas"></canvas>
 
 <script>
-/* --- Supabase beállítások: változatlanul hagyva --- */
+/* --- Supabase (változatlan) --- */
 const SB_URL="https://gckynywmoxylwyppmkck.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
-/* --- CART és megjelenítés --- */
+/* --- CART és UI (változatlan) --- */
 let PRODUCTS=[];
-(function clearCartOnReload(){
-  try{
-    const nav=performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
-    if(nav && nav.type==='reload'){ localStorage.removeItem('cart'); }
-  }catch(_){}
-})();
+(function(){try{const nav=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];if(nav&&nav.type==='reload'){localStorage.removeItem('cart');}}catch(_){}})();
 let CART=JSON.parse(localStorage.getItem("cart")||"[]");
-
-const FREE_THRESHOLD=30000;
-const SHIPPING_FEE=1500;
-
+const FREE_THRESHOLD=30000, SHIPPING_FEE=1500;
 const HUF=n=>new Intl.NumberFormat('hu-HU').format(n||0)+" Ft";
-const saveCart=()=>{localStorage.setItem("cart",JSON.stringify(CART)); setBadge();};
+const saveCart=()=>{localStorage.setItem("cart",JSON.stringify(CART));setBadge();};
 const setBadge=()=>{document.getElementById('badge').textContent=CART.reduce((s,x)=>s+(x.qty||0),0);};
 const toast=msg=>{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1200);};
 
-/* Mini reel építése (eredeti) */
-function buildMiniReel(arr){
-  const track=document.getElementById('miniTrack'); if(!track) return;
-  track.innerHTML='';
-  const urls=(arr||[]).map(p=>p.image_url).filter(Boolean);
-  if(urls.length<2) return;
-  urls.forEach(u=>{
-    const img=new Image(); img.src=u; img.alt=''; img.className='mini-thumb'; track.appendChild(img);
-  });
-  urls.forEach(u=>{
-    const img=new Image(); img.src=u; img.alt=''; img.className='mini-thumb'; track.appendChild(img);
-  });
-}
+function buildMiniReel(arr){const track=document.getElementById('miniTrack');if(!track)return;track.innerHTML='';const urls=(arr||[]).map(p=>p.image_url).filter(Boolean);if(urls.length<2)return;urls.concat(urls).forEach(u=>{const img=new Image();img.src=u;img.alt='';img.className='mini-thumb';track.appendChild(img);});}
 
-/* Renderelés: termékkártyák (eredeti) */
 function render(list){
   const box=document.getElementById('list');
   box.innerHTML=list.map((p,i)=>`
-    <article class="card" style="animation-delay:${0.08*i}s">
-      <img class="thumb" src="${p.image_url||'logo.png'}" alt="">
-      <div class="px">
-        <div class="row" style="justify-content:space-between">
-          <div class="title" title="${p.title||''}">${p.title||'-'}</div>
-          <div class="price">${HUF(p.price)}</div>
+  <article class="card" style="animation-delay:${0.08*i}s">
+    <img class="thumb" src="${p.image_url||'logo.png'}" alt="">
+    <div class="px">
+      <div class="row" style="justify-content:space-between">
+        <div class="title" title="${p.title||''}">${p.title||'-'}</div>
+        <div class="price">${HUF(p.price)}</div>
+      </div>
+      <div class="row" style="justify-content:space-between;margin-top:8px;flex-wrap:wrap">
+        <div class="qty" style="flex:0 0 auto">
+          <button data-act="minus" data-id="${p.id}" aria-label="Mennyiség csökkentése">−</button>
+          <input value="1" inputmode="numeric" pattern="[0-9]*" min="1" data-qty="${p.id}">
+          <button data-act="plus" data-id="${p.id}" aria-label="Mennyiség növelése">+</button>
         </div>
-        <div class="row" style="justify-content:space-between;margin-top:8px;flex-wrap:wrap">
-          <div class="qty" style="flex:0 0 auto">
-            <button data-act="minus" data-id="${p.id}" aria-label="Mennyiség csökkentése">−</button>
-            <input value="1" inputmode="numeric" pattern="[0-9]*" min="1" data-qty="${p.id}">
-            <button data-act="plus" data-id="${p.id}" aria-label="Mennyiség növelése">+</button>
-          </div>
-          <div class="row" style="flex:1 1 auto;justify-content:flex-end;gap:8px">
-            <button class="btn" data-add="${p.id}">Kosárba</button>
-            <a class="btn ghost" href="product.html?id=${encodeURIComponent(p.id)}">Megnyitás</a>
-          </div>
+        <div class="row" style="flex:1 1 auto;justify-content:flex-end;gap:8px">
+          <button class="btn" data-add="${p.id}">Kosárba</button>
+          <a class="btn ghost" href="product.html?id=${encodeURIComponent(p.id)}">Megnyitás</a>
         </div>
       </div>
-    </article>`).join('');
+    </div>
+  </article>`).join('');
   document.getElementById('empty').style.display=list.length?'none':'block';
 }
 
-/* Kosár fiók nyit/zár (eredeti) */
-const drawer = document.getElementById('cartDrawer');
-const scrim = document.getElementById('cartScrim');
-const openBtn = document.getElementById('cartOpen');
-const closeBtn = document.getElementById('cartClose');
-function openCart(){ drawer.classList.add('open'); scrim.hidden = false; document.body.style.overflow='hidden'; }
-function closeCart(){ drawer.classList.remove('open'); scrim.hidden = true; document.body.style.overflow=''; }
-openBtn && openBtn.addEventListener('click', openCart);
-closeBtn && closeBtn.addEventListener('click', closeCart);
-scrim && scrim.addEventListener('click', closeCart);
+const drawer=document.getElementById('cartDrawer');
+const scrim=document.getElementById('cartScrim');
+const openBtn=document.getElementById('cartOpen');
+const closeBtn=document.getElementById('cartClose');
+function openCart(){drawer.classList.add('open');scrim.hidden=false;document.body.style.overflow='hidden';}
+function closeCart(){drawer.classList.remove('open');scrim.hidden=true;document.body.style.overflow='';}
+openBtn&&openBtn.addEventListener('click',openCart);
+closeBtn&&closeBtn.addEventListener('click',closeCart);
+scrim&&scrim.addEventListener('click',closeCart);
 
-/* Kosár render (eredeti) */
 function renderCart(){
-  const ul = document.getElementById('cartItems');
-  const subEl = document.getElementById('subTotal');
-  const shipEl = document.getElementById('shipCost');
-  const totalEl = document.getElementById('cartTotal');
-  ul.innerHTML = '';
-  let subtotal = 0;
-
-  if (!CART.length) {
-    ul.innerHTML = `<li class="cart-empty">A kosarad üres.</li>`;
-  } else {
+  const ul=document.getElementById('cartItems');
+  const subEl=document.getElementById('subTotal');
+  const shipEl=document.getElementById('shipCost');
+  const totalEl=document.getElementById('cartTotal');
+  ul.innerHTML=''; let subtotal=0;
+  if(!CART.length){ul.innerHTML=`<li class="cart-empty">A kosarad üres.</li>`;}
+  else{
     CART.forEach(p=>{
-      const line = (p.price||0) * (p.qty||1);
-      subtotal += line;
-      ul.insertAdjacentHTML('beforeend', `
+      const line=(p.price||0)*(p.qty||1); subtotal+=line;
+      ul.insertAdjacentHTML('beforeend',`
         <li class="cart-row" data-id="${p.id}">
           <img class="thumb" src="${p.image_url||'logo.png'}" alt="${escapeHtml(p.title||'')}">
           <span class="title">${escapeHtml(p.title||'')}</span>
@@ -318,263 +260,240 @@ function renderCart(){
       `);
     });
   }
-
-  const shipping = (subtotal >= FREE_THRESHOLD || subtotal === 0) ? 0 : SHIPPING_FEE;
-  const total = subtotal + shipping;
-
-  subEl.textContent = subtotal.toLocaleString('hu-HU') + ' Ft';
-  shipEl.textContent = shipping.toLocaleString('hu-HU') + ' Ft';
-  totalEl.textContent = total.toLocaleString('hu-HU') + ' Ft';
-
-  setBadge();
-  localStorage.setItem("cart", JSON.stringify(CART));
+  const shipping=(subtotal>=FREE_THRESHOLD||subtotal===0)?0:SHIPPING_FEE;
+  const total=subtotal+shipping;
+  subEl.textContent=subtotal.toLocaleString('hu-HU')+' Ft';
+  shipEl.textContent=shipping.toLocaleString('hu-HU')+' Ft';
+  totalEl.textContent=total.toLocaleString('hu-HU')+' Ft';
+  setBadge(); localStorage.setItem("cart",JSON.stringify(CART));
 }
 
-/* Kosár interakciók (eredeti) */
-document.getElementById('cartItems').addEventListener('click', (e)=>{
-  if (e.target.closest('.remove')) {
-    const id = e.target.closest('.cart-row').dataset.id;
-    CART = CART.filter(x => String(x.id) !== String(id));
-    renderCart();
-  }
+document.getElementById('cartItems').addEventListener('click',(e)=>{
+  if(e.target.closest('.remove')){const id=e.target.closest('.cart-row').dataset.id;CART=CART.filter(x=>String(x.id)!==String(id));renderCart();}
 });
-document.getElementById('cartItems').addEventListener('input', (e)=>{
-  if (e.target.matches('.qty')) {
-    const row = e.target.closest('.cart-row');
-    const id = row.dataset.id;
-    const item = CART.find(x => String(x.id) === String(id));
-    if (item) {
-      const v = Math.max(1, parseInt(e.target.value||'1',10));
-      item.qty = v;
-      renderCart();
-    }
-  }
+document.getElementById('cartItems').addEventListener('input',(e)=>{
+  if(e.target.matches('.qty')){const row=e.target.closest('.cart-row');const id=row.dataset.id;const item=CART.find(x=>String(x.id)===String(id));if(item){const v=Math.max(1,parseInt(e.target.value||'1',10));item.qty=v;renderCart();}}
 });
 
-/* Termékkártya események (eredeti) */
 document.getElementById('list').addEventListener('click',e=>{
   const minus=e.target.closest('[data-act="minus"]');
   const plus=e.target.closest('[data-act="plus"]');
   const add=e.target.closest('[data-add]');
-
-  if(minus){
-    const id=minus.dataset.id;
-    const q=document.querySelector(`[data-qty="${id}"]`);
-    q.value=Math.max(1,parseInt(q.value||"1")-1);
-  }
-  if(plus){
-    const id=plus.dataset.id;
-    const q=document.querySelector(`[data-qty="${id}"]`);
-    q.value=Math.max(1,parseInt(q.value||"1")+1);
-  }
+  if(minus){const id=minus.dataset.id;const q=document.querySelector(`[data-qty="${id}"]`);q.value=Math.max(1,parseInt(q.value||"1")-1);}
+  if(plus){const id=plus.dataset.id;const q=document.querySelector(`[data-qty="${id}"]`);q.value=Math.max(1,parseInt(q.value||"1")+1);}
   if(add){
-    const id=add.dataset.add;
-    const p=PRODUCTS.find(x=>String(x.id)===String(id));
-    const qEl=document.querySelector(`[data-qty="${id}"]`);
-    const qty=Math.max(1,parseInt(qEl?.value||"1"));
+    const id=add.dataset.add;const p=PRODUCTS.find(x=>String(x.id)===String(id));
+    const qEl=document.querySelector(`[data-qty="${id}"]`);const qty=Math.max(1,parseInt(qEl?.value||"1"));
     const i=CART.findIndex(x=>String(x.id)===String(id));
-    if(i>=0) CART[i].qty += qty;
-    else CART.push({id:p.id,title:p.title,price:p.price,image_url:p.image_url,qty});
-    saveCart(); toast("Hozzáadva a kosárhoz");
-    renderCart();
-    openCart();
+    if(i>=0)CART[i].qty+=qty;else CART.push({id:p.id,title:p.title,price:p.price,image_url:p.image_url,qty});
+    saveCart(); toast("Hozzáadva a kosárhoz"); renderCart(); openCart();
   }
 });
 
-/* Kártya mennyiség input (eredeti) */
 document.getElementById('list').addEventListener('input',e=>{
-  if(e.target.matches('[data-qty]')){
-    const v=parseInt(e.target.value||"1",10);
-    e.target.value = isNaN(v) || v<1 ? 1 : v;
-  }
+  if(e.target.matches('[data-qty]')){const v=parseInt(e.target.value||"1",10);e.target.value=isNaN(v)||v<1?1:v;}
 });
 
-/* Kereső + Szűrő (eredeti) */
-const qInput=document.getElementById('q');
-const priceFilter=document.getElementById('priceFilter');
+const qInput=document.getElementById('q');const priceFilter=document.getElementById('priceFilter');
 function applyFilters(){
-  const q=(qInput.value||'').toLowerCase().trim();
-  const pf=priceFilter.value;
+  const q=(qInput.value||'').toLowerCase().trim();const pf=priceFilter.value;
   let list=PRODUCTS.filter(p=>{
-    const hit = (p.title||'').toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q);
-    if(!hit) return false;
-    const price = Number(p.price)||0;
-    if(pf==='lt5') return price<5000;
-    if(pf==='5to10') return price>=5000 && price<=10000;
-    if(pf==='gt10') return price>10000;
-    return true;
-  });
-  render(list);
+    const hit=(p.title||'').toLowerCase().includes(q)||(p.description||'').toLowerCase().includes(q);
+    if(!hit)return false;const price=Number(p.price)||0;
+    if(pf==='lt5')return price<5000;if(pf==='5to10')return price>=5000&&price<=10000;if(pf==='gt10')return price>10000;return true;
+  }); render(list);
 }
-qInput.addEventListener('input',applyFilters);
-priceFilter.addEventListener('change',applyFilters);
+qInput.addEventListener('input',applyFilters); priceFilter.addEventListener('change',applyFilters);
 
-/* Lightbox (eredeti) */
-const lb = document.getElementById('imgLightbox');
-const lbImg = lb.querySelector('.lb-img');
-document.addEventListener('click', (e)=>{
-  if (e.target.matches('.thumb')) {
-    lbImg.src = e.target.src;
-    lb.removeAttribute('hidden');
-    document.body.style.overflow = 'hidden';
-  }
-  if (e.target.matches('#imgLightbox, #imgLightbox .lb-close')) {
-    lb.setAttribute('hidden','');
-    lbImg.src = '';
-    document.body.style.overflow = '';
-  }
+const lb=document.getElementById('imgLightbox'); const lbImg=lb.querySelector('.lb-img');
+document.addEventListener('click',(e)=>{if(e.target.matches('.thumb')){lbImg.src=e.target.src;lb.removeAttribute('hidden');document.body.style.overflow='hidden';}
+  if(e.target.matches('#imgLightbox, #imgLightbox .lb-close')){lb.setAttribute('hidden','');lbImg.src='';document.body.style.overflow='';}
 });
-document.addEventListener('keydown',(e)=>{
-  if(e.key==='Escape'){
-    if(!lb.hasAttribute('hidden')) document.querySelector('.lb-close').click();
-    if(drawer.classList.contains('open')) closeCart();
-  }
-});
+document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){if(!lb.hasAttribute('hidden'))document.querySelector('.lb-close').click();if(drawer.classList.contains('open'))closeCart();}});
 
-/* Checkout (eredeti) */
-const CHECKOUT_URL = "checkout.html";
-document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-  if (!CART.length) return;
-  window.location.href = CHECKOUT_URL;
-});
+const CHECKOUT_URL="checkout.html";
+document.getElementById('checkoutBtn').addEventListener('click',()=>{if(!CART.length)return;window.location.href=CHECKOUT_URL;});
 
-/* Betöltés (eredeti) */
 async function load(){
-  const {data,error}=await sb
-    .from('products')
-    .select('id,title,price,description,image_url,instock,created_at')
-    .eq('instock',true)
-    .order('created_at',{ascending:false});
-  if(error){
-    document.getElementById('list').innerHTML="<p>Hiba: "+escapeHtml(error.message)+"</p>";
-    return;
-  }
-  PRODUCTS=data||[];
-  render(PRODUCTS);
-  setBadge();
-  renderCart();
-  buildMiniReel(PRODUCTS);
+  const {data,error}=await sb.from('products').select('id,title,price,description,image_url,instock,created_at').eq('instock',true).order('created_at',{ascending:false});
+  if(error){document.getElementById('list').innerHTML="<p>Hiba: "+escapeHtml(error.message)+"</p>";return;}
+  PRODUCTS=data||[]; render(PRODUCTS); setBadge(); renderCart(); buildMiniReel(PRODUCTS);
 }
 load();
 
-/* segédfüggvény (eredeti) */
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
-/* === Szerencsekerék logika (JAVÍTOTT + MODERN) === */
+/* === Szerencsekerék – modern canvas + valós nyeremény + 1 pörgetés === */
 (function wheelInit(){
-  const scrim = document.getElementById('wheelScrim');
-  const modal = document.getElementById('wheelModal');
-  const close = document.getElementById('wheelClose');
-  const spinBtn = document.getElementById('spinBtn');
-  const wheel = document.getElementById('wheel');
-  const resultBox = document.getElementById('wheelResult');
+  const scrim=document.getElementById('wheelScrim');
+  const modal=document.getElementById('wheelModal');
+  const close=document.getElementById('wheelClose');
+  const spinBtn=document.getElementById('spinBtn');
+  const resultBox=document.getElementById('wheelResult');
+  const canvas=document.getElementById('wheelCanvas');
+  const ctx=canvas.getContext('2d');
 
-  // Munkamenetenként egyszer
-  if(!sessionStorage.getItem('wheelShown')){
-    scrim.hidden=false; modal.hidden=false; document.body.style.overflow='hidden';
-    sessionStorage.setItem('wheelShown','1');
+  // Szeletek (felirat + szín + esély súly)
+  const SEGMENTS=[
+    {label:"0%", color:"#0ea5e9", weight:18},
+    {label:"3%", color:"#22c55e", weight:16},
+    {label:"5%", color:"#f59e0b", weight:22},
+    {label:"7%", color:"#ef4444", weight:12},
+    {label:"0%", color:"#8b5cf6", weight:18},
+    {label:"5%", color:"#06b6d4", weight:14}
+  ];
+  const N=SEGMENTS.length;
+  const slice=(Math.PI*2)/N;
+  let currentRot=0;
+  let spinning=false;
+
+  // Mutassuk fel egyszer munkamenetenként
+  if(!sessionStorage.getItem('wheelShown')){openWheel(); sessionStorage.setItem('wheelShown','1');}
+  else if(sessionStorage.getItem('wheelSpun')==='1'){disableSpin();} // ha már pörgött, legyen tiltva
+
+  function openWheel(){scrim.hidden=false;modal.hidden=false;document.body.style.overflow='hidden';}
+  function closeWheel(){scrim.hidden=true;modal.hidden=true;document.body.style.overflow='';}
+  close.addEventListener('click',closeWheel); scrim.addEventListener('click',closeWheel);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)closeWheel();});
+
+  // Kerék rajzolása (modern)
+  const size=canvas.width, r=size/2, cx=r, cy=r;
+  function draw(rotation=0){
+    ctx.clearRect(0,0,size,size);
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(rotation);
+    for(let i=0;i<N;i++){
+      const start=i*slice, end=start+slice;
+      // szelet
+      ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,r-8,start,end); ctx.closePath();
+      const grad=ctx.createLinearGradient(0,0, r*Math.cos((start+end)/2), r*Math.sin((start+end)/2));
+      grad.addColorStop(0, lighten(SEGMENTS[i].color, .22));
+      grad.addColorStop(1, SEGMENTS[i].color);
+      ctx.fillStyle=grad; ctx.fill();
+      // elválasztó
+      ctx.strokeStyle="rgba(255,255,255,.22)"; ctx.lineWidth=2; ctx.stroke();
+      // felirat
+      ctx.save(); ctx.rotate(start+slice/2);
+      ctx.fillStyle="#0b1220"; ctx.font="700 24px Inter, system-ui"; ctx.textAlign="right"; ctx.textBaseline="middle";
+      ctx.fillText(SEGMENTS[i].label, r-26, 0);
+      ctx.restore();
+    }
+    // közép kör
+    ctx.beginPath(); ctx.arc(0,0,54,0,Math.PI*2); ctx.fillStyle="#0b1220"; ctx.fill();
+    ctx.lineWidth=2; ctx.strokeStyle="rgba(255,255,255,.15)"; ctx.stroke();
+    ctx.restore();
+  }
+  function lighten(hex, amt){ // egyszerű világosítás
+    const c=hex.replace('#',''); const n=parseInt(c,16);
+    let r=(n>>16)&255, g=(n>>8)&255, b=n&255;
+    r=Math.min(255,Math.round(r+(255-r)*amt));
+    g=Math.min(255,Math.round(g+(255-g)*amt));
+    b=Math.min(255,Math.round(b+(255-b)*amt));
+    return `#${(r<<16|g<<8|b).toString(16).padStart(6,'0')}`;
+  }
+  draw(currentRot);
+
+  // Súlyozott választás – valós nyeremény (nem fix 5%)
+  function pickIndex(){
+    const total=SEGMENTS.reduce((s,x)=>s+x.weight,0);
+    let rnd=Math.random()*total;
+    for(let i=0;i<N;i++){rnd-=SEGMENTS[i].weight; if(rnd<=0)return i;}
+    return N-1;
   }
 
-  function closeWheel(){
-    scrim.hidden=true; modal.hidden=true; document.body.style.overflow='';
-  }
-  close.addEventListener('click', closeWheel);
-  scrim.addEventListener('click', closeWheel);
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !modal.hidden) closeWheel(); });
-
-  // A szeletek sorrendje a DOM-ban: [0,3,5,7,0,5]
-  // 6 szelet -> 60°/szelet, a mutató a tetején van (0°), a szelet közepe: i*60+30°
-  // Ehhez a kerék cél-szöge: extra körök + (330 - i*60) (azaz 360 - (i*60+30))
-  const prizes = [0,3,5,7,0,5];
-  let spinning = false;
-
-  spinBtn.addEventListener('click', ()=>{
+  spinBtn.addEventListener('click', async ()=>{
     if(spinning) return;
-    spinning = true;
-    resultBox.hidden = true;
+    if(sessionStorage.getItem('wheelSpun')==='1') return;
+    spinning=true; spinBtn.setAttribute('disabled','true'); spinBtn.textContent='Pörög…'; resultBox.hidden=true;
 
-    const i = Math.floor(Math.random()*prizes.length);
-    const prize = prizes[i];
+    const i=pickIndex();
+    const extra= (Math.floor(Math.random()*2)+4) * Math.PI*2; // 4–5 teljes kör
+    // A mutató a vászon tetején van (−90°), a szelet közepe legyen ott:
+    const targetAngle = (Math.PI*3/2) - (i*slice + slice/2); // -90deg - center(i)
+    const startRot=currentRot; const delta=normalize(targetAngle - startRot) + extra;
 
-    const extraTurns = 360*5; // 5 teljes kör a látványért
-    const targetDeg = extraTurns + (330 - i*60);
+    await animate(t=>{
+      const eased = 1 - Math.pow(1-t,3); // easeOutCubic
+      currentRot = startRot + delta*eased; draw(currentRot);
+    }, 3500);
 
-    wheel.style.transform = `rotate(${targetDeg}deg)`;
+    currentRot = startRot + delta; draw(currentRot);
 
-    // A transition 3s, várjunk kicsit rá
-    setTimeout(()=>{
-      resultBox.hidden = false;
-      if(prize>0){
-        const code = `SAVE${prize}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
-        resultBox.innerHTML = `🎉 <strong>Gratulálunk!</strong><br>Nyertél <b>${prize}%</b> kupont!<br>Kód: <code>${code}</code>`;
-        sessionStorage.setItem('couponPercent', String(prize));
-        sessionStorage.setItem('couponCode', code);
-        runConfetti(2000); // PONTOSAN 2 mp
-      } else {
-        resultBox.innerHTML = `😥 <strong>Sajnáljuk!</strong><br>Most nem nyertél kupont.`;
-      }
-      spinning = false;
-    }, 3100);
+    const prizeText = SEGMENTS[i].label; // pl. "7%"
+    const prizeNum = parseInt(prizeText,10)||0;
+
+    resultBox.hidden=false;
+    if(prizeNum>0){
+      const code=`SAVE${prizeNum}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
+      resultBox.innerHTML=`🎉 <strong>Gratulálunk!</strong><br>Nyertél <b>${prizeNum}%</b> kupont!<br>Kód: <code>${code}</code>`;
+      sessionStorage.setItem('couponPercent', String(prizeNum));
+      sessionStorage.setItem('couponCode', code);
+      runConfetti(2000);
+    }else{
+      resultBox.innerHTML=`😥 <strong>Sajnáljuk!</strong><br>Most nem nyertél kupont.`;
+    }
+
+    // 1 pörgetés szabály — tartós tiltás a munkamenetben
+    sessionStorage.setItem('wheelSpun','1');
+    disableSpin();
+    spinning=false;
   });
 
+  function disableSpin(){
+    spinBtn.setAttribute('disabled','true');
+    spinBtn.textContent='Már pörgettél';
+    spinBtn.style.opacity='0.7';
+    spinBtn.style.cursor='not-allowed';
+  }
+
+  function normalize(a){return a;} // itt nem kell további módosítás
+
+  function animate(step, duration){
+    return new Promise(resolve=>{
+      const t0=performance.now();
+      function frame(now){
+        const t=Math.min(1,(now-t0)/duration); step(t);
+        if(t<1) requestAnimationFrame(frame); else resolve();
+      }
+      requestAnimationFrame(frame);
+    });
+  }
 })();
 
-/* === Profi Canvas-konfetti (pontosan 2 mp) === */
+/* === Profi Canvas-konfetti (2 mp) === */
 (function confettiSetup(){
-  const canvas = document.getElementById('confettiCanvas');
-  const ctx = canvas.getContext('2d');
-  let parts = [];
-  let running = false;
-  function resize(){
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-  }
-  addEventListener('resize', resize); resize();
-
+  const canvas=document.getElementById('confettiCanvas');
+  const ctx=canvas.getContext('2d'); let parts=[], running=false;
+  function resize(){canvas.width=innerWidth; canvas.height=innerHeight;}
+  addEventListener('resize',resize); resize();
   function makeParts(){
-    const N = Math.min(250, Math.floor((canvas.width*canvas.height)/12000));
-    parts = new Array(N).fill(0).map(()=>({
-      x: Math.random()*canvas.width,
-      y: -10 - Math.random()*canvas.height*0.2,
-      vx: (Math.random()-.5)*3,
-      vy: 3+Math.random()*3,
-      w: 6+Math.random()*6,
-      h: 10+Math.random()*14,
-      rot: Math.random()*Math.PI,
-      vr: (Math.random()-.5)*0.3,
-      color: confettiColor()
+    const N=Math.min(250, Math.floor((canvas.width*canvas.height)/12000));
+    parts=new Array(N).fill(0).map(()=>({
+      x:Math.random()*canvas.width, y:-10-Math.random()*canvas.height*0.2,
+      vx:(Math.random()-.5)*3, vy:3+Math.random()*3,
+      w:6+Math.random()*6, h:10+Math.random()*14,
+      rot:Math.random()*Math.PI, vr:(Math.random()-.5)*0.3,
+      color:randColor()
     }));
   }
-  function confettiColor(){
-    const p = ["#22c55e","#3b82f6","#f59e0b","#ef4444","#8b5cf6","#06b6d4","#eab308","#10b981"];
-    return p[(Math.random()*p.length)|0];
-  }
-
+  function randColor(){const p=["#22c55e","#3b82f6","#f59e0b","#ef4444","#8b5cf6","#06b6d4","#eab308","#10b981"]; return p[(Math.random()*p.length)|0];}
   function loop(endAt){
-    if(!running) return;
-    const now = performance.now();
+    if(!running) return; const now=performance.now();
     ctx.clearRect(0,0,canvas.width,canvas.height);
     for(const p of parts){
-      p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += 0.03;
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.vy+=0.03;
       ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
-      ctx.fillStyle = p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
-      if(p.y>canvas.height+40){ p.y=-20; p.x=Math.random()*canvas.width; p.vy=3+Math.random()*3; }
+      ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+      if(p.y>canvas.height+40){p.y=-20;p.x=Math.random()*canvas.width;p.vy=3+Math.random()*3;}
     }
-    if(now<endAt){ requestAnimationFrame(()=>loop(endAt)); }
-    else { running=false; canvas.style.display='none'; }
+    if(now<endAt) requestAnimationFrame(()=>loop(endAt)); else {running=false; canvas.style.display='none';}
   }
-
-  window.runConfetti = function(durationMs=2000){
-    makeParts();
-    canvas.style.display='block';
-    running = true;
-    const endAt = performance.now()+durationMs;
-    loop(endAt);
+  window.runConfetti=function(ms=2000){
+    makeParts(); canvas.style.display='block'; running=true;
+    const endAt=performance.now()+ms; loop(endAt);
   };
 })();
 </script>
 
-<!-- Footer -->
 <footer style="background:#f5f7fb;border-top:1px solid #e5e9f2;padding:20px;margin-top:40px;font-size:14px;color:#555">
   <div class="wrap row space" style="flex-wrap:wrap;gap:10px">
     <div>© 2025 Szőke-Épker Kft. Minden jog fenntartva.</div>
@@ -585,6 +504,5 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':
     </div>
   </div>
 </footer>
-
 </body>
 </html>

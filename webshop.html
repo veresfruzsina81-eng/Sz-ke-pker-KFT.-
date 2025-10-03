@@ -33,6 +33,12 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .searchbar input:focus{outline:none;box-shadow:var(--ring);border-color:#d6def7}
 .filter{border:1px solid #e5e9f2;background:#fff;border-radius:12px;padding:9px 10px;font-size:14px}
 
+/* === MINI REEL (új) === */
+.mini-reel{overflow:hidden;height:64px;border-radius:12px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.06);margin:10px auto;max-width:1200px}
+.mini-track{display:flex;align-items:center;gap:10px;padding:8px;animation:reelScroll 40s linear infinite;will-change:transform}
+.mini-thumb{width:84px;height:48px;object-fit:cover;border-radius:8px;flex:0 0 auto}
+@keyframes reelScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
 /* TERMÉKKÁRTYÁK */
 .grid{display:grid;gap:12px;margin:16px auto;max-width:1200px}
 @media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
@@ -101,6 +107,21 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .btn-primary:disabled{opacity:.6;cursor:not-allowed}
 .cart-foot{border-top:1px solid #eee;padding:12px}
 .cart-foot .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+
+/* === Szerencsekerék modal (új) === */
+.wheel-scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200}
+.wheel-scrim[hidden]{display:none}
+.wheel-modal{position:fixed;inset:0;display:grid;place-items:center;z-index:1201;padding:16px}
+.wheel-modal[hidden]{display:none}
+.wheel-modal>div{background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.2);width:min(520px,92vw);padding:18px;position:relative;text-align:center}
+.wheel-x{position:absolute;right:14px;top:14px;width:36px;height:36px;border:0;border-radius:50%;background:#f3f3f3;font-size:20px;cursor:pointer}
+.wheel{width:280px;height:280px;border-radius:50%;border:10px solid #eef2f7;transition:transform 3s cubic-bezier(.2,.8,.1,1);position:relative;overflow:hidden;margin:10px auto}
+.slice{position:absolute;inset:-10px 0 0 0;width:50%;height:50%;transform-origin:100% 100%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.s1{transform:rotate(0deg) skewY(-30deg);background:#e3f2fd}.s2{transform:rotate(60deg) skewY(-30deg);background:#f1f8e9}
+.s3{transform:rotate(120deg) skewY(-30deg);background:#fff3e0}.s4{transform:rotate(180deg) skewY(-30deg);background:#e8eaf6}
+.s5{transform:rotate(240deg) skewY(-30deg);background:#fce4ec}.s6{transform:rotate(300deg) skewY(-30deg);background:#ede7f6}
+.pin{position:absolute;top:-8px;font-size:20px;color:#1a73e8}
+.wheel-result{margin-top:10px;padding:10px;border-radius:10px;background:#f5faff;font-weight:600}
 </style>
 </head>
 <body>
@@ -132,6 +153,11 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
   </select>
 </div>
 
+<!-- === Mini képsor / Reel (új) === -->
+<div class="mini-reel">
+  <div class="mini-track" id="miniTrack"></div>
+</div>
+
 <main class="wrap">
   <section id="list" class="grid"></section>
   <p id="empty" class="muted" style="display:none;text-align:center">Nincs találat.</p>
@@ -161,6 +187,29 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 
 <div id="toast" class="toast">Hozzáadva a kosárhoz</div>
 
+<!-- === Szerencsekerék (új) === -->
+<div id="wheelScrim" class="wheel-scrim" hidden></div>
+<div id="wheelModal" class="wheel-modal" hidden aria-modal="true" role="dialog" aria-labelledby="wheelTitle">
+  <div>
+    <button id="wheelClose" class="wheel-x" aria-label="Bezárás">×</button>
+    <h3 id="wheelTitle">Pörgesd meg a szerencsekereket!</h3>
+    <p>Akár <strong>7%</strong> kedvezmény – egyszeri kupon.</p>
+    <div class="wheel-wrap" style="position:relative;display:grid;place-items:center;">
+      <div id="wheel" class="wheel">
+        <div class="slice s1">0%</div>
+        <div class="slice s2">3%</div>
+        <div class="slice s3">5%</div>
+        <div class="slice s4">7%</div>
+        <div class="slice s5">0%</div>
+        <div class="slice s6">5%</div>
+      </div>
+      <div class="pin">▼</div>
+    </div>
+    <button id="spinBtn" class="btn-primary">Pörgetés</button>
+    <div id="wheelResult" class="wheel-result" hidden></div>
+  </div>
+</div>
+
 <script>
 /* --- Supabase beállítások: változatlanul hagyva --- */
 const SB_URL="https://gckynywmoxylwyppmkck.supabase.co";
@@ -185,6 +234,22 @@ const HUF=n=>new Intl.NumberFormat('hu-HU').format(n||0)+" Ft";
 const saveCart=()=>{localStorage.setItem("cart",JSON.stringify(CART)); setBadge();};
 const setBadge=()=>{document.getElementById('badge').textContent=CART.reduce((s,x)=>s+(x.qty||0),0);};
 const toast=msg=>{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1200);};
+
+/* === Mini reel építése (új) === */
+function buildMiniReel(arr){
+  const track=document.getElementById('miniTrack'); if(!track) return;
+  track.innerHTML='';
+  const urls=(arr||[]).map(p=>p.image_url).filter(Boolean);
+  if(urls.length<2) return; // ha kevés a kép, ne fusson
+  // egyszer
+  urls.forEach(u=>{
+    const img=new Image(); img.src=u; img.alt=''; img.className='mini-thumb'; track.appendChild(img);
+  });
+  // és duplán, hogy végtelen legyen az animáció
+  urls.forEach(u=>{
+    const img=new Image(); img.src=u; img.alt=''; img.className='mini-thumb'; track.appendChild(img);
+  });
+}
 
 /* --- Renderelés: termékkártyák --- */
 function render(list){
@@ -391,11 +456,62 @@ async function load(){
   render(PRODUCTS);
   setBadge();
   renderCart();
+  /* ÚJ: mini reel építése, miután megjöttek a termékek */
+  buildMiniReel(PRODUCTS);
 }
 load();
 
 /* segédfüggvény */
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+/* === Szerencsekerék logika (új) === */
+(function wheelInit(){
+  const scrim = document.getElementById('wheelScrim');
+  const modal = document.getElementById('wheelModal');
+  const close = document.getElementById('wheelClose');
+  const spinBtn = document.getElementById('spinBtn');
+  const wheel = document.getElementById('wheel');
+  const resultBox = document.getElementById('wheelResult');
+
+  // csak egyszer jelenjen meg munkamenetenként
+  if(!sessionStorage.getItem('wheelShown')){
+    scrim.hidden=false; modal.hidden=false; document.body.style.overflow='hidden';
+    sessionStorage.setItem('wheelShown','1');
+  }
+
+  function closeWheel(){
+    scrim.hidden=true; modal.hidden=true; document.body.style.overflow='';
+  }
+  close.addEventListener('click', closeWheel);
+  scrim.addEventListener('click', closeWheel);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !modal.hidden) closeWheel(); });
+
+  const prizes = [0,3,5,7,0,5]; // max 7%
+  let spinning = false;
+
+  spinBtn.addEventListener('click', ()=>{
+    if(spinning) return;
+    spinning = true;
+    const prize = prizes[Math.floor(Math.random()*prizes.length)];
+    const index = prizes.indexOf(prize); // első előfordulás elég
+    // 6 szelet => 60° / szelet; -30 offset a "pin" közepére
+    const targetDeg = 360*5 + (360 - index*60) - 30;
+    wheel.style.transform = `rotate(${targetDeg}deg)`;
+
+    setTimeout(()=>{
+      resultBox.hidden = false;
+      if(prize>0){
+        const code = `SAVE${prize}-${Math.random().toString(36).slice(2,7).toUpperCase()}`;
+        resultBox.textContent = `Gratulálunk! ${prize}% kedvezmény kuponod: ${code}`;
+        sessionStorage.setItem('couponPercent', String(prize));
+        sessionStorage.setItem('couponCode', code);
+      }else{
+        resultBox.textContent = `Most nem nyertél kupont.`;
+      }
+      spinning = false;
+    }, 3100);
+  });
+})();
 </script>
 </body>
 </html>

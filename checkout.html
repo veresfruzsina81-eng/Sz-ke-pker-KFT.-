@@ -22,6 +22,18 @@
 .muted{color:var(--muted)}.right{text-align:right}
 .center{text-align:center}
 .bigok{font-size:42px;line-height:1}
+
+/* Előnézet (rendelés összegzés) modal */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:1000}
+.modal{position:fixed;inset:0;display:none;place-items:center;z-index:1001;padding:16px}
+.modal>div{background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.25);width:min(700px,92vw);padding:16px}
+.modal.open{display:grid}.scrim.open{display:block}
+.modal h3{margin:0 0 10px}
+.summary-row{display:flex;justify-content:space-between;margin:6px 0}
+.summary-row.total{border-top:1px solid #e5e9f2;padding-top:8px;font-weight:700}
+.table{width:100%;border-collapse:collapse;margin-top:6px}
+.table th,.table td{padding:8px;border-bottom:1px solid #eef2f8;text-align:left}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#245bcb;font-weight:700;font-size:12px}
 </style>
 </head>
 <body>
@@ -42,7 +54,7 @@
         <input id="address" class="inp" placeholder="Szállítási cím *" style="grid-column:1/-1">
         <textarea id="note" rows="4" placeholder="Megjegyzés (opcionális)" style="grid-column:1/-1"></textarea>
       </div>
-      <button class="btn" style="margin-top:10px" onclick="placeOrder()">Rendelés leadása</button>
+      <button id="placeBtn" class="btn" style="margin-top:10px">Rendelés leadása</button>
     </div>
 
     <aside class="card">
@@ -50,17 +62,72 @@
       <div id="items"></div>
       <div class="row space" style="margin-top:8px"><span>Részösszeg</span><strong id="sub">0 Ft</strong></div>
       <div class="row space"><span>Szállítás</span><strong id="ship">0 Ft</strong></div>
+      <!-- Kupon kedvezmény sor -->
+      <div class="row space" id="discountRow" style="display:none">
+        <span>Kedvezmény</span><strong id="discountValue">-0 Ft</strong>
+      </div>
       <div class="row space" style="margin-top:6px;border-top:1px solid #e5e9f2;padding-top:8px"><span>Végösszeg</span><strong id="tot">0 Ft</strong></div>
+
+      <!-- Kupon mező -->
+      <div id="couponBox" style="margin-top:14px;padding:12px;background:#fff;border:1px solid #e5e9f2;border-radius:12px">
+        <label for="couponInput" style="display:block;font-weight:700;margin-bottom:6px">Kuponkód</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="couponInput" type="text" placeholder="Pl. SAVE5-ABCD" style="flex:1;padding:10px 12px;border:1px solid #e5e9f2;border-radius:10px">
+          <button id="couponApply" class="btn" type="button" style="flex:0 0 auto">Kupon alkalmazása</button>
+        </div>
+        <div id="couponMsg" class="muted" style="margin-top:6px;min-height:18px"></div>
+      </div>
     </aside>
   </div>
 
+  <!-- Siker nézet -->
   <div id="thanks" class="card center" style="display:none">
     <div class="bigok">✔</div>
     <h2>Köszönjük a rendelést!</h2>
     <p class="muted">Hamarosan felvesszük Önnel a kapcsolatot e-mailben/telefonon.</p>
-    <div class="row center" style="justify-content:center">
+
+    <!-- Rendelés befejezése – részletes összegzés -->
+    <div id="finalSummary" style="text-align:left;max-width:800px;margin:14px auto 0">
+      <h3 style="margin:0 0 8px">Rendelés összefoglaló</h3>
+      <div id="finalBuyer" class="muted" style="margin-bottom:8px"></div>
+      <table class="table" id="finalItems">
+        <thead>
+          <tr><th>Termék</th><th>Mennyiség</th><th>Egységár</th><th>Összeg</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="summary-row"><span>Részösszeg</span><strong id="fSub">0 Ft</strong></div>
+      <div class="summary-row"><span>Szállítás</span><strong id="fShip">0 Ft</strong></div>
+      <div class="summary-row" id="fDiscRow" style="display:none"><span>Kedvezmény <span id="fDiscCode" class="badge"></span></span><strong id="fDisc">-0 Ft</strong></div>
+      <div class="summary-row total"><span>Végösszeg</span><strong id="fTot">0 Ft</strong></div>
+    </div>
+
+    <div class="row center" style="justify-content:center;margin-top:12px">
       <a class="btn" href="webshop.html">Vissza a webshopba</a>
       <a class="btn ghost" href="/">Vissza a weboldalra</a>
+    </div>
+  </div>
+</div>
+
+<!-- Előnézet modal -->
+<div id="reviewScrim" class="scrim"></div>
+<div id="reviewModal" class="modal">
+  <div>
+    <h3>Rendelés összegzés</h3>
+    <div id="reviewBuyer" class="muted" style="margin-bottom:8px"></div>
+    <table class="table" id="reviewItems">
+      <thead>
+        <tr><th>Termék</th><th>Mennyiség</th><th>Egységár</th><th>Összeg</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="summary-row"><span>Részösszeg</span><strong id="rSub">0 Ft</strong></div>
+    <div class="summary-row"><span>Szállítás</span><strong id="rShip">0 Ft</strong></div>
+    <div class="summary-row" id="rDiscRow" style="display:none"><span>Kedvezmény <span id="rDiscCode" class="badge"></span></span><strong id="rDisc">-0 Ft</strong></div>
+    <div class="summary-row total"><span>Végösszeg</span><strong id="rTot">0 Ft</strong></div>
+    <div class="row" style="justify-content:flex-end;margin-top:10px">
+      <button id="revBack" class="btn ghost" type="button">Vissza</button>
+      <button id="revConfirm" class="btn" type="button">Megerősítem</button>
     </div>
   </div>
 </div>
@@ -72,9 +139,60 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 const HUF=n=>new Intl.NumberFormat('hu-HU').format(n||0)+" Ft";
 let CART=JSON.parse(localStorage.getItem("cart")||"[]");
 
+// ======= Kupon modul =======
+const COUPON_UI = {
+  subtotalEl: '#sub',
+  shippingEl: '#ship',
+  discountRow: '#discountRow',
+  discountEl: '#discountValue',
+  totalEl: '#tot',
+  inputEl: '#couponInput',
+  applyBtn: '#couponApply',
+  msgEl: '#couponMsg'
+};
+function q(sel){ return document.querySelector(sel); }
+function setMsg(text, ok=false){
+  const el=q(COUPON_UI.msgEl); if(!el) return;
+  el.textContent=text||''; el.style.color = ok ? '#16a34a' : '#dc2626';
+}
+function ensureRemoveLink(){
+  const msg=q(COUPON_UI.msgEl); if(!msg) return;
+  if(msg.querySelector('a')) return;
+  const a=document.createElement('a'); a.href='#'; a.textContent='Eltávolítás'; a.style.marginLeft='8px';
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    localStorage.removeItem('appliedCoupon');
+    setMsg('Kupon eltávolítva.', true);
+    unlockApplyButton();
+    recalcTotals();
+  });
+  msg.appendChild(a);
+}
+function lockApplyButton(){
+  const btn=q(COUPON_UI.applyBtn); if(!btn) return;
+  btn.setAttribute('disabled','true'); btn.style.opacity='.7'; btn.style.cursor='not-allowed'; btn.textContent='Kupon alkalmazva';
+}
+function unlockApplyButton(){
+  const btn=q(COUPON_UI.applyBtn); if(!btn) return;
+  btn.removeAttribute('disabled'); btn.style.opacity=''; btn.style.cursor=''; btn.textContent='Kupon alkalmazása';
+}
+function parseCoupon(code){
+  if(!code) return null;
+  const m=String(code).trim().toUpperCase().match(/^SAVE(0|3|5|7)-([A-Z0-9]{4})$/);
+  if(!m) return null;
+  const percent=Number(m[1]);
+  if(percent<=0) return null;
+  return { code: m[0], percent };
+}
+function getAppliedCoupon(){
+  try{ return JSON.parse(localStorage.getItem('appliedCoupon')); }catch(_){ return null; }
+}
+function saveAppliedCoupon(c){ localStorage.setItem('appliedCoupon', JSON.stringify(c)); }
+// ======= /Kupon modul =======
+
 function renderSummary(){
   const box=document.getElementById('items');
-  if(!CART.length){ box.innerHTML="<p class='muted'>A kosár üres.</p>"; return; }
+  if(!CART.length){ box.innerHTML="<p class='muted'>A kosár üres.</p>"; recalcTotals(); return; }
   box.innerHTML=CART.map(it=>`
     <div class="item">
       <img src="${it.image_url||'logo.png'}" alt="">
@@ -84,35 +202,215 @@ function renderSummary(){
       </div>
       <div class="right"><strong>${HUF(it.price*it.qty)}</strong></div>
     </div>`).join('');
-  const sub=CART.reduce((s,x)=>s+x.price*x.qty,0);
-  const ship=0; const tot=sub+ship;
-  document.getElementById('sub').textContent=HUF(sub);
-  document.getElementById('ship').textContent=HUF(ship);
-  document.getElementById('tot').textContent=HUF(tot);
+  recalcTotals();
 }
+
+function calcSubtotal(){ return CART.reduce((s,x)=>s + x.price * x.qty, 0); }
+
+/* === LOGIKA: 30 000 alatt 1 500 Ft szállítás ===
+   A küszöb a RÉSZÖSSZEG alapján dől el (kupon nélkül), hogy egyezzen a webshop viselkedésével. */
+const FREE_THRESHOLD = 30000;
+const SHIPPING_FEE  = 1500;
+
+function computeShipping(subtotal){
+  if(subtotal<=0) return 0;
+  return subtotal >= FREE_THRESHOLD ? 0 : SHIPPING_FEE;
+}
+
+function recalcTotals(){
+  const subtotal = calcSubtotal();
+  const shippingBase = computeShipping(subtotal); // küszöb a subtotal szerint
+  const applied = getAppliedCoupon();
+
+  let discount = 0;
+  if(applied && applied.percent){
+    discount = Math.round(subtotal * applied.percent / 100);
+    q(COUPON_UI.discountRow).style.display = '';
+    q(COUPON_UI.discountEl).textContent = '-' + HUF(discount).replace('-', '');
+  }else{
+    q(COUPON_UI.discountRow).style.display = 'none';
+    q(COUPON_UI.discountEl).textContent = '-0 Ft';
+  }
+
+  const total = Math.max(0, subtotal - discount + shippingBase);
+
+  q(COUPON_UI.subtotalEl).textContent = HUF(subtotal);
+  q(COUPON_UI.shippingEl).textContent = HUF(shippingBase);
+  q(COUPON_UI.totalEl).textContent    = HUF(total);
+
+  // Előnézet és befejezés nézetek is ebből számolnak majd
+  return { subtotal, shipping: shippingBase, discount, total, coupon: applied || null };
+}
+
 renderSummary();
 
-async function placeOrder(){
-  if(!CART.length){ alert("A kosár üres."); return; }
+// Kupon események + auto-prefill a szerencsekerékből
+(function initCouponBox(){
+  const input=q(COUPON_UI.inputEl);
+  const btn=q(COUPON_UI.applyBtn);
+
+  // 1) Korábban alkalmazott kupon
+  let applied = getAppliedCoupon();
+  if(applied){
+    if(input) input.value = applied.code;
+    setMsg(`Kupon alkalmazva: ${applied.code} (−${applied.percent}%)`, true);
+    lockApplyButton(); ensureRemoveLink(); recalcTotals();
+  } else {
+    // 2) Szerencsekerékből automatikus
+    const wheelCode = sessionStorage.getItem('couponCode');
+    const wheelPct  = Number(sessionStorage.getItem('couponPercent')||'0');
+    if(wheelCode && wheelPct>0){
+      const parsed = parseCoupon(wheelCode) || { code: wheelCode, percent: wheelPct };
+      saveAppliedCoupon(parsed);
+      if(input) input.value = parsed.code;
+      setMsg(`Kupon alkalmazva: ${parsed.code} (−${parsed.percent}%)`, true);
+      lockApplyButton(); ensureRemoveLink(); recalcTotals();
+    }
+  }
+
+  if(btn){
+    btn.addEventListener('click', ()=>{
+      const code=(input?.value||'').trim();
+      const parsed=parseCoupon(code);
+      if(!parsed){ setMsg('Érvénytelen kuponkód. Használható: SAVE3-XXXX, SAVE5-XXXX, SAVE7-XXXX.'); return; }
+      saveAppliedCoupon(parsed);
+      setMsg(`Kupon alkalmazva: ${parsed.code} (−${parsed.percent}%)`, true);
+      lockApplyButton(); ensureRemoveLink(); recalcTotals();
+    });
+  }
+})();
+
+/* ====== Rendelés LEADÁSA – előnézet (összegzés) → megerősítés → mentés ====== */
+const placeBtn = document.getElementById('placeBtn');
+const reviewModal = document.getElementById('reviewModal');
+const reviewScrim = document.getElementById('reviewScrim');
+const revBack = document.getElementById('revBack');
+const revConfirm = document.getElementById('revConfirm');
+
+placeBtn.addEventListener('click', ()=>{
+  // Validáció minimálisan már most, hogy az előnézet értelmes legyen
   const name=document.getElementById('name').value.trim();
   const email=document.getElementById('email').value.trim();
   const phone=document.getElementById('phone').value.trim();
   const address=document.getElementById('address').value.trim();
-  const shipping=document.getElementById('shipping').value.trim()||'Ismeretlen';
+  if(!CART.length){ alert("A kosár üres."); return; }
+  if(!name||!email||!phone||!address){
+    alert("Kérjük, töltsd ki: Név, E-mail, Telefon, Cím.");
+    return;
+  }
+  // Előnézet feltöltése
+  fillPreview();
+  openReview();
+});
+
+revBack.addEventListener('click', closeReview);
+reviewScrim.addEventListener('click', closeReview);
+
+revConfirm.addEventListener('click', placeOrder); // tényleges mentés
+
+function openReview(){ reviewScrim.classList.add('open'); reviewModal.classList.add('open'); }
+function closeReview(){ reviewScrim.classList.remove('open'); reviewModal.classList.remove('open'); }
+
+function fillTableBody(tbodyEl){
+  if(!tbodyEl) return;
+  tbodyEl.innerHTML = CART.map(it=>`
+    <tr>
+      <td>${escapeHtml(it.title)}</td>
+      <td>${it.qty}</td>
+      <td>${HUF(it.price)}</td>
+      <td>${HUF(it.price*it.qty)}</td>
+    </tr>
+  `).join('');
+}
+
+function fillPreview(){
+  const buyer = `
+    ${escapeHtml(document.getElementById('name').value||'')} •
+    ${escapeHtml(document.getElementById('email').value||'')} •
+    ${escapeHtml(document.getElementById('phone').value||'')}<br>
+    Cím: ${escapeHtml(document.getElementById('address').value||'')} |
+    Szállítás módja: ${escapeHtml(document.getElementById('shipping').value||'Ismeretlen')}
+  `;
+  document.getElementById('reviewBuyer').innerHTML = buyer;
+
+  fillTableBody(document.querySelector('#reviewItems tbody'));
+
+  const t = recalcTotals();
+  document.getElementById('rSub').textContent  = HUF(t.subtotal);
+  document.getElementById('rShip').textContent = HUF(t.shipping);
+  document.getElementById('rTot').textContent  = HUF(t.total);
+
+  const rDiscRow = document.getElementById('rDiscRow');
+  if(t.discount>0 && t.coupon){
+    rDiscRow.style.display='';
+    document.getElementById('rDisc').textContent = '-' + HUF(t.discount).replace('-','');
+    document.getElementById('rDiscCode').textContent = t.coupon.code;
+  } else {
+    rDiscRow.style.display='none';
+  }
+}
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+/* === Mentés Supabase-be, majd befejezés nézet === */
+async function placeOrder(){
+  // zárjuk az előnézetet a katt után
+  closeReview();
+
+  const name=document.getElementById('name').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const address=document.getElementById('address').value.trim();
+  const shippingMethod=document.getElementById('shipping').value.trim()||'Ismeretlen';
   const note=document.getElementById('note').value.trim();
+
+  if(!CART.length){ alert("A kosár üres."); return; }
   if(!name||!email||!phone||!address){ alert("Kérjük, töltsd ki: Név, E-mail, Telefon, Cím."); return; }
 
-  const subtotal=CART.reduce((s,x)=>s+x.price*x.qty,0);
-  const shipping_cost=0; const total=subtotal+shipping_cost;
+  const t = recalcTotals(); // subtotal, shipping (küszöb szerint), discount, total, coupon
 
-  const payload={ name,email,phone,address,shipping,note, items:CART, subtotal, shipping_cost, total };
+  const payload={
+    name,email,phone,address,shipping:shippingMethod,note,
+    items:CART,
+    subtotal: t.subtotal,
+    shipping_cost: t.shipping,
+    discount: t.discount,
+    total: t.total,
+    coupon_code: t.coupon?.code || null,
+    coupon_percent: t.coupon?.percent || null
+  };
+
   const { error } = await sb.from('orders').insert(payload);
   if(error){ alert("Hiba a mentéskor: "+error.message); return; }
 
-  // siker
+  // siker – végső összegzés + köszönő oldal
+  fillFinalSummary(t, {name,email,phone,address,shippingMethod});
   CART=[]; localStorage.setItem("cart","[]");
   document.getElementById('checkout').style.display="none";
   document.getElementById('thanks').style.display="block";
+}
+
+function fillFinalSummary(totals, buyer){
+  // Vevő adatok
+  document.getElementById('finalBuyer').innerHTML =
+    `${escapeHtml(buyer.name)} • ${escapeHtml(buyer.email)} • ${escapeHtml(buyer.phone)}<br>` +
+    `Cím: ${escapeHtml(buyer.address)} | Szállítás módja: ${escapeHtml(buyer.shippingMethod)}`;
+
+  // Tételek
+  fillTableBody(document.querySelector('#finalItems tbody'));
+
+  // Összegek
+  document.getElementById('fSub').textContent  = HUF(totals.subtotal);
+  document.getElementById('fShip').textContent = HUF(totals.shipping);
+  document.getElementById('fTot').textContent  = HUF(totals.total);
+
+  if(totals.discount>0 && totals.coupon){
+    document.getElementById('fDiscRow').style.display='';
+    document.getElementById('fDisc').textContent = '-' + HUF(totals.discount).replace('-', '');
+    document.getElementById('fDiscCode').textContent = totals.coupon.code;
+  } else {
+    document.getElementById('fDiscRow').style.display='none';
+  }
 }
 </script>
 </body>

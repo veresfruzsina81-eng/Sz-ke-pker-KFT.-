@@ -4,10 +4,11 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Szőke Épker – Admin</title>
-<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/supabase.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Stabil UMD build (fontos!) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root{--ink:#1f2937;--muted:#6b7280;--bg:#f7f4ef;--card:#fff;--brand:#8b5e34;--ring:0 0 0 3px rgba(193,154,107,.25);--radius:16px;--bad:#e11d48;}
+:root{--ink:#1f2937;--muted:#6b7280;--bg:#f7f4ef;--card:#fff;--brand:#8b5e34;--ring:0 0 0 3px rgba(193,154,107,.25);--radius:16px;--bad:#e11d48}
 *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .wrap{max-width:1100px;margin:0 auto;padding:18px 14px}
 .card{background:var(--card);border:1px solid #eee3d6;border-radius:var(--radius);padding:14px;box-shadow:0 12px 30px rgba(87,61,34,.05)}
@@ -42,7 +43,7 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
     <div class="grid" style="gap:10px">
       <label>Felhasználónév<input id="u" placeholder="Felhasználónév"></label>
       <label>Jelszó<input id="p" type="password" placeholder="Jelszó"></label>
-      <button id="loginBtn" type="button" class="btn">Belépés</button> <!-- FIX: type="button" -->
+      <button id="loginBtn" type="button" class="btn">Belépés</button>
     </div>
   </div>
 
@@ -51,15 +52,15 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
     <div class="row" style="justify-content:space-between;margin-bottom:10px">
       <h1>Admin felület</h1>
       <div class="row">
-        <button class="btn ghost" onclick="location.href='/webshop.html'">Webshop megnyitása</button>
-        <button class="btn" id="logoutBtn">Kijelentkezés</button>
+        <button class="btn ghost" type="button" onclick="location.href='/webshop.html'">Webshop megnyitása</button>
+        <button class="btn" id="logoutBtn" type="button">Kijelentkezés</button>
       </div>
     </div>
 
     <div class="tabs">
-      <button class="tab active" data-tab="products">Termékek</button>
-      <button class="tab" data-tab="orders">Rendelések</button>
-      <button class="tab" data-tab="reviews">Vélemények</button>
+      <button class="tab active" data-tab="products" type="button">Termékek</button>
+      <button class="tab" data-tab="orders" type="button">Rendelések</button>
+      <button class="tab" data-tab="reviews" type="button">Vélemények</button>
     </div>
 
     <div id="tab-products">
@@ -73,7 +74,7 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
             <label class="muted">Kép (jpg/png)</label>
             <input id="file" type="file" accept="image/*">
             <label class="row" style="gap:8px"><input id="instock" type="checkbox" checked> Készleten</label>
-            <button class="btn" id="addBtn">Hozzáadás</button>
+            <button class="btn" id="addBtn" type="button">Hozzáadás</button>
             <div id="pInfo" class="muted"></div>
           </div>
         </div>
@@ -97,48 +98,65 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
 </div>
 
 <script>
-/* === Beállítások === */
+/* ===== Konstansok ===== */
+const ADMIN_USER = "szokeadmin";
+const ADMIN_PASS = "szoke2025";
 const SUPABASE_URL = "https://gckynywmoxylwyppmkck.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const BUCKET = "products";
 
-/* === Egyszerű helyi belépés (fix: nem akad be) === */
-const loginBox = document.getElementById("loginBox");
-const app = document.getElementById("app");
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
+/* ===== Lusta Supabase init (nem dől el, ha a CDN lassú) ===== */
+let sb = null;
+function ensureSB(){
+  try{
+    if(!sb && window.supabase){ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+  }catch(e){ console.warn("Supabase init hiba:", e); }
+  return sb;
+}
 
-function setLogged(v){ localStorage.setItem("szoke_admin", v?"1":""); loginBox.classList.toggle("hidden", v); app.classList.toggle("hidden", !v); }
-if(localStorage.getItem("szoke_admin")==="1") setLogged(true);
+/* ===== UI mutat/elrejt ===== */
+function setLogged(v){
+  localStorage.setItem("szoke_admin", v?"1":"");
+  document.getElementById("loginBox").classList.toggle("hidden", v);
+  document.getElementById("app").classList.toggle("hidden", !v);
+}
 
-loginBtn.addEventListener("click", (e)=>{
-  e.preventDefault();
-  const u = document.getElementById("u").value.trim();
-  const p = document.getElementById("p").value.trim();
-  if(u==="szokeadmin" && p==="szoke2025"){ setLogged(true); loadAll(); }
-  else alert("Hibás jelszó vagy inaktív fiók.");
-});
-logoutBtn.addEventListener("click", ()=>{ setLogged(false); });
+/* ===== Események a DOM után ===== */
+document.addEventListener("DOMContentLoaded", ()=>{
+  // Autologin, ha volt
+  if(localStorage.getItem("szoke_admin")==="1"){ setLogged(true); loadAll(); }
 
-/* === Tabs === */
-document.querySelectorAll(".tab").forEach(t=>{
-  t.addEventListener("click", ()=>{
-    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-    t.classList.add("active");
-    const tab=t.dataset.tab;
-    document.getElementById("tab-products").classList.toggle("hidden", tab!=="products");
-    document.getElementById("tab-orders").classList.toggle("hidden", tab!=="orders");
-    document.getElementById("tab-reviews").classList.toggle("hidden", tab!=="reviews");
-    if(tab==="orders") loadOrders();
-    if(tab==="reviews") loadReviews();
+  document.getElementById("loginBtn").addEventListener("click", (e)=>{
+    e.preventDefault();
+    const u = document.getElementById("u").value.trim();
+    const p = document.getElementById("p").value.trim();
+    if(u===ADMIN_USER && p===ADMIN_PASS){ setLogged(true); loadAll(); }
+    else alert("Hibás felhasználónév vagy jelszó.");
   });
+
+  document.getElementById("logoutBtn").addEventListener("click", ()=>{ setLogged(false); });
+
+  document.querySelectorAll(".tab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+      btn.classList.add("active");
+      const tab = btn.dataset.tab;
+      document.getElementById("tab-products").classList.toggle("hidden", tab!=="products");
+      document.getElementById("tab-orders").classList.toggle("hidden", tab!=="orders");
+      document.getElementById("tab-reviews").classList.toggle("hidden", tab!=="reviews");
+      if(tab==="orders") loadOrders();
+      if(tab==="reviews") loadReviews();
+    });
+  });
+
+  document.getElementById("addBtn").addEventListener("click", addProduct);
 });
 
-/* === Termékek === */
+/* ===== Termékek ===== */
 async function listProducts(){
+  if(!ensureSB()) return alert("Supabase nem elérhető (script).");
   const {data,error}=await sb.from('products').select('id,title,price,instock,image_url').order('created_at',{ascending:false});
-  if(error){ console.error(error); alert("Hiba: "+error.message); return; }
+  if(error){ console.error(error); return alert("Hiba: "+error.message); }
   const list=data||[];
   const wrap=document.getElementById("plist");
   wrap.innerHTML=list.map(p=>`
@@ -149,25 +167,27 @@ async function listProducts(){
         <div class="muted">${new Intl.NumberFormat('hu-HU').format(p.price||0)} Ft • ${p.instock?'készleten':'nem elérhető'}</div>
       </div>
       <div class="row">
-        <button class="btn ghost" onclick="toggleStock('${p.id}', ${!!p.instock})">${p.instock?'Leállít':'Elérhetővé'}</button>
-        <button class="btn bad" onclick="delProduct('${p.id}')">Törlés</button>
+        <button class="btn ghost" type="button" onclick="toggleStock('${p.id}', ${!!p.instock})">${p.instock?'Leállít':'Elérhetővé'}</button>
+        <button class="btn bad" type="button" onclick="delProduct('${p.id}')">Törlés</button>
       </div>
     </div>`).join("");
   document.getElementById("pempty").style.display=list.length?"none":"block";
 }
 async function toggleStock(id, cur){
+  if(!ensureSB()) return;
   const {error}=await sb.from('products').update({instock:!cur}).eq('id',id);
   if(error) return alert("Hiba: "+error.message);
   listProducts();
 }
 async function delProduct(id){
   if(!confirm("Biztos törlöd a terméket?")) return;
+  if(!ensureSB()) return;
   const {error}=await sb.from('products').delete().eq('id',id);
   if(error) return alert("Hiba: "+error.message);
   listProducts();
 }
-
-document.getElementById("addBtn").addEventListener("click", async ()=>{
+async function addProduct(){
+  if(!ensureSB()) return alert("Supabase nem elérhető (script).");
   const title=document.getElementById("title").value.trim();
   const price=parseInt(document.getElementById("price").value||"0",10);
   const description=document.getElementById("desc").value||"";
@@ -184,7 +204,6 @@ document.getElementById("addBtn").addEventListener("click", async ()=>{
     const up=await sb.storage.from(BUCKET).upload(fname, file, {upsert:false});
     if(up.error){
       alert("Képfeltöltési hiba: "+up.error.message+"\n(Állíts be INSERT jogot a 'products' bucketre.)");
-      // továbbmegyünk kép nélkül
     }else{
       const { data } = sb.storage.from(BUCKET).getPublicUrl(fname);
       image_url=data.publicUrl;
@@ -197,12 +216,13 @@ document.getElementById("addBtn").addEventListener("click", async ()=>{
   document.getElementById("desc").value=""; document.getElementById("file").value="";
   info.textContent="Mentve. ID: "+ins.data.id;
   listProducts();
-});
+}
 
-/* === Rendelések === */
+/* ===== Rendelések ===== */
 async function loadOrders(){
+  if(!ensureSB()) return;
   const {data,error}=await sb.from('orders').select('id,created_at,name,email,phone,address,shipping,subtotal,shipping_cost,total,items').order('created_at',{ascending:false});
-  if(error){ console.error(error); alert("Hiba: "+error.message); return; }
+  if(error){ console.error(error); return alert("Hiba: "+error.message); }
   const list=data||[]; const box=document.getElementById("olist");
   box.innerHTML=list.map(o=>{
     const items=(o.items||[]).map(it=>`${it.title} × ${it.qty}`).join(", ");
@@ -223,32 +243,34 @@ async function loadOrders(){
   document.getElementById("oempty").style.display=list.length?"none":"block";
 }
 
-/* === Vélemények === */
+/* ===== Vélemények ===== */
 async function loadReviews(){
-  const {data,error}=await sb.from('reviews').select('id,created_at,username,text,rating,product_id,products(title)').order('created_at',{ascending:false});
-  if(error){ console.error(error); alert("Hiba: "+error.message); return; }
+  if(!ensureSB()) return;
+  // ha nincs FK-join policy, vegyük le a join-t:
+  const {data,error}=await sb.from('reviews').select('id,created_at,username,text,rating,product_id').order('created_at',{ascending:false});
+  if(error){ console.error(error); return alert("Hiba: "+error.message); }
   const list=data||[]; const box=document.getElementById("rlist");
   box.innerHTML=list.map(r=>`
     <div class="item" style="grid-template-columns:1fr auto">
       <div>
         <div><strong>${r.username||'Névtelen'}</strong> ${r.rating?`<span class="muted">• ${"★".repeat(r.rating)}</span>`:''}</div>
-        <div class="muted" style="font-size:13px">${new Date(r.created_at).toLocaleString('hu-HU')} • ${r.products?.title||'Ismeretlen termék'}</div>
+        <div class="muted" style="font-size:13px">${new Date(r.created_at).toLocaleString('hu-HU')}</div>
         <div>${r.text}</div>
       </div>
-      <button class="btn bad" onclick="delReview('${r.id}')">Törlés</button>
+      <button class="btn bad" type="button" onclick="delReview('${r.id}')">Törlés</button>
     </div>`).join("");
   document.getElementById("rempty").style.display=list.length?"none":"block";
 }
 async function delReview(id){
   if(!confirm("Biztos törlöd a véleményt?")) return;
+  if(!ensureSB()) return;
   const {error}=await sb.from('reviews').delete().eq('id',id);
   if(error) return alert("Hiba: "+error.message);
   loadReviews();
 }
 
-/* === Init === */
-function loadAll(){ listProducts(); }
-if(localStorage.getItem("szoke_admin")==="1"){ loadAll(); }
+/* ===== Kezdő betöltés ===== */
+function loadAll(){ ensureSB(); listProducts(); }
 </script>
 </body>
 </html>

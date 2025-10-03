@@ -31,7 +31,7 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
 .grid-2{grid-template-columns:1fr}
 @media(min-width:900px){.grid-2{grid-template-columns:380px 1fr}}
 
-/* Termékkártya */
+/* Termék kártya */
 .item{
   display:grid;grid-template-columns:96px 1fr auto;gap:12px;align-items:center;
   border:1px solid #e5e9f2;border-radius:12px;padding:12px;background:#fff
@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
 });
 
 /* ===== Termékek ===== */
-let P_ADMIN = [];
+let P_ADMIN = []; // utoljára lekért termékek
 
 async function listProducts(){
   if(!ensureSB()) return alert("Supabase nem elérhető (script).");
@@ -389,7 +389,7 @@ async function saveEdit(){
     }
   }
 
-  const { data, error } = await sb.from('products').update(patch).eq('id', EDIT_ID).select('id').maybeSingle();
+  const { error } = await sb.from('products').update(patch).eq('id', EDIT_ID);
   if(error){ alert("Hiba: "+error.message+"\n(Tipp: RLS UPDATE policy hiányzik a products táblán)"); return; }
   info.textContent = "Frissítve.";
   toast("Termék frissítve");
@@ -445,7 +445,7 @@ function renderOrders(list){
           ${sel}
           <button class="btn ghost" data-pdf="${o.id}" type="button">PDF</button>
           <button class="btn ghost" data-csv="${o.id}" type="button">CSV</button>
-          <button class="btn bad"  type="button" onclick="deleteOrder('${o.id}')">Törlés</button>
+          <button class="btn bad" type="button" onclick="deleteOrder('${o.id}')">Törlés</button>
         </div>
       </div>
     </div>`;
@@ -466,7 +466,7 @@ function renderOrders(list){
         }
         toast("Státusz frissítve");
       }else{
-        alert("Nem sikerült menteni a státuszt (ellenőrizd az orders UPDATE RLS policy-t).");
+        alert("Nem sikerült menteni a státuszt (részletek a konzolon).");
       }
     });
   });
@@ -487,26 +487,24 @@ function renderOrders(list){
     });
   });
 }
-async function saveStatus(id, statusValue){
-  const res = await sb.from('orders').update({ status: statusValue }).eq('id', id).select('id').maybeSingle();
-  if(!res.error) return true;
 
-  // fallback: ha nincs 'status' oszlop, note-hoz fűzzük
-  if(/column.*status/i.test(String(res.error.message||''))){
-    const cur = await sb.from('orders').select('note').eq('id', id).maybeSingle();
-    if(cur.error) return false;
-    const addon = ` [Status: ${statusValue}]`;
-    const upd = await sb.from('orders').update({ note: (cur.data?.note||'') + addon }).eq('id', id);
-    return !upd.error;
-  }
-  return false;
-}
-async function deleteOrder(id){
-  if(!confirm("Biztos törlöd a rendelést?")) return;
-  const {error}=await sb.from('orders').delete().eq('id',id);
-  if(error){ alert("Hiba: "+error.message); return; }
-  toast("Rendelés törölve");
-  loadOrders();
+/* === STÁTUSZ – biztos mentés + fallback note-ba === */
+async function saveStatus(id, statusValue){
+  const key = /^\d+$/.test(String(id)) ? parseInt(id,10) : id;
+
+  // 1) egyszerű UPDATE (nincs .select/.single)
+  const up = await sb.from('orders').update({ status: statusValue }).eq('id', key);
+  if(!up.error) return true;
+
+  console.warn('orders status update error:', up.error);
+
+  // 2) fallback: a note végére írunk
+  const cur = await sb.from('orders').select('note').eq('id', key).maybeSingle();
+  if(cur.error){ console.warn('orders status fallback read error:', cur.error); return false; }
+  const addon = ` [Status: ${statusValue}]`;
+  const upd2 = await sb.from('orders').update({ note: (cur.data?.note||'') + addon }).eq('id', key);
+  if(upd2.error){ console.warn('orders status write-to-note error:', upd2.error); return false; }
+  return true;
 }
 
 /* === Egy rendelés CSV === */

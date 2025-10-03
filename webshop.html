@@ -21,15 +21,24 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
 .badge{display:inline-flex;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#111;color:#fff;font-size:12px;align-items:center;justify-content:center}
 
-.search{margin:14px auto 0;max-width:640px}
-.search input{width:100%;border:1px solid #e5e9f2;background:#fff;padding:10px 12px;border-radius:12px}
-.search input:focus{outline:none;box-shadow:var(--ring);border-color:#d6def7}
+/* felső sáv + kereső + szűrő */
+.shipping{position:relative;overflow:hidden;background:linear-gradient(90deg,#2f6fed,#54a7ff);color:#fff;border-radius:12px;padding:10px 14px;margin:14px auto 0;max-width:1200px;box-shadow:0 10px 22px rgba(22,29,37,.05)}
+.shipping .row{gap:8px}
+.shipping .truck{font-size:20px}
+.shipping .marquee{position:absolute;inset:0;display:flex;align-items:center;gap:40px;padding-left:14px;opacity:.12;font-weight:700;letter-spacing:.4px;animation:marq 18s linear infinite;pointer-events:none}
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.searchbar{margin:10px auto 0;max-width:1200px;display:flex;gap:8px;align-items:center}
+.searchbar input{flex:1;border:1px solid #e5e9f2;background:#fff;padding:10px 12px;border-radius:12px;font-size:14px}
+.searchbar input:focus{outline:none;box-shadow:var(--ring);border-color:#d6def7}
+.filter{border:1px solid #e5e9f2;background:#fff;border-radius:12px;padding:9px 10px;font-size:14px}
 
 /* TERMÉKKÁRTYÁK */
 .grid{display:grid;gap:12px;margin:16px auto;max-width:1200px}
 @media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1000px){.grid{grid-template-columns:repeat(3,1fr)}}
-.card{background:var(--card);border:1px solid #e5e9f2;border-radius:14px;box-shadow:0 10px 22px rgba(22,29,37,.05);overflow:hidden}
+.card{background:var(--card);border:1px solid #e5e9f2;border-radius:14px;box-shadow:0 10px 22px rgba(22,29,37,.05);overflow:hidden;opacity:0;transform:translateY(20px);animation:fadeUp .6s forwards}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 .thumb{
   width:100%;
   height:220px;
@@ -50,7 +59,7 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .qty input::-webkit-outer-spin-button,
 .qty input::-webkit-inner-spin-button{appearance:none;margin:0}
 
-/* ikon gomb (maradhat általános célra) */
+/* ikon gomb */
 .icon-btn{
   background:#fff;border:1px solid #e5e9f2;border-radius:10px;
   width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;
@@ -82,7 +91,8 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 .cart-scrim[hidden]{display:none}
 .cart-head{padding:16px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee}
 .cart-list{list-style:none;margin:0;padding:8px 12px;overflow:auto;flex:1}
-.cart-row{display:grid;grid-template-columns:1fr auto 92px 32px;align-items:center;gap:8px;padding:10px 6px;border-bottom:1px dashed #eee}
+.cart-row{display:grid;grid-template-columns:48px 1fr auto 92px 32px;align-items:center;gap:8px;padding:10px 6px;border-bottom:1px dashed #eee}
+.cart-row .thumb{width:42px;height:42px;object-fit:cover;border-radius:6px}
 .cart-row .title{font-weight:500}
 .cart-row .price{white-space:nowrap}
 .cart-row .qty{width:88px;border-radius:10px}
@@ -105,8 +115,24 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
   </div>
 </header>
 
+<!-- Ingyenes szállítás sáv -->
+<div class="shipping">
+  <div class="row"><span class="truck">🚚</span> Ingyenes szállítás 30 000 Ft felett</div>
+  <div class="marquee">INGYENES SZÁLLÍTÁS 30 000 FT FELETT • INGYENES SZÁLLÍTÁS 30 000 FT FELETT •</div>
+</div>
+
+<!-- Kereső + Szűrő -->
+<div class="searchbar wrap">
+  <input id="q" type="search" placeholder="Keresés a termékek közt…">
+  <select id="priceFilter" class="filter" aria-label="Ár szerinti szűrő">
+    <option value="all">Összes ár</option>
+    <option value="lt5">&lt; 5 000 Ft</option>
+    <option value="5to10">5 000 – 10 000 Ft</option>
+    <option value="gt10">&gt; 10 000 Ft</option>
+  </select>
+</div>
+
 <main class="wrap">
-  <div class="search"><input id="q" type="search" placeholder="Keresés a termékek közt…"></div>
   <section id="list" class="grid"></section>
   <p id="empty" class="muted" style="display:none;text-align:center">Nincs találat.</p>
 </main>
@@ -125,10 +151,9 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
   </div>
   <ul id="cartItems" class="cart-list"></ul>
   <div class="cart-foot">
-    <div class="row">
-      <span>Összesen:</span>
-      <strong id="cartTotal">0 Ft</strong>
-    </div>
+    <div class="row"><span>Részösszeg:</span><strong id="subTotal">0 Ft</strong></div>
+    <div class="row"><span>Szállítás:</span><strong id="shipCost">1 500 Ft</strong></div>
+    <div class="row"><span>Összesen:</span><strong id="cartTotal">0 Ft</strong></div>
     <button id="checkoutBtn" class="btn-primary">Tovább a megrendeléshez</button>
   </div>
 </div>
@@ -142,18 +167,19 @@ const SB_URL="https://gckynywmoxylwyppmkck.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
-/* --- CART kezelés --- */
+/* --- CART és megjelenítés --- */
 let PRODUCTS=[];
 /* Frissítéskor (reload) töröljük a kosarat ezen az oldalon */
 (function clearCartOnReload(){
   try{
     const nav=performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
     if(nav && nav.type==='reload'){ localStorage.removeItem('cart'); }
-    // alternatíva régi böngészőkre:
-    // if(performance.navigation && performance.navigation.type===1){ localStorage.removeItem('cart'); }
   }catch(_){}
 })();
 let CART=JSON.parse(localStorage.getItem("cart")||"[]");
+
+const FREE_THRESHOLD=30000;
+const SHIPPING_FEE=1500;
 
 const HUF=n=>new Intl.NumberFormat('hu-HU').format(n||0)+" Ft";
 const saveCart=()=>{localStorage.setItem("cart",JSON.stringify(CART)); setBadge();};
@@ -163,8 +189,8 @@ const toast=msg=>{const t=document.getElementById('toast');t.textContent=msg;t.c
 /* --- Renderelés: termékkártyák --- */
 function render(list){
   const box=document.getElementById('list');
-  box.innerHTML=list.map(p=>`
-    <article class="card">
+  box.innerHTML=list.map((p,i)=>`
+    <article class="card" style="animation-delay:${0.08*i}s">
       <img class="thumb" src="${p.image_url||'logo.png'}" alt="">
       <div class="px">
         <div class="row" style="justify-content:space-between">
@@ -195,35 +221,48 @@ const scrim = document.getElementById('cartScrim');
 const openBtn = document.getElementById('cartOpen');
 const closeBtn = document.getElementById('cartClose');
 
-function openCart(){ drawer.classList.add('open'); scrim.hidden = false; }
-function closeCart(){ drawer.classList.remove('open'); scrim.hidden = true; }
+function openCart(){ drawer.classList.add('open'); scrim.hidden = false; document.body.style.overflow='hidden'; }
+function closeCart(){ drawer.classList.remove('open'); scrim.hidden = true; document.body.style.overflow=''; }
 
 openBtn && openBtn.addEventListener('click', openCart);
 closeBtn && closeBtn.addEventListener('click', closeCart);
 scrim && scrim.addEventListener('click', closeCart);
 
-/* --- KOSÁR RENDER --- */
+/* --- KOSÁR RENDER (thumbnail + szállítási díj) --- */
 function renderCart(){
   const ul = document.getElementById('cartItems');
+  const subEl = document.getElementById('subTotal');
+  const shipEl = document.getElementById('shipCost');
   const totalEl = document.getElementById('cartTotal');
   ul.innerHTML = '';
 
+  let subtotal = 0;
+
   if (!CART.length) {
     ul.innerHTML = `<li class="cart-empty">A kosarad üres.</li>`;
-    totalEl.textContent = '0 Ft';
   } else {
     CART.forEach(p=>{
+      const line = (p.price||0) * (p.qty||1);
+      subtotal += line;
       ul.insertAdjacentHTML('beforeend', `
         <li class="cart-row" data-id="${p.id}">
-          <span class="title">${escapeHtml(p.title)}</span>
-          <span class="price">${(p.price * p.qty).toLocaleString('hu-HU')} Ft</span>
-          <input class="qty" type="number" min="1" value="${p.qty}">
+          <img class="thumb" src="${p.image_url||'logo.png'}" alt="${escapeHtml(p.title||'')}">
+          <span class="title">${escapeHtml(p.title||'')}</span>
+          <span class="price">${line.toLocaleString('hu-HU')} Ft</span>
+          <input class="qty" type="number" min="1" value="${p.qty||1}">
           <button class="icon-btn remove" title="Eltávolítás">×</button>
         </li>
       `);
     });
-    totalEl.textContent = CART.reduce((s,p)=> s + p.price*p.qty, 0).toLocaleString('hu-HU') + ' Ft';
   }
+
+  const shipping = (subtotal >= FREE_THRESHOLD || subtotal === 0) ? 0 : SHIPPING_FEE;
+  const total = subtotal + shipping;
+
+  subEl.textContent = subtotal.toLocaleString('hu-HU') + ' Ft';
+  shipEl.textContent = shipping.toLocaleString('hu-HU') + ' Ft';
+  totalEl.textContent = total.toLocaleString('hu-HU') + ' Ft';
+
   setBadge();
   localStorage.setItem("cart", JSON.stringify(CART));
 }
@@ -274,8 +313,8 @@ document.getElementById('list').addEventListener('click',e=>{
     if(i>=0) CART[i].qty += qty;
     else CART.push({id:p.id,title:p.title,price:p.price,image_url:p.image_url,qty});
     saveCart(); toast("Hozzáadva a kosárhoz");
-    renderCart();         // frissítjük a fiókot
-    openCart();           // nem irányít át, csak megnyitja a kosarat
+    renderCart();   // frissítjük a fiókot
+    openCart();     // nem irányít át, csak megnyitja a kosarat
   }
 });
 
@@ -287,12 +326,26 @@ document.getElementById('list').addEventListener('input',e=>{
   }
 });
 
-/* Kereső */
-document.getElementById('q').addEventListener('input',e=>{
-  const q=e.target.value.toLowerCase().trim();
-  const f=!q?PRODUCTS:PRODUCTS.filter(p=>(p.title||'').toLowerCase().includes(q)||(p.description||'').toLowerCase().includes(q));
-  render(f);
-});
+/* Kereső + SZŰRŐ (ár szerint) */
+const qInput=document.getElementById('q');
+const priceFilter=document.getElementById('priceFilter');
+
+function applyFilters(){
+  const q=(qInput.value||'').toLowerCase().trim();
+  const pf=priceFilter.value;
+  let list=PRODUCTS.filter(p=>{
+    const hit = (p.title||'').toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q);
+    if(!hit) return false;
+    const price = Number(p.price)||0;
+    if(pf==='lt5') return price<5000;
+    if(pf==='5to10') return price>=5000 && price<=10000;
+    if(pf==='gt10') return price>10000;
+    return true; // all
+  });
+  render(list);
+}
+qInput.addEventListener('input',applyFilters);
+priceFilter.addEventListener('change',applyFilters);
 
 /* --- Lightbox: képnagyítás --- */
 const lb = document.getElementById('imgLightbox');
@@ -307,6 +360,12 @@ document.addEventListener('click', (e)=>{
     lb.setAttribute('hidden','');
     lbImg.src = '';
     document.body.style.overflow = '';
+  }
+});
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='Escape'){
+    if(!lb.hasAttribute('hidden')) document.querySelector('.lb-close').click();
+    if(drawer.classList.contains('open')) closeCart();
   }
 });
 
@@ -325,7 +384,7 @@ async function load(){
     .eq('instock',true)
     .order('created_at',{ascending:false});
   if(error){
-    document.getElementById('list').innerHTML="<p>Hiba: "+error.message+"</p>";
+    document.getElementById('list').innerHTML="<p>Hiba: "+escapeHtml(error.message)+"</p>";
     return;
   }
   PRODUCTS=data||[];

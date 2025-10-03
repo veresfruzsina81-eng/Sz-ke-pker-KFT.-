@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Szőke Épker – Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<!-- Stabil UMD build (fontos!) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
 :root{--ink:#1f2937;--muted:#6b7280;--bg:#f7f4ef;--card:#fff;--brand:#8b5e34;--ring:0 0 0 3px rgba(193,154,107,.25);--radius:16px;--bad:#e11d48}
@@ -18,7 +17,7 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
 .btn{appearance:none;border:0;padding:10px 16px;border-radius:12px;cursor:pointer;font-weight:700;background:var(--brand);color:#fff}
 .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
 .btn.bad{background:var(--bad)}
-.row{display:flex;align-items:center;gap:10px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .tabs{display:flex;gap:8px;margin:10px 0}
 .tab{padding:8px 12px;border-radius:999px;border:1px solid #eadfce;background:#fff;cursor:pointer}
 .tab.active{background:var(--brand);color:#fff;border-color:var(--brand)}
@@ -31,37 +30,20 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
 .login{max-width:520px;margin:40px auto}
 .hidden{display:none}
 
-/* ===== FIX START: rögzített nézet + belső görgetés ===== */
-html, body { height:100%; }
-body.admin-lock { height:100vh; overflow:hidden; display:flex; flex-direction:column; }
-.admin-header { /* a felső fejléc rész (cím + gombok + fülek) köré tekerünk egy logikai keretet */
-  /* nincs külön stílus, csak szemantika */
-}
-.main-admin {
-  flex:1;
-  display:grid;
-  grid-template-columns: minmax(320px,360px) 1fr;
-  gap:12px;
-  overflow:hidden;              /* itt tiltjuk a külső scrollt */
-}
-@media (max-width:900px){
-  .main-admin { grid-template-columns: 1fr; }
-}
-.admin-panel {
-  overflow:auto;                /* a belső doboz görget belül */
-}
-.admin-panel header { position:sticky; top:0; background:#fff; z-index:2; }
-/* ===== FIX END ===== */
+/* ÚJ: fix magasság, belső görgetés */
+.panel{max-height:72vh; overflow:auto; border-radius:14px}
+#plist .item + .item{margin-top:8px}
+#olist .card + .card{margin-top:10px}
+#rlist .item + .item{margin-top:10px}
 </style>
 </head>
-<body class="admin-lock">
+<body>
 <div class="wrap">
   <!-- Login -->
   <div id="loginBox" class="card login">
     <div class="row" style="gap:10px;align-items:center;margin-bottom:6px">
       <img src="logo.png" alt="" style="height:28px"><h1 style="margin:0">Szőke Épker – Admin belépés</h1>
     </div>
-    <p class="muted" style="margin-top:0">Add meg a belépési adatokat.</p>
     <div class="grid" style="gap:10px">
       <label>Felhasználónév<input id="u" placeholder="Felhasználónév"></label>
       <label>Jelszó<input id="p" type="password" placeholder="Jelszó"></label>
@@ -71,26 +53,23 @@ body.admin-lock { height:100vh; overflow:hidden; display:flex; flex-direction:co
 
   <!-- App -->
   <div id="app" class="hidden">
-    <div class="admin-header">
-      <div class="row" style="justify-content:space-between;margin-bottom:10px">
-        <h1>Admin felület</h1>
-        <div class="row">
-          <button class="btn ghost" type="button" onclick="location.href='/webshop.html'">Webshop megnyitása</button>
-          <button class="btn" id="logoutBtn" type="button">Kijelentkezés</button>
-        </div>
-      </div>
-
-      <div class="tabs">
-        <button class="tab active" data-tab="products" type="button">Termékek</button>
-        <button class="tab" data-tab="orders" type="button">Rendelések</button>
-        <button class="tab" data-tab="reviews" type="button">Vélemények</button>
+    <div class="row" style="justify-content:space-between;margin-bottom:10px">
+      <h1>Admin felület</h1>
+      <div class="row">
+        <button class="btn ghost" type="button" onclick="location.href='/webshop.html'">Webshop megnyitása</button>
+        <button class="btn" id="logoutBtn" type="button">Kijelentkezés</button>
       </div>
     </div>
 
-    <!-- ===== FIX START: a két oszlop külön dobozban, belső scroll ===== -->
+    <div class="tabs">
+      <button class="tab active" data-tab="products" type="button">Termékek</button>
+      <button class="tab" data-tab="orders" type="button">Rendelések</button>
+      <button class="tab" data-tab="reviews" type="button">Vélemények</button>
+    </div>
+
     <div id="tab-products">
-      <div class="main-admin">
-        <div class="card admin-panel">
+      <div class="grid grid-2">
+        <div class="card panel">
           <h2>Új termék</h2>
           <div class="grid" style="gap:10px">
             <input id="title" placeholder="Termék neve">
@@ -104,21 +83,28 @@ body.admin-lock { height:100vh; overflow:hidden; display:flex; flex-direction:co
           </div>
         </div>
 
-        <div class="card admin-panel">
+        <div class="card panel">
           <h2>Termékek</h2>
           <div id="plist"></div>
           <div id="pempty" class="muted">Nincs találat.</div>
         </div>
       </div>
     </div>
-    <!-- ===== FIX END ===== -->
 
     <div id="tab-orders" class="hidden">
-      <div class="card admin-panel"><h2>Rendelések</h2><div id="olist"></div><div id="oempty" class="muted">Még nincs rendelés.</div></div>
+      <div class="card panel">
+        <h2>Rendelések</h2>
+        <div id="olist"></div>
+        <div id="oempty" class="muted">Még nincs rendelés.</div>
+      </div>
     </div>
 
     <div id="tab-reviews" class="hidden">
-      <div class="card admin-panel"><h2>Vélemények</h2><div id="rlist"></div><div id="rempty" class="muted">Még nincs vélemény.</div></div>
+      <div class="card panel">
+        <h2>Vélemények</h2>
+        <div id="rlist"></div>
+        <div id="rempty" class="muted">Még nincs vélemény.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -131,7 +117,6 @@ const SUPABASE_URL = "https://gckynywmoxylwyppmkck.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja3lueXdtb3h5bHd5cHBta2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUxODUsImV4cCI6MjA3NDk2MTE4NX0.0p2EsBFpWnYCq5IpQ6T3FsgKkJBNt0kGRd901sNBanI";
 const BUCKET = "products";
 
-/* ===== Lusta Supabase init (nem dől el, ha a CDN lassú) ===== */
 let sb = null;
 function ensureSB(){
   try{
@@ -140,16 +125,13 @@ function ensureSB(){
   return sb;
 }
 
-/* ===== UI mutat/elrejt ===== */
 function setLogged(v){
   localStorage.setItem("szoke_admin", v?"1":"");
   document.getElementById("loginBox").classList.toggle("hidden", v);
   document.getElementById("app").classList.toggle("hidden", !v);
 }
 
-/* ===== Események a DOM után ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
-  // Autologin, ha volt
   if(localStorage.getItem("szoke_admin")==="1"){ setLogged(true); loadAll(); }
 
   document.getElementById("loginBtn").addEventListener("click", (e)=>{
@@ -189,7 +171,7 @@ async function listProducts(){
     <div class="item">
       <img class="thumb" src="${p.image_url||'logo.png'}" alt="">
       <div>
-        <div><strong>${p.title||'-'}</strong></div>
+        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><strong>${p.title||'-'}</strong></div>
         <div class="muted">${new Intl.NumberFormat('hu-HU').format(p.price||0)} Ft • ${p.instock?'készleten':'nem elérhető'}</div>
       </div>
       <div class="row">
@@ -249,24 +231,33 @@ async function loadOrders(){
   if(!ensureSB()) return;
   const {data,error}=await sb.from('orders').select('id,created_at,name,email,phone,address,shipping,subtotal,shipping_cost,total,items').order('created_at',{ascending:false});
   if(error){ console.error(error); return alert("Hiba: "+error.message); }
+  const nf = (n)=>new Intl.NumberFormat('hu-HU').format(n||0);
   const list=data||[]; const box=document.getElementById("olist");
   box.innerHTML=list.map(o=>{
     const items=(o.items||[]).map(it=>`${it.title} × ${it.qty}`).join(", ");
-    return `<div class="card" style="margin-bottom:10px">
+    return `<div class="card">
       <div class="row" style="justify-content:space-between">
-        <strong>#${o.id.slice(0,8)}</strong>
+        <strong>#${String(o.id).slice(0,8)}</strong>
         <div class="muted">${new Date(o.created_at).toLocaleString('hu-HU')}</div>
       </div>
       <div>${o.name} • ${o.email} • ${o.phone}</div>
-      <div class="muted">Cím: ${o.address} • Szállítás: ${o.shipping}</div>
+      <div class="muted">Cím: ${o.address} • Szállítás: ${o.shipping||'-'}</div>
       <div class="muted">Tételek: ${items||'-'}</div>
-      <div class="row" style="gap:10px; margin-top:6px">
-        <strong>Összesen: ${new Intl.NumberFormat('hu-HU').format(o.total||0)} Ft</strong>
-        <span class="muted">(Részösszeg ${new Intl.NumberFormat('hu-HU').format(o.subtotal||0)} Ft + Szállítás ${new Intl.NumberFormat('hu-HU').format(o.shipping_cost||0)} Ft)</span>
+      <div class="row" style="gap:10px;margin-top:6px;justify-content:space-between">
+        <div><strong>Összesen: ${nf(o.total)} Ft</strong>
+          <span class="muted">(Részösszeg ${nf(o.subtotal)} Ft + Szállítás ${nf(o.shipping_cost)} Ft)</span>
+        </div>
+        <button class="btn bad" type="button" onclick="deleteOrder('${o.id}')">Rendelés törlése</button>
       </div>
     </div>`;
   }).join("");
   document.getElementById("oempty").style.display=list.length?"none":"block";
+}
+async function deleteOrder(id){
+  if(!confirm("Biztos törlöd a rendelést?")) return;
+  const {error}=await sb.from('orders').delete().eq('id',id);
+  if(error){ alert("Hiba: "+error.message); return; }
+  loadOrders();
 }
 
 /* ===== Vélemények ===== */
@@ -288,13 +279,11 @@ async function loadReviews(){
 }
 async function delReview(id){
   if(!confirm("Biztos törlöd a véleményt?")) return;
-  if(!ensureSB()) return;
   const {error}=await sb.from('reviews').delete().eq('id',id);
   if(error) return alert("Hiba: "+error.message);
   loadReviews();
 }
 
-/* ===== Kezdő betöltés ===== */
 function loadAll(){ ensureSB(); listProducts(); }
 </script>
 </body>

@@ -42,7 +42,7 @@ body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
 
 /* Kupon doboz sor: ne lógjon ki a gomb */
 #couponBox .line{display:flex;gap:8px;align-items:center}
-#couponInput{flex:1;min-width:0} /* engedje összemenni, ne tolja ki a gombot */
+#couponInput{flex:1;min-width:0}
 #couponApply{flex:0 0 auto;white-space:nowrap}
 </style>
 </head>
@@ -306,7 +306,7 @@ function fillPreview(){
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
-/* === Mentés Supabase-be – oszlophiány esetén automatikus visszaesés === */
+/* === Mentés Supabase-be – OSZLOPHIÁNY ROBUSZTUS KEZELÉS === */
 async function placeOrder(){
   closeReview();
 
@@ -320,10 +320,10 @@ async function placeOrder(){
   if(!CART.length){ alert("A kosár üres."); return; }
   if(!name||!email||!phone||!address){ alert("Kérjük, töltsd ki: Név, E-mail, Telefon, Cím."); return; }
 
-  const t=recalcTotals(); // subtotal, shipping, discount, total, coupon
+  const t=recalcTotals();
 
-  // Alap payload a kupon mezőkkel
-  const payloadBase={
+  // Alap payload a kupon mezőkkel és kedvezménnyel
+  let payload={
     name,email,phone,address,shipping:shippingMethod,
     note:noteRaw,
     items:CART,
@@ -335,29 +335,35 @@ async function placeOrder(){
     coupon_percent: t.coupon?.percent ?? null
   };
 
-  // 1. kísérlet: teljes payload
-  let { error } = await sb.from('orders').insert(payloadBase);
-
-  // Ha nincs 'coupon_code' / 'coupon_percent' oszlop → próbáljuk újra ezek nélkül
-  if(error && /coupon_(code|percent)/i.test(error.message||"")){
-    const fallback={...payloadBase};
-    delete fallback.coupon_code; delete fallback.coupon_percent;
-    // kupon infó bekerül a megjegyzés végére, hogy ne vesszen el
-    if(t.coupon){
-      const addon = ` [Kupon: ${t.coupon.code} (−${t.coupon.percent}%)]`;
-      fallback.note = (fallback.note||"") + addon;
-    }
-    const retry = await sb.from('orders').insert(fallback);
-    error = retry.error;
+  // ha nincs külön oszlop, a kupon infó kerüljön a megjegyzés végére
+  if(t.coupon){
+    const addon=` [Kupon: ${t.coupon.code} (−${t.coupon.percent}%)]`;
+    payload.note=(payload.note||"")+addon;
   }
 
-  if(error){ alert("Hiba a mentéskor: "+error.message); return; }
-
-  // siker – végső összegzés + köszönő oldal
-  fillFinalSummary(t, {name,email,phone,address,shippingMethod});
-  CART=[]; localStorage.setItem("cart","[]");
-  document.getElementById('checkout').style.display="none";
-  document.getElementById('thanks').style.display="block";
+  // Általános újrapróbálás: ha "Could not find the 'X' column" → töröljük X-et és újra
+  const MAX_TRIES=6;
+  for(let attempt=1; attempt<=MAX_TRIES; attempt++){
+    const { error } = await sb.from('orders').insert(payload);
+    if(!error){
+      fillFinalSummary(t, {name,email,phone,address,shippingMethod});
+      CART=[]; localStorage.setItem("cart","[]");
+      document.getElementById('checkout').style.display="none";
+      document.getElementById('thanks').style.display="block";
+      return;
+    }
+    const msg=String(error.message||'');
+    const m = msg.match(/Could not find the '([^']+)' column/i);
+    if(m && m[1] && Object.prototype.hasOwnProperty.call(payload, m[1])){
+      // töröljük a hiányzó kulcsot és próbáljuk újra
+      delete payload[m[1]];
+      console.warn('Hiányzó oszlop, eltávolítva a payloadból:', m[1]);
+      continue;
+    }
+    alert("Hiba a mentéskor: "+msg);
+    return;
+  }
+  alert("Hiba: a rendelést nem sikerült menteni több próbálkozás után.");
 }
 
 function fillFinalSummary(totals, buyer){

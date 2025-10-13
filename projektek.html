@@ -1,214 +1,299 @@
--- ServerScriptService -> BuildCsataArena.server.lua
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Nagyobb projektek – Szőke Épker KFT.</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    /* ====== PROJEKTEK OLDAL – SCOPED STÍLUS ====== */
+    :root { --proj-brand:#0a8; --proj-ink:#1f2937; --proj-muted:#6b7280; --proj-line:#e5e7eb; --proj-bg:#f8fafc; }
+    body.proj-body { background:var(--proj-bg); color:var(--proj-ink); }
 
--- ===== Beállítások =====
-local ARENA_FOLDER_NAME = "Generated_Csata"
-local WALL_HEIGHT = 30
-local WALL_THICK  = 2
-local BASE_PAD_H  = 2
-local COVER_H     = 6
-local RAMP_W      = 10
-local RAMP_H      = 8
-local CENTER_PLAT_H = 3
+    .proj-wrap { max-width:1200px; margin:0 auto; padding:20px 16px 60px; }
+    .proj-topbar {
+      display:flex; align-items:center; justify-content:space-between; gap:10px; margin:8px 0 24px;
+    }
+    .proj-brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; }
+    .proj-brand img { width:40px; height:40px; object-fit:contain; }
+    .proj-brand span { font-weight:700; }
 
-local WALL_COLOR  = Color3.fromRGB(220, 230, 255)
-local FLOOR_MAT   = Enum.Material.Ice
-local WALL_MAT    = Enum.Material.Slate
-local BASE_MAT    = Enum.Material.Neon
-local COVER_MAT   = Enum.Material.Concrete
-local RAMP_MAT    = Enum.Material.Metal
+    .proj-back { display:inline-flex; align-items:center; gap:8px; text-decoration:none;
+      border:1px solid var(--proj-line); padding:10px 14px; border-radius:12px; background:#fff; font-weight:600; }
+    .proj-back:hover { border-color:#cbd5e1; }
 
-local NIGHT_CLOCKTIME = 22 -- 22:00
--- ========================
+    .proj-hero { background:#fff; border:1px solid var(--proj-line); border-radius:18px; padding:22px; box-shadow:0 8px 22px rgba(0,0,0,.06); }
+    .proj-hero h1 { margin:0 0 10px; font-size:2rem; }
+    .proj-hero p { margin:0; color:var(--proj-muted); }
 
-local Lighting = game:GetService("Lighting")
+    .proj-filters { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 8px; }
+    .proj-chip { border:1px solid var(--proj-line); background:#fff; padding:8px 12px; border-radius:999px; cursor:pointer; font-weight:600; font-size:.95rem; }
+    .proj-chip[aria-pressed="true"] { background:var(--proj-brand); border-color:var(--proj-brand); color:#fff; }
 
--- 1) Keresd meg a "Csata" Partot
-local root = workspace:FindFirstChild("Csata")
-if not root or not root:IsA("BasePart") then
-	warn("[BuildCsataArena] Nincs 'Csata' nevű Part a Workspace-ben!")
-	return
-end
+    .proj-grid { margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media (max-width: 920px){ .proj-grid { grid-template-columns:1fr; } }
 
--- 2) Töröld a korábbi generált pályát
-local old = workspace:FindFirstChild(ARENA_FOLDER_NAME)
-if old then old:Destroy() end
+    .prj-card { background:#fff; border:1px solid var(--proj-line); border-radius:18px; overflow:hidden; display:grid; grid-template-columns: 1.1fr 1fr; }
+    @media (max-width: 920px){ .prj-card { grid-template-columns:1fr; } }
 
--- 3) Munkamappa
-local arenaFolder = Instance.new("Folder")
-arenaFolder.Name = ARENA_FOLDER_NAME
-arenaFolder.Parent = workspace
+    .prj-media { position:relative; min-height:240px; }
+    .prj-media img { width:100%; height:100%; object-fit:cover; display:block; }
+    .prj-badge {
+      position:absolute; left:12px; bottom:12px; background:var(--proj-brand); color:#fff;
+      padding:6px 10px; border-radius:999px; font-size:.9rem; box-shadow:0 4px 16px rgba(0,0,0,.18);
+    }
+    .prj-zoom {
+      position:absolute; right:12px; bottom:12px; border:none; background:#fff; border-radius:10px;
+      padding:8px 10px; cursor:pointer; font-weight:700; box-shadow:0 3px 10px rgba(0,0,0,.15);
+    }
 
--- 4) Segédfüggvények
-local function makePart(props)
-	local p = Instance.new("Part")
-	p.Anchored = true
-	p.CanCollide = true
-	p.TopSurface = Enum.SurfaceType.Smooth
-	p.BottomSurface = Enum.SurfaceType.Smooth
-	for k,v in pairs(props) do p[k] = v end
-	p.Parent = arenaFolder
-	return p
-end
+    .prj-body { padding:18px 18px 20px; }
+    .prj-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; }
+    .prj-title { margin:0; font-size:1.25rem; }
+    .prj-status { display:inline-flex; align-items:center; gap:6px; color:#065f46; background:#ecfdf5; border:1px solid #a7f3d0; padding:4px 8px; border-radius:999px; font-size:.85rem; }
 
-local function makeWall(length, thickness, height, atCF)
-	return makePart({
-		Name = "Wall",
-		Size = Vector3.new(length, height, thickness),
-		CFrame = atCF,
-		Material = WALL_MAT,
-		Color = WALL_COLOR
-	})
-end
+    .prj-lead { margin:8px 0 12px; color:var(--proj-ink); line-height:1.6; }
+    .prj-meta { list-style:none; padding:0; margin:0 0 12px; display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; }
+    @media (max-width: 640px){ .prj-meta { grid-template-columns:1fr; } }
+    .prj-meta li { display:flex; gap:8px; align-items:flex-start; color:#0f172a; }
+    .prj-ico { width:18px; height:18px; flex:0 0 18px; opacity:.9; }
 
-local function makeCover(name, cf, sx, sz)
-	return makePart({
-		Name = name,
-		Size = Vector3.new(sx, COVER_H, sz),
-		CFrame = cf * CFrame.new(0, COVER_H/2, 0),
-		Material = COVER_MAT,
-		Color = Color3.fromRGB(190,190,190)
-	})
-end
+    .prj-toggle { appearance:none; border:1px solid var(--proj-line); background:#fff; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:700; }
+    .prj-more { margin-top:12px; border-top:1px dashed var(--proj-line); padding-top:12px; }
+    .prj-cols { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media (max-width: 640px){ .prj-cols { grid-template-columns:1fr; } }
+    .prj-bullets { margin:8px 0 0 18px; }
 
-local function makeRamp(atCF, width, height, length)
-	local wedge = Instance.new("WedgePart")
-	wedge.Name = "Ramp"
-	wedge.Anchored = true
-	wedge.CanCollide = true
-	wedge.Material = RAMP_MAT
-	wedge.Color = Color3.fromRGB(200,200,210)
-	wedge.Size = Vector3.new(width, height, length)
-	wedge.CFrame = atCF
-	wedge.Parent = arenaFolder
-	return wedge
-end
+    /* Lightbox */
+    .proj-modal { position:fixed; inset:0; background:rgba(0,0,0,.75); display:none; align-items:center; justify-content:center; z-index:9999; padding:20px; }
+    .proj-modal.on { display:flex; }
+    .proj-modal img { max-width:min(1200px, 96vw); max-height:86vh; width:auto; height:auto; border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,.5); }
+    .proj-modal .close { position:absolute; top:18px; right:18px; background:#fff; border:none; border-radius:10px; padding:8px 12px; font-size:20px; cursor:pointer; }
 
--- Lámpaoszlop + fények (éjszakára)
-local function makeLampPost(cf, height)
-	local pole = makePart({
-		Name = "LampPost",
-		Size = Vector3.new(0.6, height, 0.6),
-		CFrame = cf * CFrame.new(0, height/2, 0),
-		Material = Enum.Material.Metal,
-		Color = Color3.fromRGB(180, 180, 180)
-	})
-	-- Fej (kar)
-	local head = makePart({
-		Name = "LampHead",
-		Size = Vector3.new(2, 0.4, 2),
-		CFrame = pole.CFrame * CFrame.new(0, pole.Size.Y/2 - 0.2, 0),
-		Material = Enum.Material.SmoothPlastic,
-		Color = Color3.fromRGB(230, 230, 230)
-	})
-	-- Fények
-	local spot = Instance.new("SpotLight")
-	spot.Name = "Spot"
-	spot.Brightness = 4
-	spot.Angle = 100
-	spot.Range = 50
-	spot.Face = Enum.NormalId.Bottom
-	spot.Parent = head
+    .proj-footer { text-align:center; color:var(--proj-muted); margin-top:28px; }
+  </style>
+</head>
+<body class="proj-body">
+  <div class="proj-wrap">
+    <div class="proj-topbar">
+      <a class="proj-brand" href="index.html#fooldal">
+        <img src="logo.png" alt="Szőke Épker logó"/>
+        <span>Szőke Épker KFT.</span>
+      </a>
+      <a class="proj-back" href="index.html#fooldal" aria-label="Vissza a weboldalra">← Vissza a weboldalra</a>
+    </div>
 
-	local point = Instance.new("PointLight")
-	point.Name = "Glow"
-	point.Brightness = 1.5
-	point.Range = 18
-	point.Parent = head
+    <header class="proj-hero" role="banner">
+      <h1>Nagyobb projektek</h1>
+      <p>Válogatott beruházásaink röviden: fotók, státusz, főbb adatok és műszaki tartalom. A részletek lenyithatók.</p>
+      <div class="proj-filters" role="tablist" aria-label="Szűrők">
+        <button class="proj-chip" data-filter="all" aria-pressed="true">Összes</button>
+        <button class="proj-chip" data-filter="inprogress" aria-pressed="false">Folyamatban</button>
+        <button class="proj-chip" data-filter="done" aria-pressed="false">Befejezett</button>
+        <button class="proj-chip" data-filter="planned" aria-pressed="false">Tervezett</button>
+      </div>
+    </header>
 
-	return pole, head
-end
+    <main class="proj-grid" id="projGrid">
+      <!-- === PROJEKT #1 – Komádi === -->
+      <article class="prj-card" data-status="inprogress">
+        <figure class="prj-media">
+          <img src="komadi-terv.jpg" alt="Komádi közösségi tér – látványterv"/>
+          <figcaption class="prj-badge">EU-támogatás • 605 M Ft</figcaption>
+          <button class="prj-zoom" aria-label="Kép nagyítása" data-zoom="komadi-terv.jpg">Nagyítás</button>
+        </figure>
+        <div class="prj-body">
+          <div class="prj-head">
+            <h2 class="prj-title">Komádi – Közösségi tér fejlesztése</h2>
+            <span class="prj-status">🔧 Folyamatban</span>
+          </div>
+          <p class="prj-lead">
+            A szabadidő-klub bővítése: új fogadótér, vizesblokk, nézőtér és színpad,
+            öltözők és parkolók kialakításával.
+          </p>
+          <ul class="prj-meta">
+            <li>
+              <svg class="prj-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18"/></svg>
+              <span><strong>Forrás:</strong> EU-támogatás</span>
+            </li>
+            <li>
+              <svg class="prj-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V8l9-5 9 5v12"/></svg>
+              <span><strong>Kivitelező:</strong> Szőke Épker Kft.</span>
+            </li>
+            <li>
+              <svg class="prj-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18"/></svg>
+              <span><strong>Terjedelem:</strong> bővítés + közösségi terek</span>
+            </li>
+            <li>
+              <svg class="prj-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7h8M6 3h12M6 21h12M4 11h16"/></svg>
+              <span><strong>Befejezés:</strong> jövő év I. negyedév</span>
+            </li>
+          </ul>
 
--- 5) Pálya felépítése a "Csata" köré
-local rootCF = root.CFrame
-local size   = root.Size
+          <button class="prj-toggle" aria-expanded="false" aria-controls="prj1r">Részletek</button>
+          <div id="prj1r" class="prj-more" hidden>
+            <div class="prj-cols">
+              <div>
+                <h3>Műszaki főpontok</h3>
+                <ul class="prj-bullets">
+                  <li>Színpad és nézőtér kialakítása</li>
+                  <li>Vizesblokk és öltözők</li>
+                  <li>Fogadótér akadálymentesítéssel</li>
+                  <li>Parkolóhelyek és közlekedő utak</li>
+                </ul>
+              </div>
+              <div>
+                <h3>Városi vízió</h3>
+                <p>Az új közösségi tengely a készülő templommal és kulturális funkciókkal
+                   egységes, élhető városi magot hoz létre.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
 
--- Padló (jég)
-local floor = makePart({
-	Name = "Floor",
-	Size = Vector3.new(size.X, 1, size.Z),
-	CFrame = rootCF * CFrame.new(0, -root.Size.Y/2 + 0.5, 0),
-	Material = FLOOR_MAT,
-	Color = Color3.fromRGB(240, 248, 255)
-})
+      <!-- === PROJEKT #2 – Ipari csarnok (minta) === -->
+      <article class="prj-card" data-status="done">
+        <figure class="prj-media">
+          <img src="csarnok.jpg" alt="Ipari csarnok bővítése – átadott projekt"/>
+          <figcaption class="prj-badge">Átadva • 1,2 Mrd Ft</figcaption>
+          <button class="prj-zoom" aria-label="Kép nagyítása" data-zoom="csarnok.jpg">Nagyítás</button>
+        </figure>
+        <div class="prj-body">
+          <div class="prj-head">
+            <h2 class="prj-title">Berettyóújfalu – Ipari csarnok bővítése</h2>
+            <span class="prj-status">✅ Befejezett</span>
+          </div>
+          <p class="prj-lead">Új gyártótér, raktár és irodablokk; darupálya, ipari padló, korszerű gépészet.</p>
+          <ul class="prj-meta">
+            <li><svg class="prj-ico" viewBox="0 0 24 24"><path d="M12 3l9 6-9 6-9-6 9-6z M3 15l9 6 9-6"/></svg><span><strong>Funkció:</strong> gyártó + raktár</span></li>
+            <li><svg class="prj-ico" viewBox="0 0 24 24"><path d="M4 4h16v16H4z M4 10h16"/></svg><span><strong>Alapterület:</strong> ~4 500 m²</span></li>
+            <li><svg class="prj-ico" viewBox="0 0 24 24"><path d="M6 6l12 12"/></svg><span><strong>Speciál:</strong> darupálya, ipari padló</span></li>
+            <li><svg class="prj-ico" viewBox="0 0 24 24"><path d="M8 7h8"/></svg><span><strong>Átadás:</strong> 2025 Q2</span></li>
+          </ul>
+          <button class="prj-toggle" aria-expanded="false" aria-controls="prj2r">Részletek</button>
+          <div id="prj2r" class="prj-more" hidden>
+            <div class="prj-cols">
+              <div>
+                <h3>Műszaki főpontok</h3>
+                <ul class="prj-bullets">
+                  <li>Acélvázas bővítés, gyorsszerkezet</li>
+                  <li>Energiahatékony hőtechnika</li>
+                  <li>LED csarnokvilágítás</li>
+                  <li>Komplex tűz- és munkavédelem</li>
+                </ul>
+              </div>
+              <div>
+                <h3>Megoldások</h3>
+                <p>Ütemezett kivitelezés termelés mellett; anyaglogisztika és minőség-ellenőrzés digitalizált riporttal.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
 
--- Külső falak a peremen
-do
-	local halfX, halfZ = size.X/2, size.Z/2
-	makeWall(size.X, WALL_THICK, WALL_HEIGHT, rootCF * CFrame.new(0, WALL_HEIGHT/2, -halfZ))
-	makeWall(size.X, WALL_THICK, WALL_HEIGHT, rootCF * CFrame.new(0, WALL_HEIGHT/2,  halfZ))
-	makePart({
-		Name="Wall",
-		Size = Vector3.new(WALL_THICK, WALL_HEIGHT, size.Z),
-		CFrame = rootCF * CFrame.new(-halfX, WALL_HEIGHT/2, 0),
-		Material = WALL_MAT, Color = WALL_COLOR
-	})
-	makePart({
-		Name="Wall",
-		Size = Vector3.new(WALL_THICK, WALL_HEIGHT, size.Z),
-		CFrame = rootCF * CFrame.new( halfX, WALL_HEIGHT/2, 0),
-		Material = WALL_MAT, Color = WALL_COLOR
-	})
-end
+      <!-- === PROJEKT #3 – Társasház (minta) === -->
+      <article class="prj-card" data-status="planned">
+        <figure class="prj-media">
+          <img src="tarsashaz.jpg" alt="Társasház felújítás – látvány"/>
+          <figcaption class="prj-badge">Tervezett • 320 M Ft</figcaption>
+          <button class="prj-zoom" aria-label="Kép nagyítása" data-zoom="tarsashaz.jpg">Nagyítás</button>
+        </figure>
+        <div class="prj-body">
+          <div class="prj-head">
+            <h2 class="prj-title">Debrecen – Társasház felújítás</h2>
+            <span class="prj-status">🗓️ Tervezett</span>
+          </div>
+          <p class="prj-lead">Homlokzati hőszigetelés, nyílászárócsere, gépészeti korszerűsítés és közösségi terek frissítése.</p>
+          <ul class="prj-meta">
+            <li><svg class="prj-ico" viewBox="0 0 24 24"><path d="M4 4h16v16H4z M9 4v16"/></svg><span><strong>Érintett egységek:</strong> 48 lakás</span></li>
+            <li><svg class="prj-ico" viewBox="0 0 24 24"><path d="M12 8v8M8 12h8"/></svg><span><strong>Fókusz:</strong> energiahatékonyság</span></li>
+            <li><svg class="prj-ico" viewBox="0 0 24 24"><path d="M6 6l12 12"/></svg><span><strong>Anyagok:</strong> prémium rendszerek</span></li>
+            <li><svg class="prj-ico" viewBox="0 0 24 24"><path d="M8 7h8"/></svg><span><strong>Indulás:</strong> 2026 Q1</span></li>
+          </ul>
+          <button class="prj-toggle" aria-expanded="false" aria-controls="prj3r">Részletek</button>
+          <div id="prj3r" class="prj-more" hidden>
+            <div class="prj-cols">
+              <div>
+                <h3>Műszaki főpontok</h3>
+                <ul class="prj-bullets">
+                  <li>Homlokzat + hőhídmentes csomópontok</li>
+                  <li>Korszerű gépészet és szabályozás</li>
+                  <li>Közösségi terek felújítása</li>
+                </ul>
+              </div>
+              <div>
+                <h3>Közösségi hatás</h3>
+                <p>Alacsonyabb rezsi, jobb komfort, rendezettebb környezet és növekvő ingatlanérték.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </main>
 
--- Oldalsó fedezékek
-do
-	local dx = math.max(18, size.X*0.12)
-	local dz = math.max(10, size.Z*0.08)
-	makeCover("Cover_L1", rootCF * CFrame.new(-dx, 0, -size.Z*0.18), 10, dz)
-	makeCover("Cover_R1", rootCF * CFrame.new( dx, 0, -size.Z*0.18), 10, dz)
-	makeCover("Cover_L2", rootCF * CFrame.new(-dx, 0,  size.Z*0.18), 10, dz)
-	makeCover("Cover_R2", rootCF * CFrame.new( dx, 0,  size.Z*0.18), 10, dz)
-end
+    <div class="proj-footer">
+      <p>© 2025 Szőke Épker KFT. – Nagyobb projektek</p>
+    </div>
+  </div>
 
--- Középső platform + két rámpa
-local centerPlat = makePart({
-	Name="CenterPlatform",
-	Size = Vector3.new(math.max(20, size.X*0.18), CENTER_PLAT_H, math.max(20, size.Z*0.12)),
-	CFrame = rootCF * CFrame.new(0, CENTER_PLAT_H/2, 0),
-	Material = Enum.Material.Ice,
-	Color = Color3.fromRGB(230, 245, 255)
-})
-do
-	local rampLen = math.max(16, size.Z*0.12)
-	makeRamp(rootCF * CFrame.new(0, 0.01,  centerPlat.Size.Z/2 + 6) * CFrame.Angles(0, math.pi, -math.atan(RAMP_H/rampLen)), RAMP_W, RAMP_H, rampLen)
-	makeRamp(rootCF * CFrame.new(0, 0.01, -centerPlat.Size.Z/2 - 6) * CFrame.Angles(0, 0, -math.atan(RAMP_H/rampLen)), RAMP_W, RAMP_H, rampLen)
-end
+  <!-- LIGHTBOX MODÁL -->
+  <div class="proj-modal" id="projModal" aria-hidden="true" role="dialog" aria-label="Kép nagyítás">
+    <button class="close" aria-label="Bezárás">×</button>
+    <img src="" alt="Nagyított projektkép" />
+  </div>
 
--- 6) Lámpaoszlopok a sarkoknál és a középen
-do
-	local halfX, halfZ = size.X/2, size.Z/2
-	local h = 16
-	-- Sarkok
-	makeLampPost(rootCF * CFrame.new( halfX - 3, 0,  halfZ - 3), h)
-	makeLampPost(rootCF * CFrame.new(-halfX + 3, 0,  halfZ - 3), h)
-	makeLampPost(rootCF * CFrame.new( halfX - 3, 0, -halfZ + 3), h)
-	makeLampPost(rootCF * CFrame.new(-halfX + 3, 0, -halfZ + 3), h)
-	-- Középre körben
-	makeLampPost(centerPlat.CFrame * CFrame.new( centerPlat.Size.X/2 + 4, 0,  0), h-2)
-	makeLampPost(centerPlat.CFrame * CFrame.new(-centerPlat.Size.X/2 - 4, 0,  0), h-2)
-end
+  <script>
+  // ====== Interakciók (scoped) ======
+  (()=>{
+    const grid = document.getElementById('projGrid');
+    const chips = document.querySelectorAll('.proj-chip');
 
--- 7) Éjszakai környezeti beállítások
-do
-	Lighting.ClockTime = NIGHT_CLOCKTIME
-	Lighting.Brightness = 2
-	Lighting.EnvironmentDiffuseScale = 0.4
-	Lighting.EnvironmentSpecularScale = 0.7
+    // Szűrés
+    chips.forEach(ch=>{
+      ch.addEventListener('click', ()=>{
+        chips.forEach(c=>c.setAttribute('aria-pressed','false'));
+        ch.setAttribute('aria-pressed','true');
+        const f = ch.dataset.filter;
+        document.querySelectorAll('.prj-card').forEach(card=>{
+          const ok = (f==='all') || (card.dataset.status === f);
+          card.style.display = ok ? '' : 'none';
+        });
+      });
+    });
 
-	-- Atmosphere (puha éjszakai levegő)
-	local atm = Lighting:FindFirstChildOfClass("Atmosphere") or Instance.new("Atmosphere", Lighting)
-	atm.Density = 0.35
-	atm.Offset = 0.25
-	atm.Color = Color3.fromRGB(200, 220, 255)
-	atm.Decay = Color3.fromRGB(120, 140, 160)
-	atm.Glare = 0
-	atm.Haze = 1
+    // Részletek lenyitás
+    grid.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.prj-toggle'); if(!btn) return;
+      const box = document.getElementById(btn.getAttribute('aria-controls')); if(!box) return;
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      box.hidden = open;
+    });
 
-	-- Opció: enyhe Bloom a jég csillogására
-	local bloom = Lighting:FindFirstChildOfClass("BloomEffect") or Instance.new("BloomEffect", Lighting)
-	bloom.Intensity = 0.4
-	bloom.Threshold = 0.9
-	bloom.Size = 24
-end
+    // Lightbox
+    const modal = document.getElementById('projModal');
+    const mImg  = modal.querySelector('img');
+    const mClose= modal.querySelector('.close');
 
-print("[BuildCsataArena] Kész! A pálya felépült a 'Csata' köré (spawns/csapatok nélkül, éjszakai világítással).")
+    grid.addEventListener('click', (e)=>{
+      const z = e.target.closest('[data-zoom]'); if(!z) return;
+      mImg.src = z.getAttribute('data-zoom');
+      modal.classList.add('on');
+      modal.setAttribute('aria-hidden','false');
+      document.body.style.overflow='hidden';
+    });
+
+    function closeModal(){
+      modal.classList.remove('on');
+      modal.setAttribute('aria-hidden','true');
+      mImg.src = '';
+      document.body.style.overflow='';
+    }
+    mClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && modal.classList.contains('on')) closeModal(); });
+  })();
+  </script>
+</body>
+</html>

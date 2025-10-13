@@ -27,6 +27,8 @@
         <a href="#rolunk">Rólunk</a>
         <a href="#bemutatkozas">Bemutatkozás</a>
         <a href="#referenciak">Referenciák</a>
+        <!-- ÚJ: Nagyobb projektek menüpont -->
+        <a href="#projektek">Nagyobb projektek</a>
         <a href="#ajanlatkeres">Ajánlatkérés</a>
         <a href="#kapcsolat" class="pill">Kapcsolat</a>
         <!-- KÜLÖN FÜL: Webshop -->
@@ -186,6 +188,83 @@
       <div class="modal" id="imgModal" aria-hidden="true">
         <button class="modal-close" aria-label="Bezárás">×</button>
         <img src="" alt="Nagyított kép" class="modal-img" />
+      </div>
+    </section>
+
+    <!-- ÚJ: NAGYOBB PROJEKTEK -->
+    <section id="projektek" class="section soft-bg">
+      <div class="container">
+        <h2 class="section-title">Nagyobb projektek</h2>
+
+        <!-- Projekt #1 – Komádi -->
+        <article class="prj-card">
+          <figure class="prj-media">
+            <img src="komadi-terv.jpg" alt="Komádi közösségi tér – látványterv">
+            <figcaption class="prj-badge">EU támogatás • 605 M Ft</figcaption>
+          </figure>
+          <div class="prj-body">
+            <header class="prj-head">
+              <h3 class="prj-title">Komádi – Közösségi tér fejlesztése</h3>
+              <span class="prj-status">🔧 Folyamatban</span>
+            </header>
+
+            <p class="prj-lead">
+              A szabadidő-klub épületének bővítése új fogadótérrel, vizesblokkal, nézőtérrel és színpaddal,
+              továbbá öltözőkkel és parkolókkal.
+            </p>
+
+            <ul class="prj-meta">
+              <li>💶 <strong>Forrás:</strong> EU támogatás</li>
+              <li>🏗️ <strong>Kivitelező:</strong> Szőke Épker Kft.</li>
+              <li>📅 <strong>Várható befejezés:</strong> jövő év I. negyedév</li>
+              <li>📐 <strong>Terjedelem:</strong> bővítés + közösségi terek</li>
+            </ul>
+
+            <button class="prj-toggle" aria-expanded="false" aria-controls="prj1r">Részletek</button>
+            <div id="prj1r" class="prj-more" hidden>
+              <div class="prj-cols">
+                <div>
+                  <h4>Műszaki főpontok</h4>
+                  <ul class="prj-bullets">
+                    <li>Színpad és nézőtér kialakítás</li>
+                    <li>Vizesblokk és öltözők</li>
+                    <li>Akadálymentes fogadótér</li>
+                    <li>Parkolóhelyek és közlekedő</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4>Városi vízió</h4>
+                  <p>Az új közösségi tengely a környék új templomával együtt egységes, élhető városi magot hoz létre.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Sablon további projekthez – másold a blokkot
+        <article class="prj-card">
+          <figure class="prj-media">
+            <img src="csarnok.jpg" alt="Ipari csarnok – átadott projekt">
+            <figcaption class="prj-badge">Átadva • 1,2 Mrd Ft</figcaption>
+          </figure>
+          <div class="prj-body">
+            <header class="prj-head">
+              <h3 class="prj-title">Berettyóújfalu – Ipari csarnok bővítése</h3>
+              <span class="prj-status">✅ Befejezett</span>
+            </header>
+            <p class="prj-lead">Új gyártótér, raktár és irodablokk; darupálya, ipari padló, korszerű gépészet.</p>
+            <ul class="prj-meta">
+              <li>🏭 <strong>Funkció:</strong> Gyártó + raktár</li>
+              <li>📐 <strong>Alapterület:</strong> ~4 500 m²</li>
+              <li>🦺 <strong>Speciál:</strong> Darupálya, ipari padló</li>
+              <li>📅 <strong>Átadás:</strong> 2025 Q2</li>
+            </ul>
+            <button class="prj-toggle" aria-expanded="false" aria-controls="prj2r">Részletek</button>
+            <div id="prj2r" class="prj-more" hidden>...</div>
+          </div>
+        </article>
+        -->
+
       </div>
     </section>
 
@@ -473,9 +552,6 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
       : "";
   }
 
-  // NE blokkoljuk a submitot/fab-ot capturing-ben
-  // (szándékosan nincs stopImmediatePropagation)
-
   // Nyit/zár
   function openChat(){
     panel.setAttribute('aria-hidden','false');
@@ -590,5 +666,58 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
   }
 })();
 </script>
+
+<!-- ===== PROJEKTEK – STÍLUS (scoped, ütközésmentes) ===== -->
+<style>
+  #projektek .prj-card{
+    display:grid; grid-template-columns: 1.05fr 1fr; gap:22px;
+    background:#fff; border:1px solid #eee; border-radius:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px; margin-top:18px;
+  }
+  #projektek .prj-media{ position:relative; border-radius:14px; overflow:hidden; min-height:240px; }
+  #projektek .prj-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+  #projektek .prj-badge{
+    position:absolute; left:12px; bottom:12px; background:#8b5e3c; color:#fff;
+    padding:6px 10px; border-radius:999px; font-size:.9rem; box-shadow:0 3px 10px rgba(0,0,0,.2);
+  }
+  #projektek .prj-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  #projektek .prj-title{ margin:0; font-size:1.3rem; }
+  #projektek .prj-status{
+    display:inline-flex; align-items:center; gap:6px; color:#065f46; background:#ecfdf5;
+    border:1px solid #a7f3d0; padding:4px 8px; border-radius:999px; font-size:.85rem;
+  }
+  #projektek .prj-lead{ margin:8px 0 12px; line-height:1.6; }
+  #projektek .prj-meta{ list-style:none; padding:0; margin:0 0 12px;
+    display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; }
+  @media (max-width: 680px){ #projektek .prj-meta{ grid-template-columns:1fr; } }
+  #projektek .prj-meta li{ display:flex; gap:8px; align-items:center; font-size:.95rem; }
+  #projektek .prj-toggle{
+    appearance:none; border:1px solid #ddd; background:#fff; padding:8px 12px;
+    border-radius:10px; cursor:pointer; font-weight:600;
+  }
+  #projektek .prj-more{ margin-top:12px; border-top:1px dashed #e5e5e5; padding-top:12px; }
+  #projektek .prj-cols{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width: 860px){
+    #projektek .prj-card{ grid-template-columns:1fr; }
+    #projektek .prj-cols{ grid-template-columns:1fr; }
+  }
+  #projektek .prj-bullets{ margin:8px 0 0 18px; }
+</style>
+
+<!-- ===== PROJEKTEK – Lenyitás JS (scoped) ===== -->
+<script>
+  (() => {
+    const root = document.getElementById('projektek');
+    if(!root) return;
+    root.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.prj-toggle'); if(!btn) return;
+      const box = document.getElementById(btn.getAttribute('aria-controls')); if(!box) return;
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      box.hidden = open;
+    });
+  })();
+</script>
+
 </body>
 </html>

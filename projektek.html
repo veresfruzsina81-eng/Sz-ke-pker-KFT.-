@@ -1,0 +1,214 @@
+-- ServerScriptService -> BuildCsataArena.server.lua
+
+-- ===== Beállítások =====
+local ARENA_FOLDER_NAME = "Generated_Csata"
+local WALL_HEIGHT = 30
+local WALL_THICK  = 2
+local BASE_PAD_H  = 2
+local COVER_H     = 6
+local RAMP_W      = 10
+local RAMP_H      = 8
+local CENTER_PLAT_H = 3
+
+local WALL_COLOR  = Color3.fromRGB(220, 230, 255)
+local FLOOR_MAT   = Enum.Material.Ice
+local WALL_MAT    = Enum.Material.Slate
+local BASE_MAT    = Enum.Material.Neon
+local COVER_MAT   = Enum.Material.Concrete
+local RAMP_MAT    = Enum.Material.Metal
+
+local NIGHT_CLOCKTIME = 22 -- 22:00
+-- ========================
+
+local Lighting = game:GetService("Lighting")
+
+-- 1) Keresd meg a "Csata" Partot
+local root = workspace:FindFirstChild("Csata")
+if not root or not root:IsA("BasePart") then
+	warn("[BuildCsataArena] Nincs 'Csata' nevű Part a Workspace-ben!")
+	return
+end
+
+-- 2) Töröld a korábbi generált pályát
+local old = workspace:FindFirstChild(ARENA_FOLDER_NAME)
+if old then old:Destroy() end
+
+-- 3) Munkamappa
+local arenaFolder = Instance.new("Folder")
+arenaFolder.Name = ARENA_FOLDER_NAME
+arenaFolder.Parent = workspace
+
+-- 4) Segédfüggvények
+local function makePart(props)
+	local p = Instance.new("Part")
+	p.Anchored = true
+	p.CanCollide = true
+	p.TopSurface = Enum.SurfaceType.Smooth
+	p.BottomSurface = Enum.SurfaceType.Smooth
+	for k,v in pairs(props) do p[k] = v end
+	p.Parent = arenaFolder
+	return p
+end
+
+local function makeWall(length, thickness, height, atCF)
+	return makePart({
+		Name = "Wall",
+		Size = Vector3.new(length, height, thickness),
+		CFrame = atCF,
+		Material = WALL_MAT,
+		Color = WALL_COLOR
+	})
+end
+
+local function makeCover(name, cf, sx, sz)
+	return makePart({
+		Name = name,
+		Size = Vector3.new(sx, COVER_H, sz),
+		CFrame = cf * CFrame.new(0, COVER_H/2, 0),
+		Material = COVER_MAT,
+		Color = Color3.fromRGB(190,190,190)
+	})
+end
+
+local function makeRamp(atCF, width, height, length)
+	local wedge = Instance.new("WedgePart")
+	wedge.Name = "Ramp"
+	wedge.Anchored = true
+	wedge.CanCollide = true
+	wedge.Material = RAMP_MAT
+	wedge.Color = Color3.fromRGB(200,200,210)
+	wedge.Size = Vector3.new(width, height, length)
+	wedge.CFrame = atCF
+	wedge.Parent = arenaFolder
+	return wedge
+end
+
+-- Lámpaoszlop + fények (éjszakára)
+local function makeLampPost(cf, height)
+	local pole = makePart({
+		Name = "LampPost",
+		Size = Vector3.new(0.6, height, 0.6),
+		CFrame = cf * CFrame.new(0, height/2, 0),
+		Material = Enum.Material.Metal,
+		Color = Color3.fromRGB(180, 180, 180)
+	})
+	-- Fej (kar)
+	local head = makePart({
+		Name = "LampHead",
+		Size = Vector3.new(2, 0.4, 2),
+		CFrame = pole.CFrame * CFrame.new(0, pole.Size.Y/2 - 0.2, 0),
+		Material = Enum.Material.SmoothPlastic,
+		Color = Color3.fromRGB(230, 230, 230)
+	})
+	-- Fények
+	local spot = Instance.new("SpotLight")
+	spot.Name = "Spot"
+	spot.Brightness = 4
+	spot.Angle = 100
+	spot.Range = 50
+	spot.Face = Enum.NormalId.Bottom
+	spot.Parent = head
+
+	local point = Instance.new("PointLight")
+	point.Name = "Glow"
+	point.Brightness = 1.5
+	point.Range = 18
+	point.Parent = head
+
+	return pole, head
+end
+
+-- 5) Pálya felépítése a "Csata" köré
+local rootCF = root.CFrame
+local size   = root.Size
+
+-- Padló (jég)
+local floor = makePart({
+	Name = "Floor",
+	Size = Vector3.new(size.X, 1, size.Z),
+	CFrame = rootCF * CFrame.new(0, -root.Size.Y/2 + 0.5, 0),
+	Material = FLOOR_MAT,
+	Color = Color3.fromRGB(240, 248, 255)
+})
+
+-- Külső falak a peremen
+do
+	local halfX, halfZ = size.X/2, size.Z/2
+	makeWall(size.X, WALL_THICK, WALL_HEIGHT, rootCF * CFrame.new(0, WALL_HEIGHT/2, -halfZ))
+	makeWall(size.X, WALL_THICK, WALL_HEIGHT, rootCF * CFrame.new(0, WALL_HEIGHT/2,  halfZ))
+	makePart({
+		Name="Wall",
+		Size = Vector3.new(WALL_THICK, WALL_HEIGHT, size.Z),
+		CFrame = rootCF * CFrame.new(-halfX, WALL_HEIGHT/2, 0),
+		Material = WALL_MAT, Color = WALL_COLOR
+	})
+	makePart({
+		Name="Wall",
+		Size = Vector3.new(WALL_THICK, WALL_HEIGHT, size.Z),
+		CFrame = rootCF * CFrame.new( halfX, WALL_HEIGHT/2, 0),
+		Material = WALL_MAT, Color = WALL_COLOR
+	})
+end
+
+-- Oldalsó fedezékek
+do
+	local dx = math.max(18, size.X*0.12)
+	local dz = math.max(10, size.Z*0.08)
+	makeCover("Cover_L1", rootCF * CFrame.new(-dx, 0, -size.Z*0.18), 10, dz)
+	makeCover("Cover_R1", rootCF * CFrame.new( dx, 0, -size.Z*0.18), 10, dz)
+	makeCover("Cover_L2", rootCF * CFrame.new(-dx, 0,  size.Z*0.18), 10, dz)
+	makeCover("Cover_R2", rootCF * CFrame.new( dx, 0,  size.Z*0.18), 10, dz)
+end
+
+-- Középső platform + két rámpa
+local centerPlat = makePart({
+	Name="CenterPlatform",
+	Size = Vector3.new(math.max(20, size.X*0.18), CENTER_PLAT_H, math.max(20, size.Z*0.12)),
+	CFrame = rootCF * CFrame.new(0, CENTER_PLAT_H/2, 0),
+	Material = Enum.Material.Ice,
+	Color = Color3.fromRGB(230, 245, 255)
+})
+do
+	local rampLen = math.max(16, size.Z*0.12)
+	makeRamp(rootCF * CFrame.new(0, 0.01,  centerPlat.Size.Z/2 + 6) * CFrame.Angles(0, math.pi, -math.atan(RAMP_H/rampLen)), RAMP_W, RAMP_H, rampLen)
+	makeRamp(rootCF * CFrame.new(0, 0.01, -centerPlat.Size.Z/2 - 6) * CFrame.Angles(0, 0, -math.atan(RAMP_H/rampLen)), RAMP_W, RAMP_H, rampLen)
+end
+
+-- 6) Lámpaoszlopok a sarkoknál és a középen
+do
+	local halfX, halfZ = size.X/2, size.Z/2
+	local h = 16
+	-- Sarkok
+	makeLampPost(rootCF * CFrame.new( halfX - 3, 0,  halfZ - 3), h)
+	makeLampPost(rootCF * CFrame.new(-halfX + 3, 0,  halfZ - 3), h)
+	makeLampPost(rootCF * CFrame.new( halfX - 3, 0, -halfZ + 3), h)
+	makeLampPost(rootCF * CFrame.new(-halfX + 3, 0, -halfZ + 3), h)
+	-- Középre körben
+	makeLampPost(centerPlat.CFrame * CFrame.new( centerPlat.Size.X/2 + 4, 0,  0), h-2)
+	makeLampPost(centerPlat.CFrame * CFrame.new(-centerPlat.Size.X/2 - 4, 0,  0), h-2)
+end
+
+-- 7) Éjszakai környezeti beállítások
+do
+	Lighting.ClockTime = NIGHT_CLOCKTIME
+	Lighting.Brightness = 2
+	Lighting.EnvironmentDiffuseScale = 0.4
+	Lighting.EnvironmentSpecularScale = 0.7
+
+	-- Atmosphere (puha éjszakai levegő)
+	local atm = Lighting:FindFirstChildOfClass("Atmosphere") or Instance.new("Atmosphere", Lighting)
+	atm.Density = 0.35
+	atm.Offset = 0.25
+	atm.Color = Color3.fromRGB(200, 220, 255)
+	atm.Decay = Color3.fromRGB(120, 140, 160)
+	atm.Glare = 0
+	atm.Haze = 1
+
+	-- Opció: enyhe Bloom a jég csillogására
+	local bloom = Lighting:FindFirstChildOfClass("BloomEffect") or Instance.new("BloomEffect", Lighting)
+	bloom.Intensity = 0.4
+	bloom.Threshold = 0.9
+	bloom.Size = 24
+end
+
+print("[BuildCsataArena] Kész! A pálya felépült a 'Csata' köré (spawns/csapatok nélkül, éjszakai világítással).")

@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Szőke Épker KFT.</title>
   <link rel="stylesheet" href="styles.css" />
+  <!-- Fejléc stabilizáló, ütközésmentes override -->
+  <style>
+    .site-header .header-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .site-header .main-nav{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+    .site-header .main-nav a{white-space:nowrap}
+    @media (max-width:980px){.site-header .main-nav{gap:8px 10px}}
+  </style>
 </head>
 <body>
 
@@ -27,11 +34,10 @@
         <a href="#rolunk">Rólunk</a>
         <a href="#bemutatkozas">Bemutatkozás</a>
         <a href="#referenciak">Referenciák</a>
-        <!-- ÚJ: Nagyobb projektek menüpont -->
-        <a href="#projektek">Nagyobb projektek</a>
+        <!-- Kiemelt menüpont -->
+        <a href="#projektek" class="pill">Nagyobb projektek</a>
         <a href="#ajanlatkeres">Ajánlatkérés</a>
         <a href="#kapcsolat" class="pill">Kapcsolat</a>
-        <!-- KÜLÖN FÜL: Webshop -->
         <a href="webshop.html" class="pill">Webshop</a>
       </nav>
     </div>
@@ -191,79 +197,73 @@
       </div>
     </section>
 
-    <!-- ÚJ: NAGYOBB PROJEKTEK -->
+    <!-- ÚJ: NAGYOBB PROJEKTEK (kiemelt) -->
     <section id="projektek" class="section soft-bg">
       <div class="container">
         <h2 class="section-title">Nagyobb projektek</h2>
 
-        <!-- Projekt #1 – Komádi -->
-        <article class="prj-card">
-          <figure class="prj-media">
-            <img src="komadi-terv.jpg" alt="Komádi közösségi tér – látványterv">
-            <figcaption class="prj-badge">EU támogatás • 605 M Ft</figcaption>
-          </figure>
-          <div class="prj-body">
-            <header class="prj-head">
-              <h3 class="prj-title">Komádi – Közösségi tér fejlesztése</h3>
-              <span class="prj-status">🔧 Folyamatban</span>
-            </header>
+        <!-- Kiemelt hero-kártya -->
+        <article class="prj-feature">
+          <div class="prj-feature-media">
+            <img src="komadi.jpg" alt="Komádi közösségi tér – látvány / építési fotó">
+            <div class="prj-feature-badge">EU támogatás • 605 M Ft</div>
+            <div class="prj-feature-gradient"></div>
+            <div class="prj-feature-caption">
+              <h3>Komádi – Közösségi tér fejlesztése</h3>
+              <p>Modern, többfunkciós közösségi épület: fogadótér, vizesblokk, színpad és nézőtér, öltözők és parkolók.</p>
+              <div class="prj-stats">
+                <span>🔧 Folyamatban</span>
+                <span>📅 Befejezés: jövő év I. negyedév</span>
+                <span>🏗️ Kivitelező: Szőke Épker Kft.</span>
+              </div>
+            </div>
+          </div>
 
-            <p class="prj-lead">
-              A szabadidő-klub épületének bővítése új fogadótérrel, vizesblokkal, nézőtérrel és színpaddal,
-              továbbá öltözőkkel és parkolókkal.
+          <div class="prj-feature-body">
+            <div class="prj-icons">
+              <div class="prj-ico"><span>🏛️</span><small>Fogadótér</small></div>
+              <div class="prj-ico"><span>🚻</span><small>Vizesblokk</small></div>
+              <div class="prj-ico"><span>🎭</span><small>Színpad</small></div>
+              <div class="prj-ico"><span>🪑</span><small>Nézőtér</small></div>
+              <div class="prj-ico"><span>🧥</span><small>Öltözők</small></div>
+              <div class="prj-ico"><span>🅿️</span><small>Parkolók</small></div>
+            </div>
+
+            <p class="prj-intro">
+              A beruházás célja, hogy Komádi kulturális és közösségi életének új, korszerű otthont adjon.
+              A bővítés során kiemelt figyelmet kap az akadálymentesítés, a kényelmes közlekedés és
+              az üzemeltetési költségek csökkentése. A fejlesztés a városközpont megújulásának
+              kulcseleme, amely a környező intézményekkel együtt egységes, élhető közösségi tengelyt hoz létre.
             </p>
 
             <ul class="prj-meta">
-              <li>💶 <strong>Forrás:</strong> EU támogatás</li>
-              <li>🏗️ <strong>Kivitelező:</strong> Szőke Épker Kft.</li>
-              <li>📅 <strong>Várható befejezés:</strong> jövő év I. negyedév</li>
-              <li>📐 <strong>Terjedelem:</strong> bővítés + közösségi terek</li>
+              <li>💶 <strong>Finanszírozás:</strong> EU forrás</li>
+              <li>📐 <strong>Terjedelem:</strong> fogadótér • vizesblokk • nézőtér • színpad • öltözők • parkolók</li>
+              <li>🧱 <strong>Anyaghasználat:</strong> tartós, bevált rendszerek gyártói előírás szerint</li>
+              <li>🧰 <strong>Projektmenedzsment:</strong> ütemterv, mérföldkövek, rendszeres státusz</li>
             </ul>
 
-            <button class="prj-toggle" aria-expanded="false" aria-controls="prj1r">Részletek</button>
+            <button class="prj-toggle" aria-expanded="false" aria-controls="prj1r">Részletes műszaki leírás</button>
             <div id="prj1r" class="prj-more" hidden>
               <div class="prj-cols">
                 <div>
                   <h4>Műszaki főpontok</h4>
                   <ul class="prj-bullets">
-                    <li>Színpad és nézőtér kialakítás</li>
-                    <li>Vizesblokk és öltözők</li>
-                    <li>Akadálymentes fogadótér</li>
-                    <li>Parkolóhelyek és közlekedő</li>
+                    <li>Akusztikailag optimalizált nézőtér és színpad</li>
+                    <li>Akadálymentes, tágas fogadótér és beléptetés</li>
+                    <li>Korszerű gépészet, LED világítás, energiatakarékos üzem</li>
+                    <li>Rendezett külső közlekedők és parkolófelületek</li>
                   </ul>
                 </div>
                 <div>
-                  <h4>Városi vízió</h4>
-                  <p>Az új közösségi tengely a környék új templomával együtt egységes, élhető városi magot hoz létre.</p>
+                  <h4>Üzemeltetői előnyök</h4>
+                  <p>Tervezhető fenntartási költség, rugalmas térhasználat (rendezvény, közösségi programok),
+                    jó hangosíthatóság és látványtechnikára előkészített infrastruktúra.</p>
                 </div>
               </div>
             </div>
           </div>
         </article>
-
-        <!-- Sablon további projekthez – másold a blokkot
-        <article class="prj-card">
-          <figure class="prj-media">
-            <img src="csarnok.jpg" alt="Ipari csarnok – átadott projekt">
-            <figcaption class="prj-badge">Átadva • 1,2 Mrd Ft</figcaption>
-          </figure>
-          <div class="prj-body">
-            <header class="prj-head">
-              <h3 class="prj-title">Berettyóújfalu – Ipari csarnok bővítése</h3>
-              <span class="prj-status">✅ Befejezett</span>
-            </header>
-            <p class="prj-lead">Új gyártótér, raktár és irodablokk; darupálya, ipari padló, korszerű gépészet.</p>
-            <ul class="prj-meta">
-              <li>🏭 <strong>Funkció:</strong> Gyártó + raktár</li>
-              <li>📐 <strong>Alapterület:</strong> ~4 500 m²</li>
-              <li>🦺 <strong>Speciál:</strong> Darupálya, ipari padló</li>
-              <li>📅 <strong>Átadás:</strong> 2025 Q2</li>
-            </ul>
-            <button class="prj-toggle" aria-expanded="false" aria-controls="prj2r">Részletek</button>
-            <div id="prj2r" class="prj-more" hidden>...</div>
-          </div>
-        </article>
-        -->
 
       </div>
     </section>
@@ -304,7 +304,7 @@
               title="Térkép"
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps?q=Sz%C5%91ke%20%C3%89pker%20KFT%204100%20Beretty%C3%B3%C3%BAjfalu%20D%C3%B3zsa%20Gy%C3%B6rgy%206%201%2F3&output=embed">
+              src="https://www.google.com/maps?q=Sz%C5%91ke%20%C3%89pker%20KFT%204100%20Beretty%C3%B3újfalu%20D%C3%B3zsa%20Gy%C3%B6rgy%206%201%2F3&output=embed">
             </iframe>
           </div>
         </div>
@@ -392,10 +392,8 @@
     const LS_CHAT = "szoke_chat_history_v1";
     const LS_WELCOME = "szoke_chat_welcome_v1";
 
-    // NO PERSIST: régi előzmény törlés, ne használjunk localStorage-t a history-ra
     try { localStorage.removeItem(LS_CHAT); } catch(_){}  // CLEAR OLD HISTORY
-    let history = [];                          // memória-alapú csak a futás idejére
-    const save = () => {};                     // NO PERSIST: mentés kikapcsolva
+    let history = []; const save = () => {};              // NO PERSIST
 
     const SYS = `Te a "Szőke Épker KFT." rövid, kedves és segítőkész üzleti asszisztense vagy.
 Válaszolj magyarul, tömören. Csak üzleti témák: szolgáltatások, folyamat, kapcsolat, webshop, szállítás (1490 Ft, 30 000 Ft felett ingyenes), fizetés (csak utánvét), rendelés email visszaigazolás.
@@ -421,7 +419,6 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
     const closeBtn = panel.querySelector('.chat-close');
 
     const scrollBottom = () => body.scrollTop = body.scrollHeight;
-
     function addMsg(role, html){
       const wrap = document.createElement('div');
       wrap.className = 'msg ' + (role==='user'?'me':'bot');
@@ -429,23 +426,13 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
       body.appendChild(wrap);
       scrollBottom();
     }
-
-    function openChat(){
-      panel.setAttribute('aria-hidden','false');
-      panel.classList.add('on');
-      fab.classList.add('off');
-      input.focus();
-    }
-    function closeChat(){
-      panel.setAttribute('aria-hidden','true');
-      panel.classList.remove('on');
-      fab.classList.remove('off');
-    }
+    function openChat(){ panel.setAttribute('aria-hidden','false'); panel.classList.add('on'); fab.classList.add('off'); input.focus(); }
+    function closeChat(){ panel.setAttribute('aria-hidden','true'); panel.classList.remove('on'); fab.classList.remove('off'); }
 
     fab.addEventListener('click', openChat);
     closeBtn.addEventListener('click', closeChat);
 
-    // első látogatás: kedves köszöntő (LS_WELCOME maradhat)
+    // első látogatás: kedves köszöntő
     window.addEventListener('load', ()=>{
       if(!localStorage.getItem(LS_WELCOME)){
         openChat();
@@ -494,140 +481,17 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
       if(!q) return;
       input.value = "";
       addMsg('user', q);
-      history.push({role:'user', content:q}); save();   // NO PERSIST
+      history.push({role:'user', content:q}); save();
 
       addMsg('bot', 'Írok…');
       const typing = body.lastElementChild;
       const reply = await askLLM(q);
       typing.remove();
       addMsg('bot', reply);
-      history.push({role:'assistant', content:reply}); save(); // NO PERSIST
+      history.push({role:'assistant', content:reply}); save();
     });
   })();
   </script>
-
-<!-- === CHAT PATCH (Netlify AI, quick replies, kedves üdvözlő, humor) === -->
-<script>
-(()=> {
-  const ENDPOINT = "/.netlify/functions/ai";
-  const LS_CHAT = "szoke_chat_history_v1";
-  const LS_WELCOME = "szoke_chat_welcome_v2";
-
-  const fab   = document.getElementById('chat-fab');
-  const panel = document.getElementById('chat-panel');
-  const body  = document.getElementById('chat-body');
-  const form  = document.getElementById('chat-form');
-  const input = document.getElementById('chat-input');
-  const closeBtn = panel?.querySelector('.chat-close');
-
-  if(!fab || !panel || !body || !form || !input){
-    console.warn("[chat patch] hiányzó elemek – ellenőrizd a chat HTML-t"); return;
-  }
-
-  // Gyors gomb konténer
-  let quick = document.getElementById('chat-quick');
-  if(!quick){
-    quick = document.createElement('div');
-    quick.id = 'chat-quick';
-    quick.className = 'chat-quick';
-    form.parentNode.insertBefore(quick, form);
-  }
-
-  // NO PERSIST: régi előzmény törlése és nincs localStorage használat
-  try { localStorage.removeItem(LS_CHAT); } catch(_){}  // CLEAR OLD HISTORY
-  let history = [];                         // csak memóriában
-  const save = () => {};                    // NO PERSIST
-
-  const scrollBottom = () => body.scrollTop = body.scrollHeight;
-
-  function addMsg(role, html){
-    const wrap = document.createElement('div');
-    wrap.className = 'msg ' + (role==='user'?'me':'bot');
-    wrap.innerHTML = `<div class="bubble">${html}</div>`;
-    body.appendChild(wrap); scrollBottom();
-  }
-  function setQuickReplies(arr){
-    quick.innerHTML = (arr && arr.length)
-      ? arr.slice(0,4).map(t=>`<button type="button" class="qr">${t}</button>`).join("")
-      : "";
-  }
-
-  // Nyit/zár
-  function openChat(){
-    panel.setAttribute('aria-hidden','false');
-    panel.classList.add('on');
-    fab.classList.add('off');
-    input.focus();
-  }
-  function closeChat(){
-    panel.setAttribute('aria-hidden','true');
-    panel.classList.remove('on');
-    fab.classList.remove('off');
-  }
-  fab.addEventListener('click', openChat);
-  closeBtn?.addEventListener('click', closeChat);
-
-  // Üdvözlő csak egyszer (ez maradhat)
-  window.addEventListener('load', ()=>{
-    if(!localStorage.getItem(LS_WELCOME)){
-      openChat();
-      addMsg('bot','Szia, üdvözöllek a <strong>Szőke Épker</strong> saját chat ablakában! 😊<br>Üzleti kérdésekben segítek: szolgáltatások, webshop, szállítás/fizetés. Árajánlathoz kattints: <a href="index.html#ajanlatkeres">Ajánlatkérés</a>.');
-      setQuickReplies(['Szolgáltatások','Szállítás','Fizetés','Kapcsolat']);
-      localStorage.setItem(LS_WELCOME, '1');
-    }
-  });
-
-  function fallbackReply(q){
-    const s=q.toLowerCase(), offer=`<a href="index.html#ajanlatkeres">Ajánlatkérés</a>`;
-    if(/szia|hello|helló|jó napot/.test(s)) return {reply:"Szia! Miben segíthetek: szolgáltatások, webshop, szállítás/fizetés vagy árajánlat?", quick_replies:['Szolgáltatások','Szállítás','Fizetés','Kapcsolat']};
-    if(/ár|áraj|költs|mennyibe|árlista/.test(s)) return {reply:`Az ár több tényezőtől függ. Kérlek, küldd el az igényt itt: ${offer}.`, quick_replies:['Ajánlatkérés','Kapcsolat']};
-    if(/szállít|futár|ingyenes/.test(s)) return {reply:"Szállítás: 1490 Ft, 30 000 Ft felett ingyenes.", quick_replies:['Fizetés','Kapcsolat']};
-    if(/fizet|utánvét|online|kártya/.test(s)) return {reply:"Online fizetés jelenleg nem elérhető, csak utánvét.", quick_replies:['Szállítás','Ajánlatkérés']};
-    if(/kapcsolat|telefon|email|elérhet/.test(s)) return {reply:"+36 70 607 0675 · info@szoke-epker.com · 4100 Berettyóújfalu, Dózsa György utca 6 1/3.", quick_replies:['Telefonhívás','E-mail küldése','Ajánlatkérés']};
-    return {reply:"Értem a kérdésed, de sajnos csak üzleti témákban válaszolhatok 😚", quick_replies:['Ajánlatkérés','Kapcsolat']};
-  }
-
-  async function askServer(prompt){
-    try{
-      const res = await fetch(ENDPOINT, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ prompt, history: history.slice(-6) })
-      });
-      if(!res.ok) throw 0;
-      const data = await res.json();
-      return { reply: data.reply || "Rendben.", quick_replies: data.quick_replies || [] };
-    }catch(_){
-      return fallbackReply(prompt);
-    }
-  }
-
-  // Quick reply → írja be és submitolja a meglévő formot
-  quick.addEventListener('click', (e)=>{
-    const b = e.target.closest('.qr'); if(!b) return;
-    input.value = b.textContent.trim();
-    form.requestSubmit();
-  });
-
-  // Submit kezelés (NINCS mentés localStorage-ba)
-  form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const q = (input.value || "").trim(); if(!q) return;
-    input.value = "";
-    addMsg('user', q);
-    history.push({role:'user', content:q}); save(); // NO PERSIST
-
-    addMsg('bot','Írok…'); const typing = body.lastElementChild;
-    const { reply, quick_replies } = await askServer(q);
-    typing.remove();
-
-    addMsg('bot', reply);
-    setQuickReplies(quick_replies);
-    history.push({role:'assistant', content:reply}); save(); // NO PERSIST
-  });
-
-})();
-</script>
 
 <script>
 /* === Chat viewport clamp – mobil méretezés JS-biztosítással === */
@@ -667,41 +531,70 @@ Ha a kérdés off-topic, mondd: "Értem a kérdésed, de sajnos csak üzleti té
 })();
 </script>
 
-<!-- ===== PROJEKTEK – STÍLUS (scoped, ütközésmentes) ===== -->
+<!-- ===== PROJEKTEK – STÍLUS (scoped) ===== -->
 <style>
-  #projektek .prj-card{
-    display:grid; grid-template-columns: 1.05fr 1fr; gap:22px;
-    background:#fff; border:1px solid #eee; border-radius:18px;
-    box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px; margin-top:18px;
+  /* Kiemelt projekt hero-kártya */
+  #projektek .prj-feature{
+    display:grid; gap:18px;
+    background:linear-gradient(180deg,#fff, #fbfaf8);
+    border:1px solid #eee; border-radius:22px; padding:14px;
+    box-shadow:0 12px 32px rgba(0,0,0,.08);
   }
-  #projektek .prj-media{ position:relative; border-radius:14px; overflow:hidden; min-height:240px; }
-  #projektek .prj-media img{ width:100%; height:100%; object-fit:cover; display:block; }
-  #projektek .prj-badge{
-    position:absolute; left:12px; bottom:12px; background:#8b5e3c; color:#fff;
-    padding:6px 10px; border-radius:999px; font-size:.9rem; box-shadow:0 3px 10px rgba(0,0,0,.2);
+  #projektek .prj-feature-media{
+    position:relative; overflow:hidden; border-radius:18px;
+    aspect-ratio: 21/9; background:#f4f1ed;
   }
-  #projektek .prj-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
-  #projektek .prj-title{ margin:0; font-size:1.3rem; }
-  #projektek .prj-status{
-    display:inline-flex; align-items:center; gap:6px; color:#065f46; background:#ecfdf5;
-    border:1px solid #a7f3d0; padding:4px 8px; border-radius:999px; font-size:.85rem;
+  #projektek .prj-feature-media img{
+    width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.02);
   }
-  #projektek .prj-lead{ margin:8px 0 12px; line-height:1.6; }
+  #projektek .prj-feature-gradient{
+    position:absolute; inset:0;
+    background:linear-gradient(180deg,rgba(0,0,0,0) 40%, rgba(0,0,0,.55) 100%);
+  }
+  #projektek .prj-feature-badge{
+    position:absolute; left:16px; top:16px;
+    background:#8b5e3c; color:#fff; padding:8px 12px; border-radius:999px;
+    font-weight:700; box-shadow:0 6px 18px rgba(0,0,0,.25);
+  }
+  #projektek .prj-feature-caption{
+    position:absolute; left:18px; right:18px; bottom:14px; color:#fff;
+  }
+  #projektek .prj-feature-caption h3{ margin:0 0 6px; font-size:1.6rem; text-shadow:0 2px 10px rgba(0,0,0,.35) }
+  #projektek .prj-feature-caption p{ margin:0 0 10px; opacity:.95 }
+  #projektek .prj-stats{ display:flex; gap:10px; flex-wrap:wrap }
+  #projektek .prj-stats span{
+    background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3);
+    padding:6px 10px; border-radius:999px; backdrop-filter: blur(2px);
+    font-size:.93rem;
+  }
+
+  #projektek .prj-feature-body{ padding:6px 6px 10px; }
+  #projektek .prj-icons{ display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; margin-bottom:10px; }
+  @media (max-width:900px){ #projektek .prj-icons{ grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:520px){ #projektek .prj-icons{ grid-template-columns:repeat(2,1fr);} }
+  #projektek .prj-ico{
+    background:#fff; border:1px solid #eee; border-radius:14px; padding:10px;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    box-shadow:0 6px 18px rgba(0,0,0,.05);
+  }
+  #projektek .prj-ico span{ font-size:1.25rem }
+  #projektek .prj-ico small{ font-size:.85rem; color:#4b5563 }
+
+  #projektek .prj-intro{ margin:8px 0 12px; line-height:1.7 }
   #projektek .prj-meta{ list-style:none; padding:0; margin:0 0 12px;
-    display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; }
-  @media (max-width: 680px){ #projektek .prj-meta{ grid-template-columns:1fr; } }
-  #projektek .prj-meta li{ display:flex; gap:8px; align-items:center; font-size:.95rem; }
+    display:grid; grid-template-columns:1fr 1fr; gap:8px 16px }
+  @media (max-width:720px){ #projektek .prj-meta{ grid-template-columns:1fr } }
+  #projektek .prj-meta li{ display:flex; gap:8px; align-items:center; font-size:.95rem }
+
   #projektek .prj-toggle{
-    appearance:none; border:1px solid #ddd; background:#fff; padding:8px 12px;
-    border-radius:10px; cursor:pointer; font-weight:600;
+    appearance:none; border:1px solid #d9d9d9; background:#fff; padding:10px 14px;
+    border-radius:12px; cursor:pointer; font-weight:700;
+    box-shadow:0 4px 14px rgba(0,0,0,.06)
   }
-  #projektek .prj-more{ margin-top:12px; border-top:1px dashed #e5e5e5; padding-top:12px; }
-  #projektek .prj-cols{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  @media (max-width: 860px){
-    #projektek .prj-card{ grid-template-columns:1fr; }
-    #projektek .prj-cols{ grid-template-columns:1fr; }
-  }
-  #projektek .prj-bullets{ margin:8px 0 0 18px; }
+  #projektek .prj-more{ margin-top:12px; border-top:1px dashed #e5e5e5; padding-top:12px }
+  #projektek .prj-cols{ display:grid; grid-template-columns:1fr 1fr; gap:16px }
+  @media (max-width:860px){ #projektek .prj-cols{ grid-template-columns:1fr } }
+  #projektek .prj-bullets{ margin:8px 0 0 18px }
 </style>
 
 <!-- ===== PROJEKTEK – Lenyitás JS (scoped) ===== -->

@@ -8,80 +8,139 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
 :root{
-  --ink:#222; --muted:#7a8594; --bg:#f5f7fb; --card:#fff;
-  --brand:#2f6fed; --brand-2:#245bcb; --ring:0 0 0 3px rgba(47,111,237,.18);
-  --radius:16px; --bad:#e23d3d; --ok:#1f8f5f;
+  /* Színek */
+  --ink:#1c1c1e; --muted:#6c7282; --bg:#f5f8fc; --card:#ffffff;
+  --brand:#2f6fed; --brand-2:#245bcb; --good:#1f8f5f; --bad:#e23d3d;
+  /* UI */
+  --radius:18px; --shadow:0 8px 26px rgba(0,0,0,.06);
+  --ring:0 0 0 3px rgba(47,111,237,.18);
 }
+
+/* Alapok */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;font-family:Inter,system-ui;background:var(--bg);color:var(--ink)}
+h1,h2,h3{margin:0 0 8px}
+
+/* Konténer */
 .wrap{max-width:1200px;margin:0 auto;padding:18px 14px}
-.card{background:var(--card);border:1px solid #e5e9f2;border-radius:var(--radius);padding:16px;box-shadow:0 18px 40px rgba(22,29,37,.05)}
-h1{margin:0 0 8px} h2{margin:0 0 10px}
-input,textarea,select{width:100%;border:1px solid #e5e9f2;background:#fff;padding:12px 14px;border-radius:12px;font:inherit}
-input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);border-color:#d6def7}
-.btn{appearance:none;border:0;padding:10px 16px;border-radius:12px;cursor:pointer;font-weight:700;background:var(--brand);color:#fff;transition:.18s}
+
+/* Kártyák */
+.card{
+  background:var(--card);border:1px solid #e8edf6;border-radius:var(--radius);
+  padding:16px;box-shadow:var(--shadow)
+}
+
+/* Bemenetek és gombok */
+input,textarea,select{
+  width:100%;border:1px solid #dfe7f3;background:#fff;padding:12px 14px;
+  border-radius:12px;font:inherit;transition:.16s
+}
+input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);border-color:#cfe0ff}
+.btn{
+  appearance:none;border:0;padding:10px 16px;border-radius:12px;cursor:pointer;
+  font-weight:700;background:var(--brand);color:#fff;transition:.18s
+}
 .btn:hover{background:var(--brand-2)}
 .btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
 .btn.bad{background:var(--bad)}
+.muted{color:var(--muted)}
 .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.tabs{display:flex;gap:10px;margin:14px 0 18px;flex-wrap:wrap}
-.tab{padding:9px 14px;border-radius:999px;border:1px solid #e5e9f2;background:#fff;cursor:pointer;font-weight:600}
-.tab.active{background:var(--brand);color:#fff;border-color:var(--brand)}
 .grid{display:grid;gap:12px}
 .grid-2{grid-template-columns:1fr}
 @media(min-width:900px){.grid-2{grid-template-columns:380px 1fr}}
 
-/* ELEMEK */
+/* ANIMÁLT TOPBAR a meglévő fejléc-sor helyén */
+.topbar{
+  position:sticky;top:0;z-index:20;
+  background:linear-gradient(135deg,#e7f0ff 0%,#f9fbff 100%);
+  border:1px solid #e8edf6;border-radius:16px;box-shadow:var(--shadow);
+  padding:14px 16px;margin-bottom:14px;
+  animation:slideDown .7s ease forwards;transform:translateY(-100%);opacity:0
+}
+@keyframes slideDown{
+  0%{transform:translateY(-100%);opacity:0}
+  100%{transform:translateY(0);opacity:1}
+}
+.topbar h1{margin:0;color:var(--brand);font-size:20px}
+
+/* Tabs */
+.tabs{display:flex;gap:10px;margin:14px 0 18px;flex-wrap:wrap}
+.tab{
+  padding:10px 16px;border-radius:999px;border:1px solid #dfe7f3;background:#fff;
+  cursor:pointer;font-weight:600;transition:.18s
+}
+.tab.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+
+/* List elemek */
 .item{
   display:grid;grid-template-columns:96px 1fr auto;gap:12px;align-items:center;
-  border:1px solid #e5e9f2;border-radius:12px;padding:12px;background:#fff
+  border:1px solid #e8edf6;border-radius:12px;padding:12px;background:#fff;
+  transition:.18s
 }
 .item + .item{margin-top:10px}
+.item:hover{box-shadow:0 6px 18px rgba(0,0,0,.06)}
 .thumb{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid #e5e9f2;background:#fff}
-.muted{color:var(--muted)}
-.login{max-width:520px;margin:40px auto}
-.hidden{display:none}
 
-/* PANELEK görgethető tartalommal */
+/* Görgethető panel */
 .panel{max-height:72vh;overflow:auto;border-radius:14px}
 #plist,#olist,#rlist{padding-right:4px;margin-top:8px}
 #olist .card + .card{margin-top:10px}
 
-/* AKCIÓGOMB-SOR */
+/* Akciógomb-sor */
 .actions{display:flex;gap:8px;flex-wrap:nowrap}
 .actions .btn{min-width:108px}
 @media(max-width:480px){.actions .btn{min-width:unset;flex:1}}
 
-/* RAGADÓS FEJLÉC */
+/* Ragadós kártyafejléc */
 #tab-products .card h2,#tab-orders .card h2,#tab-reviews .card h2{
   position:sticky;top:0;z-index:2;background:var(--card);
-  margin:-16px -16px 10px;padding:12px 16px;border-bottom:1px solid #e5e9f2;
+  margin:-16px -16px 10px;padding:12px 16px;border-bottom:1px solid #eef1f8;
   border-top-left-radius:var(--radius);border-top-right-radius:var(--radius)
 }
 
-/* KERESŐ */
+/* Kereső */
 .search{display:flex;gap:8px;align-items:center}
 .input{border:1px solid #e5e9f2;background:#fff;border-radius:10px;padding:10px 12px}
 
-/* MODAL */
+/* Modal */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:1000}
 .modal{position:fixed;inset:0;display:none;place-items:center;z-index:1001;padding:16px}
 .modal>div{background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.25);width:min(720px,92vw);padding:16px}
 .modal.open{display:grid}.scrim.open{display:block}
 
-/* STÁTUSZ BADGE-ek */
+/* Badge-ek */
 .badge{display:inline-block;padding:4px 10px;border-radius:10px;font-size:12px;font-weight:700;color:#fff;vertical-align:middle}
 .badge.new{background:#3b82f6}
 .badge.proc{background:#f59e0b}
 .badge.done{background:#10b981}
 .badge.cancel{background:#ef4444}
 
-/* TOAST */
+/* Toast */
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 14px;border-radius:12px;box-shadow:0 12px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:.25s;z-index:1202}
 .toast.show{opacity:1}
 
-/* MOBIL TUNING */
+/* Dashboard kártyák (statisztika) */
+.dashboard{display:grid;gap:16px;margin:18px 0 10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.stat{
+  background:#fff;border:1px solid #e8edf6;border-radius:16px;box-shadow:var(--shadow);
+  padding:16px;transition:.18s
+}
+.stat:hover{transform:translateY(-2px)}
+.stat h3{margin:0;color:var(--muted);font-size:13px}
+.stat strong{font-size:22px}
+
+/* Profil kártya */
+.profile{
+  display:flex;align-items:center;gap:12px;margin-top:20px;
+  background:#fff;border:1px solid #e8edf6;border-radius:16px;padding:14px 16px;box-shadow:var(--shadow)
+}
+.profile img{width:52px;height:52px;border-radius:50%;object-fit:cover}
+.profile div{line-height:1.2}
+.profile strong{font-size:15px}
+.profile span{font-size:13px;color:var(--muted)}
+
+/* Mobil */
 @media(max-width:680px){
   .item{grid-template-columns:72px 1fr;align-items:flex-start}
   .thumb{width:72px;height:72px}
@@ -92,11 +151,15 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
   .tabs{gap:8px}
   .grid-2{grid-template-columns:1fr}
 }
+
+/* Egyéb */
+.login{max-width:520px;margin:40px auto}
+.hidden{display:none}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <!-- Login -->
+  <!-- Login (változatlan) -->
   <div id="loginBox" class="card login">
     <div class="row" style="gap:10px;align-items:center;margin-bottom:6px">
       <img src="logo.png" alt="" style="height:28px"><h1 style="margin:0">Szőke Épker – Admin belépés</h1>
@@ -110,7 +173,8 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
 
   <!-- App -->
   <div id="app" class="hidden">
-    <div class="row" style="justify-content:space-between;margin-bottom:10px">
+    <!-- ANIMÁLT TOPBAR – a régi felső sor helyén -->
+    <div class="topbar row" style="justify-content:space-between">
       <div class="row" style="gap:8px;align-items:center">
         <img src="logo.png" alt="" style="height:28px">
         <h1 style="margin:0">Szőke Épker Adminisztráció</h1>
@@ -121,12 +185,22 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
       </div>
     </div>
 
+    <!-- Dashboard kártyák (statikus placeholder) -->
+    <div class="dashboard">
+      <div class="stat"><h3>Összes termék</h3><strong>3 236</strong></div>
+      <div class="stat"><h3>Aktív termékek</h3><strong>2 887</strong></div>
+      <div class="stat"><h3>Mai rendelések</h3><strong>4</strong></div>
+      <div class="stat"><h3>Havi bevétel</h3><strong>21 140 Ft</strong></div>
+    </div>
+
+    <!-- Tabs (változatlan szerkezet) -->
     <div class="tabs">
       <button class="tab active" data-tab="products" type="button">Termékek</button>
       <button class="tab" data-tab="orders" type="button">Rendelések</button>
       <button class="tab" data-tab="reviews" type="button">Vélemények</button>
     </div>
 
+    <!-- Termékek -->
     <div id="tab-products">
       <div class="grid grid-2">
         <div class="card panel">
@@ -156,6 +230,7 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
       </div>
     </div>
 
+    <!-- Rendelések -->
     <div id="tab-orders" class="hidden">
       <div class="card panel">
         <div class="row" style="justify-content:space-between;align-items:center">
@@ -169,6 +244,7 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
       </div>
     </div>
 
+    <!-- Vélemények -->
     <div id="tab-reviews" class="hidden">
       <div class="card panel">
         <h2>Vélemények</h2>
@@ -176,10 +252,19 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
         <div id="rempty" class="muted">Még nincs vélemény.</div>
       </div>
     </div>
+
+    <!-- Profil kártya alul -->
+    <div class="profile">
+      <img src="szokegyula.jpg" alt="Szőke Gyula">
+      <div>
+        <strong>Szőke Gyula</strong>
+        <span>Adminisztrátor</span>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Termék szerkesztő modal -->
+<!-- Termék szerkesztő modal (változatlan) -->
 <div id="editScrim" class="scrim"></div>
 <div id="editModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
   <div>
@@ -207,7 +292,7 @@ input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);bord
 <div id="toast" class="toast">Mentve</div>
 
 <script>
-/* ===== Beállítások / Segédek ===== */
+/* ===== Beállítások / Segédek (VÁLTOZATLAN) ===== */
 const ADMIN_USER = "szokeadmin";
 const ADMIN_PASS = "szoke2025";
 const SUPABASE_URL = "https://gckynywmoxylwyppmkck.supabase.co";
@@ -219,7 +304,7 @@ const normalizeId=(id)=>/^\d+$/.test(String(id))?parseInt(id,10):id;
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1400);}
 function setLogged(v){localStorage.setItem("szoke_admin",v?"1":"");document.getElementById("loginBox").classList.toggle("hidden",v);document.getElementById("app").classList.toggle("hidden",!v);}
 
-/* ===== Init / Nav ===== */
+/* ===== Init / Nav (VÁLTOZATLAN) ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
   if(localStorage.getItem("szoke_admin")==="1"){ setLogged(true); loadAll(); }
   document.getElementById("loginBtn").onclick=()=>{const u=document.getElementById("u").value.trim();const p=document.getElementById("p").value.trim();if(u===ADMIN_USER&&p===ADMIN_PASS){setLogged(true);loadAll();}else alert("Hibás felhasználónév vagy jelszó.")};
@@ -244,7 +329,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("rlist").addEventListener("click", onReviewsClick);
 });
 
-/* ===== Termékek ===== */
+/* ===== Termékek (VÁLTOZATLAN) ===== */
 let P_ADMIN=[];
 async function listProducts(){
   if(!ensureSB())return alert("Supabase nem elérhető.");
@@ -322,7 +407,8 @@ async function delProduct(id){
   const el=document.querySelector(`.item[data-id="${CSS.escape(String(id))}"]`); if(el) el.remove();
   listProducts();
 }
-/* Modal */
+
+/* Modal (VÁLTOZATLAN) */
 let EDIT_ID=null;
 function openEdit(p){
   EDIT_ID=p.id;
@@ -357,7 +443,7 @@ async function saveEdit(){
   info.textContent="Frissítve."; toast("Termék frissítve"); closeEdit(); listProducts();
 }
 
-/* ===== Rendelések ===== */
+/* ===== Rendelések (VÁLTOZATLAN) ===== */
 let ORDERS_CACHE=[];
 async function loadOrders(){
   if(!ensureSB())return;
@@ -445,12 +531,10 @@ async function saveStatusPersistent(id,val){
   const key=normalizeId(id);
   const up=await sb.from('orders').update({status:val}).eq('id',key);
   if(up.error){console.warn(up.error);return false;}
-  // visszaellenőrzés: tényleg ez az érték van-e a DB-ben
   const check=await sb.from('orders').select('status').eq('id',key).maybeSingle();
   if(check.error){console.warn(check.error);return false;}
   return (check.data?.status===val);
 }
-
 /* — Rendelés törlés — */
 async function deleteOrder(id){
   if(!confirm("Biztos törlöd a rendelést?")) return;
@@ -463,7 +547,7 @@ async function deleteOrder(id){
   if(!ORDERS_CACHE.length) document.getElementById('oempty').style.display='block';
 }
 
-/* — Egy rendelés CSV — */
+/* — CSV / PDF export (VÁLTOZATLAN) — */
 function exportOrderCsv(o){
   const H=['id','created_at','name','email','phone','address','shipping','subtotal','shipping_cost','discount','total','coupon_code','coupon_percent','status','items'];
   const items=Array.isArray(o.items)?o.items.map(it=>`${(it.title||'').replace(/"/g,'""')} x ${it.qty}`).join(' | '):'';
@@ -472,7 +556,6 @@ function exportOrderCsv(o){
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`order-${String(o.id).slice(-6)}.csv`;document.body.appendChild(a);a.click();a.remove();
 }
-/* — Egy rendelés „számlaszerű” PDF (print) — */
 function exportOrderPdf(o){
   const HUF=n=>(Number(n)||0).toLocaleString('hu-HU')+' Ft';
   const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
@@ -507,7 +590,7 @@ function exportOrderPdf(o){
   const blob=new Blob([html],{type:'text/html;charset=utf-8;'}); const url=URL.createObjectURL(blob); window.open(url,'_blank');
 }
 
-/* ===== Vélemények ===== */
+/* ===== Vélemények (VÁLTOZATLAN) ===== */
 async function loadReviews(){
   if(!ensureSB())return;
   const {data,error}=await sb.from('reviews').select('id,created_at,username,text,rating,product_id').order('created_at',{ascending:false});
@@ -531,27 +614,24 @@ function onReviewsClick(e){
 async function delReview(id){
   if(!confirm("Biztos törlöd a véleményt?")) return;
   const key=normalizeId(id);
-  // törlés
   const {error}=await sb.from('reviews').delete().eq('id',key);
   if(error){alert("Hiba: "+error.message);return;}
-  // visszaellenőrzés – tényleg eltűnt-e
   const still=await sb.from('reviews').select('id').eq('id',key).maybeSingle();
-  if(!still.error && still.data){ // még megvan -> hiba
+  if(!still.error && still.data){
     alert("A véleményt nem sikerült eltávolítani (adatbázis visszaadta).");
     return;
   }
   toast("Vélemény törölve");
-  // DOM eltávolítás és friss lista
   const row=document.querySelector(`[data-review="${CSS.escape(String(id))}"]`); if(row) row.remove();
   loadReviews();
 }
 
-/* ===== Helpers ===== */
+/* Helpers */
 function e(id){return document.getElementById(id)}
 function addClass(id,cls){document.getElementById(id).classList.add(cls)}
 function removeClass(id,cls){document.getElementById(id).classList.remove(cls)}
 
-/* ===== Init ===== */
+/* Init */
 function loadAll(){ ensureSB(); listProducts(); }
 </script>
 </body>

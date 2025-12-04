@@ -777,6 +777,46 @@ input#form-field-fenykep {
           </div>
         </article>
 
+
+        <!-- Új galéria – referenciaképek -->
+        <div class="prj-gallery">
+          <h3 class="prj-gallery-title">Képek a kivitelezéseinkből</h3>
+          <p class="prj-gallery-intro">
+            Az alábbi fotók valódi munkáinkat mutatják – rendezett munkaterület, igényes részletképzés,
+            és olyan minőség, amire hosszú távon is büszkék vagyunk.
+          </p>
+          <div class="prj-gallery-grid">
+            <button class="prj-thumb" data-img="../kep3.jpg" data-caption="Térkövezett udvar – tiszta vonalak, pontos szintek.">
+              <img src="../kep3.jpg" alt="Térkövezett udvar – Szőke Épker referencia">
+            </button>
+            <button class="prj-thumb" data-img="../kep4.jpg" data-caption="Felújított homlokzat – hőszigetelés és új vakolat, gondosan kivitelezve.">
+              <img src="../kep4.jpg" alt="Felújított homlokzat – Szőke Épker referencia">
+            </button>
+            <button class="prj-thumb" data-img="../kep5.jpg" data-caption="Kocsibeálló és járda – tartós, csúszásmentes burkolat.">
+              <img src="../kep5.jpg" alt="Kocsibeálló és járda – Szőke Épker referencia">
+            </button>
+            <button class="prj-thumb" data-img="../munka3.jpg" data-caption="Generálkivitelezés – szerkezetkész állapot minőségi anyagokkal.">
+              <img src="../munka3.jpg" alt="Generálkivitelezés – Szőke Épker referencia">
+            </button>
+            <button class="prj-thumb" data-img="../munka2.jpg" data-caption="Energetikai felújítás közben – rendezett munkaterület, átgondolt logisztika.">
+              <img src="../munka2.jpg" alt="Energetikai felújítás – Szőke Épker referencia">
+            </button>
+            <button class="prj-thumb" data-img="../munka1.jpg" data-caption="Belső felújítás – festés, burkolás, modern belső terek kialakítása.">
+              <img src="../munka1.jpg" alt="Belső felújítás – Szőke Épker referencia">
+            </button>
+          </div>
+        </div>
+
+        <!-- Lightbox / modal a képekhez -->
+        <div class="prj-lightbox" id="prjLightbox">
+          <div class="prj-lightbox-inner">
+            <button class="prj-lightbox-close" aria-label="Bezárás">&times;</button>
+            <button class="prj-lightbox-prev" aria-label="Előző kép">&#10094;</button>
+            <button class="prj-lightbox-next" aria-label="Következő kép">&#10095;</button>
+            <img id="prjLightboxImg" src="" alt="Referencia kép">
+            <p id="prjLightboxCaption"></p>
+          </div>
+        </div>
       </div>
     </section>
           </div>
@@ -1147,6 +1187,166 @@ var ElementorProFrontendConfig = {"ajaxurl":"https:\/\/Szőke Épker KFT..hu\/wp
 			</div>
 		</div>
 	</template>
+
+<style>
+.prj-gallery {
+  margin-top: 40px;
+}
+.prj-gallery-title {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+.prj-gallery-intro {
+  max-width: 720px;
+}
+.prj-gallery-grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.prj-thumb {
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.prj-thumb img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+.prj-thumb:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+}
+
+/* Lightbox */
+.prj-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+.prj-lightbox.is-active {
+  display: flex;
+}
+.prj-lightbox-inner {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  text-align: center;
+  color: #fff;
+}
+.prj-lightbox img {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 8px;
+}
+.prj-lightbox p {
+  margin-top: 12px;
+  font-size: 16px;
+}
+.prj-lightbox-close,
+.prj-lightbox-prev,
+.prj-lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: #fff;
+  font-size: 26px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.prj-lightbox-close {
+  top: -10px;
+  right: -10px;
+  transform: none;
+}
+.prj-lightbox-prev {
+  left: -50px;
+}
+.prj-lightbox-next {
+  right: -50px;
+}
+@media (max-width: 768px) {
+  .prj-lightbox-prev {
+    left: 10px;
+  }
+  .prj-lightbox-next {
+    right: 10px;
+  }
+}
+</style>
+
+<script>
+(function() {
+  const thumbs = Array.from(document.querySelectorAll('.prj-thumb'));
+  const lb = document.getElementById('prjLightbox');
+  if (!lb || !thumbs.length) return;
+
+  const imgEl = document.getElementById('prjLightboxImg');
+  const capEl = document.getElementById('prjLightboxCaption');
+  const btnClose = lb.querySelector('.prj-lightbox-close');
+  const btnPrev = lb.querySelector('.prj-lightbox-prev');
+  const btnNext = lb.querySelector('.prj-lightbox-next');
+
+  let currentIndex = 0;
+
+  function openAt(index) {
+    currentIndex = index;
+    const t = thumbs[currentIndex];
+    imgEl.src = t.getAttribute('data-img');
+    capEl.textContent = t.getAttribute('data-caption') || '';
+    lb.classList.add('is-active');
+  }
+
+  function closeLb() {
+    lb.classList.remove('is-active');
+  }
+
+  function showPrev() {
+    currentIndex = (currentIndex - 1 + thumbs.length) % thumbs.length;
+    openAt(currentIndex);
+  }
+
+  function showNext() {
+    currentIndex = (currentIndex + 1) % thumbs.length;
+    openAt(currentIndex);
+  }
+
+  thumbs.forEach((t, idx) => {
+    t.addEventListener('click', function() { openAt(idx); });
+  });
+
+  btnClose.addEventListener('click', closeLb);
+  btnPrev.addEventListener('click', function(e) { e.stopPropagation(); showPrev(); });
+  btnNext.addEventListener('click', function(e) { e.stopPropagation(); showNext(); });
+
+  lb.addEventListener('click', function(e) {
+    if (e.target === lb) closeLb();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (!lb.classList.contains('is-active')) return;
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowLeft') showPrev();
+    if (e.key === 'ArrowRight') showNext();
+  });
+})();
+</script>
 </body>
 
 <!-- Mirrored from Szőke Épker KFT..hu/referenciak/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 26 Nov 2025 14:59:52 GMT -->

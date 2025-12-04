@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Köszönjük üzenetét! – Szőke Épker KFT.</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      font-family: Arial, sans-serif;
+    }
+    .wrapper {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+    .logo {
+      width: 160px;
+      height: auto;
+      opacity: 0;
+      animation: fadeUp 1.4s ease forwards;
+    }
+    h1 {
+      font-size: 32px;
+      margin-top: 20px;
+      color: #000;
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 0.4s;
+    }
+    p {
+      font-size: 18px;
+      color: #333;
+      margin-top: 10px;
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 0.8s;
+    }
+    a.btn {
+      margin-top: 30px;
+      display: inline-block;
+      padding: 12px 26px;
+      background: #FAD443;
+      color: #000;
+      font-weight: bold;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 16px;
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 1.2s;
+      transition: background .3s;
+    }
+    a.btn:hover {
+      background: #e5c13a;
+    }
+    @keyframes fadeUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <img src="szoke/logo.png" alt="Szőke Épker KFT logó" class="logo">
+    <h1>Köszönjük, üzenetét sikeresen megkaptuk!</h1>
+    <p>24 órán belül felvesszük Önnel a kapcsolatot.</p>
+    <a href="index.html" class="btn">Vissza a kezdőlapra</a>
+  </div>
+</body>
+</html>
